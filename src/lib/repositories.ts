@@ -30,9 +30,3 @@ export interface StorageRepository {
   delete(bucket: string, path: string): Promise<boolean>;
   getPublicUrl(bucket: string, path: string): string;
 }
-
-export interface AuthRepository {
-  signIn(email: string, password: string): Promise<{ error: string | null }>;
-  signOut(): Promise<void>;
-  getUser(): Promise<{ id: string; email: string } | null>;
-}

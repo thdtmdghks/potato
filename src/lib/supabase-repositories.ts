@@ -5,7 +5,6 @@ import type {
   ProductRepository,
   InquiryRepository,
   StorageRepository,
-  AuthRepository,
 } from "./repositories";
 
 export class SupabaseProjectRepository implements ProjectRepository {
@@ -123,24 +122,5 @@ export class SupabaseStorageRepository implements StorageRepository {
 
   getPublicUrl(bucket: string, path: string): string {
     return this.db.storage.from(bucket).getPublicUrl(path).data.publicUrl;
-  }
-}
-
-export class SupabaseAuthRepository implements AuthRepository {
-  constructor(private db: SupabaseClient<Database>) {}
-
-  async signIn(email: string, password: string): Promise<{ error: string | null }> {
-    const { error } = await this.db.auth.signInWithPassword({ email, password });
-    return { error: error?.message ?? null };
-  }
-
-  async signOut(): Promise<void> {
-    await this.db.auth.signOut();
-  }
-
-  async getUser(): Promise<{ id: string; email: string } | null> {
-    const { data } = await this.db.auth.getUser();
-    if (!data.user) return null;
-    return { id: data.user.id, email: data.user.email ?? "" };
   }
 }

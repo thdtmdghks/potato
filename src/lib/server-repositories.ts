@@ -1,19 +1,36 @@
-import { createServerSupabase } from "./supabase-server";
-import {
-  SupabaseProjectRepository,
-  SupabaseProductRepository,
-  SupabaseInquiryRepository,
-  SupabaseStorageRepository,
-  SupabaseAuthRepository,
-} from "./supabase-repositories";
+import type {
+  ProjectRepository,
+  ProductRepository,
+  InquiryRepository,
+  StorageRepository,
+} from './repositories';
 
-export async function getServerRepositories() {
+interface Repositories {
+  projects: ProjectRepository;
+  products: ProductRepository;
+  inquiries: InquiryRepository;
+  storage: StorageRepository;
+}
+
+export async function getServerRepositories(): Promise<Repositories> {
+  if (process.env.USE_MOCK === 'true' || !process.env.NEXT_PUBLIC_SUPABASE_URL) {
+    const { getMockRepositories } = await import('./mock-repositories');
+    return getMockRepositories();
+  }
+
+  const { createServerSupabase } = await import('./supabase-server');
+  const {
+    SupabaseProjectRepository,
+    SupabaseProductRepository,
+    SupabaseInquiryRepository,
+    SupabaseStorageRepository,
+  } = await import('./supabase-repositories');
+
   const supabase = await createServerSupabase();
   return {
     projects: new SupabaseProjectRepository(supabase),
     products: new SupabaseProductRepository(supabase),
     inquiries: new SupabaseInquiryRepository(supabase),
     storage: new SupabaseStorageRepository(supabase),
-    auth: new SupabaseAuthRepository(supabase),
   };
 }

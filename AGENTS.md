@@ -29,7 +29,8 @@ src/
 ├── lib/
 │   ├── repositories.ts        # Repository 인터페이스 (DB 비의존)
 │   ├── supabase-repositories.ts # Supabase 구현체
-│   ├── server-repositories.ts # 서버용 팩토리 (진입점)
+│   ├── mock-repositories.ts   # Mock 구현체 (개발/테스트용)
+│   ├── server-repositories.ts # 서버용 팩토리 (Mock/Supabase 자동 전환)
 │   ├── supabase-server.ts     # 서버용 Supabase 클라이언트 (내부용)
 │   ├── types.ts               # DB 타입 정의
 │   ├── schemas.ts             # Zod 스키마 (폼 유효성 검사)
@@ -59,6 +60,15 @@ supabase/
 - **Data access**: 서버에서 `getServerRepositories()` 사용. 클라이언트에서 DB 직접 접근 금지.
 - **Forms**: react-hook-form + zod 스키마로 유효성 검사. 스키마는 `src/lib/schemas.ts`에 정의.
 - **Images**: 업로드 시 `compressImage()` 사용 (WebP 변환 + 압축). 표시 시 Next.js `<Image>` 컴포넌트 필수.
+
+## Testing
+
+- **Runner**: Vitest + @testing-library/react
+- **테스트 위치**: `src/__tests__/` (소스 구조 미러링)
+- **실행**: `pnpm test` (단일 실행), `pnpm test:watch` (감시 모드)
+- **백엔드 테스트**: Repository, 스키마, 유틸리티 유닛 테스트
+- **프론트엔드 테스트**: 컴포넌트 렌더링 + 인터랙션 테스트 (MSW로 API 모킹)
+- **Mock 전환**: `USE_MOCK=true` 또는 `NEXT_PUBLIC_SUPABASE_URL` 미설정 시 자동으로 Mock Repository 사용
 
 ## Git Conventions
 
