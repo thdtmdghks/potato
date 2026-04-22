@@ -29,7 +29,6 @@
 │  │  Repository 인터페이스 (repositories.ts)     │  │
 │  │         ↓                                   │  │
 │  │  Supabase 구현체 (supabase-repositories.ts) │  │
-│  │  Proxy 인증 구현체 (proxy-auth.ts)          │  │
 │  └─────────────────────┬───────────────────────┘  │
 └────────────────────────┼──────────────────────────┘
                          │
@@ -143,7 +142,7 @@ export async function getServerRepositories() {
 ```
 /admin/* 접근
   → proxy.ts
-  → Supabase Auth getUser() (서버)
+  → Auth.js auth() 세션 확인 (DB 독립적)
   → 미인증 → /admin/login 리다이렉트
   → 인증됨 → 통과
 
@@ -258,4 +257,3 @@ SQL: `supabase/schema.sql`
 | Vercel | 대역폭 100GB/월 | ❌ |
 | Supabase DB | 500MB | ❌ |
 | Supabase Storage | 1GB (~8,000장 WebP) | ❌ |
-| Supabase Auth | 50,000 MAU | ❌ |

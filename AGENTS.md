@@ -8,7 +8,8 @@
 
 - **Framework**: Next.js 16 (App Router) + TypeScript
 - **Styling**: Tailwind CSS 4
-- **DB/Auth/Storage**: Supabase (PostgreSQL, Auth, Storage) — Repository 패턴으로 추상화됨
+- **DB/Storage**: Supabase (PostgreSQL, Storage) — Repository 패턴으로 추상화됨
+- **Auth**: Auth.js v5 (next-auth) — Google OAuth, DB 독립적
 - **Forms**: react-hook-form + zod + @hookform/resolvers
 - **Image**: browser-image-compression (WebP 변환, 최대 200KB)
 - **Push**: web-push (PWA 푸시 알림)
@@ -22,6 +23,7 @@ src/
 ├── app/
 │   ├── (public)/          # 공개 페이지 (홈, 회사소개, 포트폴리오, 제품, 견적문의, 연락처)
 │   ├── admin/             # 관리자 페이지 (인증 필요)
+│   ├── api/auth/          # Auth.js API Route 핸들러
 │   ├── layout.tsx         # 루트 레이아웃
 │   └── globals.css        # 글로벌 스타일 + Tailwind 테마
 ├── lib/
@@ -29,11 +31,11 @@ src/
 │   ├── supabase-repositories.ts # Supabase 구현체
 │   ├── server-repositories.ts # 서버용 팩토리 (진입점)
 │   ├── supabase-server.ts     # 서버용 Supabase 클라이언트 (내부용)
-│   ├── proxy-auth.ts          # Proxy용 인증 구현체 (Supabase)
 │   ├── types.ts               # DB 타입 정의
 │   ├── schemas.ts             # Zod 스키마 (폼 유효성 검사)
 │   └── image.ts               # 이미지 압축 유틸리티
-├── proxy.ts               # /admin/* 경로 인증 보호 (Next.js Proxy)
+├── auth.ts                # Auth.js 설정 (providers, pages)
+├── proxy.ts               # /admin/* 경로 인증 보호 (Auth.js 세션 확인)
 supabase/
 ├── schema.sql             # DB 테이블 생성 SQL
 └── seed.sql               # 샘플 데이터
@@ -41,8 +43,9 @@ supabase/
 
 ## Architecture Principles
 
-- **클라이언트는 Supabase를 직접 접근하지 않는다.** 모든 DB/Auth/Storage 접근은 서버(Server Component, API Route)에서만.
+- **클라이언트는 Supabase를 직접 접근하지 않는다.** 모든 DB/Storage 접근은 서버(Server Component, API Route)에서만.
 - **Repository 패턴**: 컴포넌트 → Repository 인터페이스 → 구현체. 백엔드 교체 시 구현체만 변경.
+- **인증은 DB와 독립적**: Auth.js가 인증 담당. DB 교체 시 인증에 영향 없음.
 - **모바일 우선**: Tailwind 기본 스타일이 모바일, `sm:`/`md:`/`lg:`로 확장.
 
 ## Coding Conventions

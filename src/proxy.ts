@@ -1,18 +1,15 @@
-import { NextResponse, type NextRequest } from "next/server";
-import { createProxyAuth } from "@/lib/proxy-auth";
+import { auth } from '@/auth';
+import { NextResponse } from 'next/server';
 
-export async function proxy(request: NextRequest) {
-  const response = NextResponse.next({ request: { headers: request.headers } });
-  const auth = createProxyAuth(request, response);
-  const user = await auth.getUser();
+export async function proxy() {
+  const session = await auth();
 
-  if (!user && !request.nextUrl.pathname.startsWith("/admin/login")) {
-    return NextResponse.redirect(new URL("/admin/login", request.url));
+  // /admin/* 경로는 인증 필요
+  if (!session) {
+    return NextResponse.redirect(new URL('/login', process.env.NEXTAUTH_URL || 'http://localhost:3000'));
   }
-
-  return response;
 }
 
 export const config = {
-  matcher: ["/admin/:path*"],
+  matcher: ['/admin/:path*'],
 };
