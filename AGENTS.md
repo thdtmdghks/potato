@@ -26,25 +26,28 @@ src/
 │   ├── api/auth/          # Auth.js API Route 핸들러
 │   ├── layout.tsx         # 루트 레이아웃
 │   └── globals.css        # 글로벌 스타일 + Tailwind 테마
-├── lib/
+├── server/                    # 서버 전용 (DB 접근, 시크릿 사용)
 │   ├── repositories.ts        # Repository 인터페이스 (DB 비의존)
 │   ├── supabase-repositories.ts # Supabase 구현체
 │   ├── mock-repositories.ts   # Mock 구현체 (개발/테스트용)
-│   ├── server-repositories.ts # 서버용 팩토리 (Mock/Supabase 자동 전환)
-│   ├── supabase-server.ts     # 서버용 Supabase 클라이언트 (내부용)
-│   ├── types.ts               # DB 타입 정의
-│   ├── schemas.ts             # Zod 스키마 (폼 유효성 검사)
+│   ├── supabase-client.ts     # Supabase 연결
+│   └── index.ts               # getServerRepositories() 팩토리 (Mock/Supabase 자동 전환)
+├── client/                    # 클라이언트 전용 (브라우저 API)
 │   └── image.ts               # 이미지 압축 유틸리티
-├── auth.ts                # Auth.js 설정 (providers, pages)
-├── proxy.ts               # /admin/* 경로 인증 보호 (Auth.js 세션 확인)
-supabase/
+├── shared/                    # 서버/클라이언트 공용 (순수 로직)
+│   ├── types.ts               # DB 타입 정의
+│   └── schemas.ts             # Zod 스키마 (폼 유효성 검사)
+├── auth.ts                # Auth.js 설정 (Next.js 관례)
+├── proxy.ts               # /admin/* 경로 인증 보호 (Next.js 강제 위치)
+db/                            # DB 설정 (런타임 아님, 수동 적용)
 ├── schema.sql             # DB 테이블 생성 SQL
 └── seed.sql               # 샘플 데이터
 ```
 
 ## Architecture Principles
 
-- **클라이언트는 Supabase를 직접 접근하지 않는다.** 모든 DB/Storage 접근은 서버(Server Component, API Route)에서만.
+- **서버/클라이언트/공용 3분할**: `server/`(DB, 시크릿), `client/`(브라우저 API), `shared/`(타입, 스키마). 폴더 경계를 넘는 import 금지 (`client/`에서 `server/` import 불가).
+- **클라이언트는 DB를 직접 접근하지 않는다.** 모든 DB/Storage 접근은 서버(Server Component, API Route)에서만.
 - **Repository 패턴**: 컴포넌트 → Repository 인터페이스 → 구현체. 백엔드 교체 시 구현체만 변경.
 - **인증은 DB와 독립적**: Auth.js가 인증 담당. DB 교체 시 인증에 영향 없음.
 - **모바일 우선**: Tailwind 기본 스타일이 모바일, `sm:`/`md:`/`lg:`로 확장.
@@ -57,10 +60,10 @@ supabase/
 - **Styling**: Tailwind 유틸리티 클래스 사용. 커스텀 CSS 최소화.
 - **HTML**: 시멘틱 태그 필수 (`<header>`, `<nav>`, `<main>`, `<section>`, `<article>`, `<aside>`, `<footer>`). `<div>` 남용 금지.
 - **Design tokens**: 네이비(`text-navy`, `bg-navy`), 다크그레이(`text-gray-dark`), 라이트그레이(`bg-gray-light`). globals.css 참고.
-- **Imports**: `@/*` alias 사용 (예: `@/lib/repositories`).
-- **Data access**: 서버에서 `getServerRepositories()` 사용. 클라이언트에서 DB 직접 접근 금지.
-- **Forms**: react-hook-form + zod 스키마로 유효성 검사. 스키마는 `src/lib/schemas.ts`에 정의.
-- **Images**: 업로드 시 `compressImage()` 사용 (WebP 변환 + 압축). 표시 시 Next.js `<Image>` 컴포넌트 필수.
+- **Imports**: `@/*` alias 사용. 서버 코드는 `@/server/`, 클라이언트 코드는 `@/client/`, 공용은 `@/shared/`.
+- **Data access**: 서버에서 `getServerRepositories()` 사용 (`@/server`에서 import). 클라이언트에서 DB 직접 접근 금지.
+- **Forms**: react-hook-form + zod 스키마로 유효성 검사. 스키마는 `src/shared/schemas.ts`에 정의.
+- **Images**: 업로드 시 `compressImage()` 사용 (`@/client/image`). 표시 시 Next.js `<Image>` 컴포넌트 필수.
 
 ## Testing
 

@@ -18,7 +18,7 @@ export async function getServerRepositories(): Promise<Repositories> {
     return getMockRepositories();
   }
 
-  const { createServerSupabase } = await import('./supabase-server');
+  const { createServerSupabase } = await import('./supabase-client');
   const {
     SupabaseProjectRepository,
     SupabaseProductRepository,

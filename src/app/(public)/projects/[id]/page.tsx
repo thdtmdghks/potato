@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getServerRepositories } from "@/lib/server-repositories";
-import type { Project } from "@/lib/types";
+import { getServerRepositories } from "@/server";
+import type { Project } from "@/shared/types";
 
 async function getProject(id: string): Promise<Project | null> {
   try {

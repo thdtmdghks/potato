@@ -1,4 +1,4 @@
-import type { Project, Product, Inquiry } from "./types";
+import type { Project, Product, Inquiry } from "@/shared/types";
 
 export interface ProjectRepository {
   getAll(category?: string): Promise<Project[]>;

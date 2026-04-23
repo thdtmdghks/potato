@@ -1,4 +1,4 @@
-import type { Project, Product, Inquiry } from './types';
+import type { Project, Product, Inquiry } from '@/shared/types';
 import type {
   ProjectRepository,
   ProductRepository,

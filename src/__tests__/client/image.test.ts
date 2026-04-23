@@ -4,7 +4,7 @@ vi.mock('browser-image-compression', () => ({
   default: vi.fn(async (file: File) => file),
 }));
 
-import { compressImage } from '@/lib/image';
+import { compressImage } from '@/client/image';
 
 describe('compressImage', () => {
   it('File을 반환한다', async () => {

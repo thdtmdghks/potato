@@ -10,7 +10,7 @@
 │  │  공개 페이지      │  │  관리자 페이지         │  │
 │  │  (Server Comp.)  │  │  (Client + Server)    │  │
 │  │                  │  │                       │  │
-│  │  /               │  │  /admin (Proxy 보호)  │  │
+│  │  /               │  │  /admin (Auth.js 보호)│  │
 │  │  /about          │  │  /admin/projects      │  │
 │  │  /projects       │  │  /admin/products      │  │
 │  │  /projects/[id]  │  │  /admin/inquiries     │  │
@@ -24,7 +24,7 @@
 │  │                                             │  │
 │  │  API Routes (/api/*)                        │  │
 │  │  Server Components                          │  │
-│  │  Proxy (인증 보호)                            │  │
+│  │  Auth.js (인증 보호)                         │  │
 │  │         ↓                                   │  │
 │  │  Repository 인터페이스 (repositories.ts)     │  │
 │  │         ↓                                   │  │
@@ -42,6 +42,42 @@
 ```
 
 **핵심 원칙: 클라이언트(브라우저)는 Supabase에 직접 접근하지 않는다.**
+
+## 3분할 디렉토리 구조
+
+기존 `lib/` 디렉토리를 역할별로 3분할하여 관리합니다.
+
+```
+src/
+├── server/     # 서버 전용 — Server Component, API Route에서만 import
+│   ├── index.ts                  # getServerRepositories() 팩토리
+│   ├── repositories.ts           # Repository 인터페이스 정의
+│   ├── supabase-client.ts        # Supabase 서버 클라이언트 생성
+│   └── supabase-repositories.ts  # Supabase 구현체
+│
+├── client/     # 클라이언트 전용 — 브라우저에서 실행되는 유틸리티
+│   └── ...
+│
+└── shared/     # 공용 — 서버/클라이언트 양쪽에서 사용 가능
+    └── ...
+```
+
+| 디렉토리 | 실행 환경 | 용도 |
+|----------|----------|------|
+| `server/` | 서버만 | DB 접근, 인증, Repository, API 로직 |
+| `client/` | 브라우저만 | 폼 유틸, 이미지 압축, UI 헬퍼 |
+| `shared/` | 서버 + 브라우저 | 타입 정의, 상수, 유효성 검증 스키마 |
+
+## Supabase 의존 파일
+
+Supabase에 직접 의존하는 파일은 **2개**뿐입니다:
+
+| 파일 | 역할 |
+|------|------|
+| `server/supabase-client.ts` | Supabase 서버 클라이언트 생성 |
+| `server/supabase-repositories.ts` | Repository 인터페이스의 Supabase 구현체 |
+
+백엔드 교체 시 이 2개 파일만 교체하면 됩니다.
 
 ## Repository 패턴
 
@@ -69,12 +105,14 @@ interface ProjectRepository {
 ### 사용법
 ```tsx
 // Server Component
+import { getServerRepositories } from "@/server";
+
 const { projects } = await getServerRepositories();
 const items = await projects.getAll(category);
 ```
 
 ### 백엔드 교체 시
-`server-repositories.ts`의 팩토리만 변경:
+`server/index.ts`의 팩토리만 변경:
 ```ts
 // 현재: Supabase
 export async function getServerRepositories() {
@@ -141,13 +179,13 @@ export async function getServerRepositories() {
 
 ```
 /admin/* 접근
-  → proxy.ts
+  → Auth.js middleware
   → Auth.js auth() 세션 확인 (DB 독립적)
   → 미인증 → /admin/login 리다이렉트
   → 인증됨 → 통과
 
 /admin/login
-  → Proxy 제외
+  → 인증 불필요
   → POST /api/auth/login (API Route)
   → getServerRepositories().auth.signIn()
   → 성공 → /admin 리다이렉트
@@ -236,7 +274,7 @@ export async function getServerRepositories() {
 | inquiries | 인증 사용자 | 누구나 | 인증 사용자 |
 | push_subscriptions | 인증 사용자 | 인증 사용자 | 인증 사용자 |
 
-SQL: `supabase/schema.sql`
+SQL: `db/schema.sql`
 
 ## 디자인 토큰 (globals.css)
 

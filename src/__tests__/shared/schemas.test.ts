@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { inquirySchema } from '@/lib/schemas';
+import { inquirySchema } from '@/shared/schemas';
 
 const valid = { name: '홍길동', phone: '010-1234-5678', email: 'test@example.com', type: '웹사이트', address: '서울시', content: '문의합니다' };
 

@@ -65,17 +65,20 @@ test/
 │   │   └── admin/                  # 관리자 페이지 (Proxy 인증)
 │   │       ├── layout.tsx          # 사이드바 + 모바일 토글
 │   │       └── page.tsx            # 대시보드 (placeholder)
-│   ├── lib/
+│   ├── server/                         # 서버 전용
 │   │   ├── repositories.ts            # Repository 인터페이스 (DB 비의존)
 │   │   ├── supabase-repositories.ts   # Supabase 구현체
-│   │   ├── server-repositories.ts     # 서버용 팩토리 (진입점)
-│   │   ├── supabase-server.ts         # 서버용 Supabase 클라이언트 (내부용)
+│   │   ├── mock-repositories.ts       # Mock 구현체 (테스트/개발용)
+│   │   ├── supabase-client.ts         # 서버용 Supabase 클라이언트 (내부용)
+│   │   └── index.ts                   # 서버용 팩토리 (진입점)
+│   ├── client/                         # 클라이언트 전용
+│   │   └── image.ts                   # 이미지 압축 (WebP, ≤200KB)
+│   ├── shared/                         # 공용
 │   │   ├── types.ts                   # DB 타입 (Project, Product, Inquiry)
-│   │   ├── schemas.ts                # Zod 스키마 (폼 검증)
-│   │   └── image.ts                  # 이미지 압축 (WebP, ≤200KB)
+│   │   └── schemas.ts                # Zod 스키마 (폼 검증)
 │   ├── auth.ts                     # Auth.js 설정 (providers, pages)
 │   └── proxy.ts                    # /admin/* 인증 보호 (Auth.js 세션 확인)
-├── supabase/
+├── db/
 │   ├── schema.sql                  # DB 테이블 + RLS 정책
 │   └── seed.sql                    # 샘플 데이터
 ├── docs/
@@ -105,11 +108,13 @@ test/
 
 ```tsx
 // 서버 컴포넌트에서 데이터 조회
+import { getServerRepositories } from '@/server';
+
 const { projects } = await getServerRepositories();
 const items = await projects.getAll(category);
 ```
 
-백엔드 교체 시 `server-repositories.ts`의 팩토리 내부만 변경하면 됩니다.
+백엔드 교체 시 `server/index.ts`의 팩토리 내부만 변경하면 됩니다.
 
 ### 클라이언트 DB 직접 접근 금지
 
@@ -118,6 +123,20 @@ const items = await projects.getAll(category);
 - **데이터 변경**: 클라이언트 → API Route → Repository
 - **인증**: Proxy → Auth.js 세션 확인 (DB 독립적)
 - **이미지 업로드**: 클라이언트에서 압축 → API Route → Storage
+
+### src/ 3분할 원칙 — server / client / shared
+
+`src/` 하위 코드를 실행 환경에 따라 3개 디렉토리로 분리합니다:
+
+| 디렉토리 | 실행 환경 | 포함 내용 |
+|----------|----------|----------|
+| `server/` | 서버 전용 | Repository, Supabase 클라이언트, 팩토리 |
+| `client/` | 클라이언트 전용 | 이미지 압축 등 브라우저 API 의존 코드 |
+| `shared/` | 서버 + 클라이언트 공용 | 타입, Zod 스키마 등 환경 무관 코드 |
+
+- `server/` 코드는 클라이언트에서 import 금지
+- `client/` 코드는 서버에서 import 금지
+- `shared/` 코드는 어디서든 import 가능
 
 ### 모바일 우선 (Mobile First)
 

@@ -1,6 +1,6 @@
 import Link from "next/link";
-import { getServerRepositories } from "@/lib/server-repositories";
-import type { Project } from "@/lib/types";
+import { getServerRepositories } from "@/server";
+import type { Project } from "@/shared/types";
 
 async function getProjects(category?: string): Promise<Project[]> {
   try {

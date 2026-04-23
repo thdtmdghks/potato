@@ -1,5 +1,5 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
-import type { Database, Project, Product, Inquiry } from "./types";
+import type { Database, Project, Product, Inquiry } from "@/shared/types";
 import type {
   ProjectRepository,
   ProductRepository,
