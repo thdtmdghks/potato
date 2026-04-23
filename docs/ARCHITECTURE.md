@@ -35,10 +35,10 @@
                          ▼
 ┌──────────────────────────────────────────────────┐
 │                 Supabase (무료 플랜)              │
-├─────────────┬──────────────┬─────────────────────┤
-│ PostgreSQL  │    Auth      │   Storage           │
-│ (500MB)     │ (관리자 인증) │ (이미지 1GB)        │
-└─────────────┴──────────────┴─────────────────────┘
+├─────────────────────────┬────────────────────────┤
+│ PostgreSQL              │   Storage              │
+│ (500MB)                 │ (이미지 1GB)            │
+└─────────────────────────┴────────────────────────┘
 ```
 
 **핵심 원칙: 클라이언트(브라우저)는 Supabase에 직접 접근하지 않는다.**
@@ -99,7 +99,7 @@ interface ProjectRepository {
   update(id, data): Promise<Project | null>;
   delete(id): Promise<boolean>;
 }
-// ProductRepository, InquiryRepository, StorageRepository, AuthRepository 동일 구조
+// ProductRepository, InquiryRepository, StorageRepository 동일 구조
 ```
 
 ### 사용법
@@ -179,15 +179,14 @@ export async function getServerRepositories() {
 
 ```
 /admin/* 접근
-  → Auth.js middleware
+  → proxy.ts
   → Auth.js auth() 세션 확인 (DB 독립적)
-  → 미인증 → /admin/login 리다이렉트
+  → 미인증 → /login 리다이렉트
   → 인증됨 → 통과
 
-/admin/login
-  → 인증 불필요
-  → POST /api/auth/login (API Route)
-  → getServerRepositories().auth.signIn()
+/login
+  → Auth.js signIn() (Google OAuth)
+  → /api/auth/[...nextauth] (Auth.js API Route)
   → 성공 → /admin 리다이렉트
 ```
 
