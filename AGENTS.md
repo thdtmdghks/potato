@@ -55,6 +55,7 @@ supabase/
 - **Components**: Server Component 기본. 클라이언트 상태가 필요할 때만 `"use client"`.
 - **Naming**: 컴포넌트 PascalCase, 함수/변수 camelCase, 파일명 kebab-case (Next.js 라우트 제외).
 - **Styling**: Tailwind 유틸리티 클래스 사용. 커스텀 CSS 최소화.
+- **HTML**: 시멘틱 태그 필수 (`<header>`, `<nav>`, `<main>`, `<section>`, `<article>`, `<aside>`, `<footer>`). `<div>` 남용 금지.
 - **Design tokens**: 네이비(`text-navy`, `bg-navy`), 다크그레이(`text-gray-dark`), 라이트그레이(`bg-gray-light`). globals.css 참고.
 - **Imports**: `@/*` alias 사용 (예: `@/lib/repositories`).
 - **Data access**: 서버에서 `getServerRepositories()` 사용. 클라이언트에서 DB 직접 접근 금지.
