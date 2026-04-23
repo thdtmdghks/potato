@@ -9,11 +9,13 @@
 - **Framework**: Next.js 16 (App Router) + TypeScript
 - **Styling**: Tailwind CSS 4
 - **DB/Storage**: Supabase (PostgreSQL, Storage) — Repository 패턴으로 추상화됨
-- **Auth**: Auth.js v5 (next-auth) — Google OAuth, DB 독립적
+- **Auth**: Auth.js v5 (next-auth) — Google OAuth, JWT 쿠키, DB 독립적
 - **Forms**: react-hook-form + zod + @hookform/resolvers
 - **Image**: browser-image-compression (WebP 변환, 최대 200KB)
 - **Push**: web-push (PWA 푸시 알림)
 - **Package Manager**: pnpm
+- **Test**: Vitest + @testing-library/react
+- **Dark Mode**: OS 기본 + 토글 (Tailwind `dark:` + localStorage)
 - **Deploy**: Vercel (무료 Hobby)
 
 ## Project Structure
@@ -33,7 +35,8 @@ src/
 │   ├── supabase-client.ts     # Supabase 연결
 │   └── index.ts               # getServerRepositories() 팩토리 (Mock/Supabase 자동 전환)
 ├── client/                    # 클라이언트 전용 (브라우저 API)
-│   └── image.ts               # 이미지 압축 유틸리티
+│   ├── image.ts               # 이미지 압축 유틸리티
+│   └── theme.ts               # 다크모드 토글 (localStorage)
 ├── shared/                    # 서버/클라이언트 공용 (순수 로직)
 │   ├── types.ts               # DB 타입 정의
 │   └── schemas.ts             # Zod 스키마 (폼 유효성 검사)
@@ -60,6 +63,7 @@ db/                            # DB 설정 (런타임 아님, 수동 적용)
 - **Styling**: Tailwind 유틸리티 클래스 사용. 커스텀 CSS 최소화.
 - **HTML**: 시멘틱 태그 필수 (`<header>`, `<nav>`, `<main>`, `<section>`, `<article>`, `<aside>`, `<footer>`). `<div>` 남용 금지.
 - **Design tokens**: 네이비(`text-navy`, `bg-navy`), 다크그레이(`text-gray-dark`), 라이트그레이(`bg-gray-light`). globals.css 참고.
+- **Dark mode**: 모든 UI에 `dark:` 변형 필수. 테마 토글은 `@/client/theme`의 `setTheme()` 사용.
 - **Imports**: `@/*` alias 사용. 서버 코드는 `@/server/`, 클라이언트 코드는 `@/client/`, 공용은 `@/shared/`.
 - **Data access**: 서버에서 `getServerRepositories()` 사용 (`@/server`에서 import). 클라이언트에서 DB 직접 접근 금지.
 - **Forms**: react-hook-form + zod 스키마로 유효성 검사. 스키마는 `src/shared/schemas.ts`에 정의.
