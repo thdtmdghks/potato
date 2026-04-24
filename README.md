@@ -204,4 +204,5 @@ refactor: 리팩토링     chore: 빌드/설정
 ## 문서
 
 - [상세 아키텍처](docs/ARCHITECTURE.md) — 시스템 구조, 데이터 흐름, DB 스키마
+- [다음 작업 가이드](docs/NEXT-TASKS.md) — 와이어프레임 프로토타입 작업 순서, 기술적 결정사항
 - [AI 에이전트 규칙](AGENTS.md) — 코딩 컨벤션, 프로젝트 규칙

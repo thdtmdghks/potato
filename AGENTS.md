@@ -101,3 +101,4 @@ db/                            # DB 설정 (런타임 아님, 수동 적용)
 - Supabase Storage 1GB 제한 → 이미지 반드시 압축 후 업로드.
 - `/admin/*` 경로는 Proxy로 인증 보호됨. 관리자 전용.
 - 자세한 아키텍처는 `docs/ARCHITECTURE.md` 참고.
+- 다음 작업 가이드는 `docs/NEXT-TASKS.md` 참고.
