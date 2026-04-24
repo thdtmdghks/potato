@@ -1,5 +1,103 @@
-<!-- BEGIN:nextjs-agent-rules -->
-# This is NOT the Next.js you know
+# Project Rules
 
-This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` before writing any code. Heed deprecation notices.
-<!-- END:nextjs-agent-rules -->
+## Overview
+
+소규모 서비스 회사의 홈페이지. 공개 페이지(홈, 회사소개, 포트폴리오, 제품안내, 견적문의, 연락처) + 관리자 페이지(포트폴리오/제품 CRUD, 문의 관리) + PWA 푸시 알림.
+
+## Tech Stack
+
+- **Framework**: Next.js 16 (App Router) + TypeScript
+- **Styling**: Tailwind CSS 4
+- **DB/Storage**: Supabase (PostgreSQL, Storage) — Repository 패턴으로 추상화됨
+- **Auth**: Auth.js v5 (next-auth) — Google OAuth, JWT 쿠키, DB 독립적
+- **Forms**: react-hook-form + zod + @hookform/resolvers
+- **Image**: browser-image-compression (WebP 변환, 최대 200KB)
+- **Push**: web-push (PWA 푸시 알림)
+- **Package Manager**: pnpm
+- **Test**: Vitest + @testing-library/react
+- **Dark Mode**: OS 기본 + 토글 (Tailwind `dark:` + localStorage)
+- **Deploy**: Vercel (무료 Hobby)
+
+## Project Structure
+
+```
+src/
+├── app/
+│   ├── (public)/          # 공개 페이지 (홈, 회사소개, 포트폴리오, 제품, 견적문의, 연락처)
+│   ├── admin/             # 관리자 페이지 (인증 필요)
+│   ├── api/auth/          # Auth.js API Route 핸들러
+│   ├── layout.tsx         # 루트 레이아웃
+│   └── globals.css        # 글로벌 스타일 + Tailwind 테마
+├── server/                    # 서버 전용 (DB 접근, 시크릿 사용)
+│   ├── repositories.ts        # Repository 인터페이스 (DB 비의존)
+│   ├── supabase-repositories.ts # Supabase 구현체
+│   ├── mock-repositories.ts   # Mock 구현체 (개발/테스트용)
+│   ├── supabase-client.ts     # Supabase 연결
+│   └── index.ts               # getServerRepositories() 팩토리 (Mock/Supabase 자동 전환)
+├── client/                    # 클라이언트 전용 (브라우저 API)
+│   ├── image.ts               # 이미지 압축 유틸리티
+│   └── theme.ts               # 다크모드 토글 (localStorage)
+├── shared/                    # 서버/클라이언트 공용 (순수 로직)
+│   ├── types.ts               # DB 타입 정의
+│   └── schemas.ts             # Zod 스키마 (폼 유효성 검사)
+├── auth.ts                # Auth.js 설정 (Next.js 관례)
+├── proxy.ts               # /admin/* 경로 인증 보호 (Next.js 강제 위치)
+db/                            # DB 설정 (런타임 아님, 수동 적용)
+├── schema.sql             # DB 테이블 생성 SQL
+└── seed.sql               # 샘플 데이터
+```
+
+## Architecture Principles
+
+- **서버/클라이언트/공용 3분할**: `server/`(DB, 시크릿), `client/`(브라우저 API), `shared/`(타입, 스키마). 폴더 경계를 넘는 import 금지 (`client/`에서 `server/` import 불가).
+- **클라이언트는 DB를 직접 접근하지 않는다.** 모든 DB/Storage 접근은 서버(Server Component, API Route)에서만.
+- **Repository 패턴**: 컴포넌트 → Repository 인터페이스 → 구현체. 백엔드 교체 시 구현체만 변경.
+- **인증은 DB와 독립적**: Auth.js가 인증 담당. DB 교체 시 인증에 영향 없음.
+- **모바일 우선**: Tailwind 기본 스타일이 모바일, `sm:`/`md:`/`lg:`로 확장.
+
+## Coding Conventions
+
+- **Language**: TypeScript strict mode. `any` 사용 금지.
+- **Components**: Server Component 기본. 클라이언트 상태가 필요할 때만 `"use client"`.
+- **Naming**: 컴포넌트 PascalCase, 함수/변수 camelCase, 파일명 kebab-case (Next.js 라우트 제외).
+- **Styling**: Tailwind 유틸리티 클래스 사용. 커스텀 CSS 최소화.
+- **HTML**: 시멘틱 태그 필수 (`<header>`, `<nav>`, `<main>`, `<section>`, `<article>`, `<aside>`, `<footer>`). `<div>` 남용 금지.
+- **Design tokens**: 네이비(`text-navy`, `bg-navy`), 다크그레이(`text-gray-dark`), 라이트그레이(`bg-gray-light`). globals.css 참고.
+- **Dark mode**: 모든 UI에 `dark:` 변형 필수. 테마 토글은 `@/client/theme`의 `setTheme()` 사용.
+- **Imports**: `@/*` alias 사용. 서버 코드는 `@/server/`, 클라이언트 코드는 `@/client/`, 공용은 `@/shared/`.
+- **Data access**: 서버에서 `getServerRepositories()` 사용 (`@/server`에서 import). 클라이언트에서 DB 직접 접근 금지.
+- **Forms**: react-hook-form + zod 스키마로 유효성 검사. 스키마는 `src/shared/schemas.ts`에 정의.
+- **Images**: 업로드 시 `compressImage()` 사용 (`@/client/image`). 표시 시 Next.js `<Image>` 컴포넌트 필수.
+
+## Testing
+
+- **Runner**: Vitest + @testing-library/react
+- **테스트 위치**: `src/__tests__/` (소스 구조 미러링)
+- **실행**: `pnpm test` (단일 실행), `pnpm test:watch` (감시 모드)
+- **백엔드 테스트**: Repository, 스키마, 유틸리티 유닛 테스트
+- **프론트엔드 테스트**: 컴포넌트 렌더링 + 인터랙션 테스트 (MSW로 API 모킹)
+- **Mock 전환**: `USE_MOCK=true` 또는 `NEXT_PUBLIC_SUPABASE_URL` 미설정 시 자동으로 Mock Repository 사용
+
+## Git Conventions
+
+- **Branch**: `main` ← `develop` ← `feat/*`, `fix/*`, `docs/*`
+- **Commit**: Conventional Commits 필수 (commitlint 적용됨). 본문은 한글 사용.
+  - 타입: `feat`, `fix`, `docs`, `chore`, `refactor`, `style`, `test`
+  - 제목은 `타입: 한글 설명` 형식 (50자 이내)
+  - 본문에 변경 사항 목록 기재
+  - 예시:
+    ```
+    feat: 포트폴리오 갤러리 페이지 추가
+
+    - 카테고리 필터 기능
+    - 반응형 그리드 레이아웃
+    - Repository 패턴으로 데이터 조회
+    ```
+- **PR**: 기능 하나 = PR 하나. 한국어 제목 가능.
+
+## Important Notes
+
+- 모든 서비스 무료 플랜. 외부 유료 서비스 추가 금지.
+- Supabase Storage 1GB 제한 → 이미지 반드시 압축 후 업로드.
+- `/admin/*` 경로는 Proxy로 인증 보호됨. 관리자 전용.
+- 자세한 아키텍처는 `docs/ARCHITECTURE.md` 참고.
