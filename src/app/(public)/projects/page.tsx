@@ -1,24 +1,6 @@
 import Link from "next/link";
+import Image from "next/image";
 import { getServerRepositories } from "@/server";
-import type { Project } from "@/shared/types";
-
-async function getProjects(category?: string): Promise<Project[]> {
-  try {
-    const { projects } = await getServerRepositories();
-    return projects.getAll(category);
-  } catch {
-    return [];
-  }
-}
-
-async function getCategories(): Promise<string[]> {
-  try {
-    const { projects } = await getServerRepositories();
-    return projects.getCategories();
-  } catch {
-    return [];
-  }
-}
 
 export default async function Projects({
   searchParams,
@@ -26,40 +8,67 @@ export default async function Projects({
   searchParams: Promise<{ category?: string }>;
 }) {
   const { category } = await searchParams;
-  const [items, categories] = await Promise.all([getProjects(category), getCategories()]);
+  const { projects } = await getServerRepositories();
+  const [items, categories] = await Promise.all([
+    projects.getAll(category),
+    projects.getCategories(),
+  ]);
 
   return (
-    <div>
-      <h1 className="text-3xl font-bold text-navy">포트폴리오</h1>
+    <>
+      <h1 className="text-3xl font-bold text-navy dark:text-white">포트폴리오</h1>
 
-      <div className="mt-4 flex flex-wrap gap-2">
-        <Link href="/projects" className={`rounded px-3 py-1 ${!category ? "bg-navy text-white" : "bg-gray-light"}`}>
+      <nav className="mt-4 flex gap-2 overflow-x-auto pb-2" aria-label="카테고리 필터">
+        <Link
+          href="/projects"
+          className={`shrink-0 rounded px-3 py-2 text-sm ${!category ? "bg-navy text-white" : "bg-gray-light text-gray-dark dark:bg-gray-800 dark:text-gray-300"}`}
+        >
           전체
         </Link>
         {categories.map((cat) => (
           <Link
             key={cat}
             href={`/projects?category=${cat}`}
-            className={`rounded px-3 py-1 ${category === cat ? "bg-navy text-white" : "bg-gray-light"}`}
+            className={`shrink-0 rounded px-3 py-2 text-sm ${category === cat ? "bg-navy text-white" : "bg-gray-light text-gray-dark dark:bg-gray-800 dark:text-gray-300"}`}
           >
             {cat}
           </Link>
         ))}
-      </div>
+      </nav>
 
       {items.length === 0 ? (
-        <p className="mt-8 text-gray-dark">등록된 항목이 없습니다.</p>
+        <p className="mt-8 text-gray-dark dark:text-gray-400">등록된 항목이 없습니다.</p>
       ) : (
-        <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <ul className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {items.map((item) => (
-            <Link key={item.id} href={`/projects/${item.id}`} className="rounded-lg border p-4 hover:shadow">
-              <div className="mb-2 h-40 rounded bg-gray-light" />
-              <h3 className="font-semibold">{item.title}</h3>
-              <span className="text-sm text-gray-dark">{item.category}</span>
-            </Link>
+            <li key={item.id}>
+              <Link
+                href={`/projects/${item.id}`}
+                className="block overflow-hidden rounded-lg border border-gray-200 transition-shadow hover:shadow-lg dark:border-gray-700"
+              >
+                {item.images.length > 0 ? (
+                  <Image
+                    src={item.images[0]}
+                    alt={item.title}
+                    width={800}
+                    height={600}
+                    className="aspect-4/3 w-full object-cover"
+                  />
+                ) : (
+                  <span className="flex aspect-4/3 items-center justify-center bg-gray-light text-gray-dark dark:bg-gray-800 dark:text-gray-500" aria-hidden="true">
+                    이미지 없음
+                  </span>
+                )}
+                <div className="p-4">
+                  <span className="text-xs text-navy dark:text-blue-400">{item.category}</span>
+                  <h2 className="mt-1 font-semibold text-navy dark:text-white">{item.title}</h2>
+                  <p className="mt-1 line-clamp-2 text-sm text-gray-dark dark:text-gray-300">{item.description}</p>
+                </div>
+              </Link>
+            </li>
           ))}
-        </div>
+        </ul>
       )}
-    </div>
+    </>
   );
 }

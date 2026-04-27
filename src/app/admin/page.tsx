@@ -1,8 +1,100 @@
-export default function AdminDashboard() {
+import { getServerRepositories } from "@/server";
+
+const statusLabel: Record<string, string> = {
+  pending: "대기",
+  confirmed: "확인",
+  completed: "완료",
+};
+
+export default async function AdminDashboard() {
+  const { projects, products, inquiries } = await getServerRepositories();
+  const [allProjects, allProducts, allInquiries] = await Promise.all([
+    projects.getAll(),
+    products.getAll(),
+    inquiries.getAll(),
+  ]);
+
+  const stats = [
+    { label: "포트폴리오", count: allProjects.length },
+    { label: "제품", count: allProducts.length },
+    { label: "문의", count: allInquiries.length },
+  ];
+
+  const recentInquiries = allInquiries.slice(0, 5);
+
   return (
-    <div>
-      <h1 className="text-2xl font-bold">관리자 대시보드</h1>
-      <p className="mt-4 text-gray-dark">Supabase 연동 후 통계가 표시됩니다.</p>
-    </div>
+    <>
+      <h1 className="text-2xl font-bold text-navy dark:text-white">대시보드</h1>
+
+      <ul className="mt-6 grid gap-4 sm:grid-cols-3">
+        {stats.map((s) => (
+          <li key={s.label} className="rounded-lg border border-gray-200 p-6 dark:border-gray-700">
+            <p className="text-sm text-gray-dark dark:text-gray-400">{s.label}</p>
+            <p className="mt-1 text-3xl font-bold text-navy dark:text-white">{s.count}</p>
+          </li>
+        ))}
+      </ul>
+
+      <section className="mt-8">
+        <h2 className="text-lg font-semibold text-navy dark:text-white">최근 문의</h2>
+        {recentInquiries.length === 0 ? (
+          <p className="mt-4 text-gray-dark dark:text-gray-400">문의가 없습니다.</p>
+        ) : (
+          <>
+            {/* 모바일: 카드형 */}
+            <ul className="mt-4 space-y-3 md:hidden">
+              {recentInquiries.map((inq) => (
+                <li key={inq.id} className="rounded-lg border border-gray-200 p-4 dark:border-gray-700">
+                  <p className="font-semibold text-navy dark:text-white">{inq.name}</p>
+                  <p className="mt-1 text-sm text-gray-dark dark:text-gray-300">
+                    {inq.type} ·{" "}
+                    <span className={`rounded px-2 py-0.5 text-xs ${
+                      inq.status === "completed" ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300"
+                      : inq.status === "confirmed" ? "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300"
+                      : "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300"
+                    }`}>
+                      {statusLabel[inq.status] ?? inq.status}
+                    </span>
+                  </p>
+                  <p className="mt-1 text-xs text-gray-dark dark:text-gray-400">{new Date(inq.created_at).toLocaleDateString("ko-KR")}</p>
+                </li>
+              ))}
+            </ul>
+
+            {/* 데스크톱: 테이블 */}
+            <div className="mt-4 hidden md:block">
+              <table className="w-full text-left text-sm">
+                <thead>
+                  <tr className="border-b border-gray-200 dark:border-gray-700">
+                    <th scope="col" className="py-2 pr-4 font-medium text-gray-dark dark:text-gray-300">이름</th>
+                    <th scope="col" className="py-2 pr-4 font-medium text-gray-dark dark:text-gray-300">유형</th>
+                    <th scope="col" className="py-2 pr-4 font-medium text-gray-dark dark:text-gray-300">상태</th>
+                    <th scope="col" className="py-2 font-medium text-gray-dark dark:text-gray-300">날짜</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {recentInquiries.map((inq) => (
+                    <tr key={inq.id} className="border-b border-gray-100 dark:border-gray-800">
+                      <td className="py-2 pr-4 text-navy dark:text-white">{inq.name}</td>
+                      <td className="py-2 pr-4 dark:text-gray-300">{inq.type}</td>
+                      <td className="py-2 pr-4">
+                        <span className={`rounded px-2 py-0.5 text-xs ${
+                          inq.status === "completed" ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300"
+                          : inq.status === "confirmed" ? "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300"
+                          : "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300"
+                        }`}>
+                          {statusLabel[inq.status] ?? inq.status}
+                        </span>
+                      </td>
+                      <td className="py-2 dark:text-gray-300">{new Date(inq.created_at).toLocaleDateString("ko-KR")}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </>
+        )}
+      </section>
+    </>
   );
 }

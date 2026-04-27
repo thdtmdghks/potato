@@ -4,8 +4,43 @@
 
 ## 현재 상태
 
-프로젝트 기반 구조 완료. 모든 페이지가 라우트만 있고 내용은 placeholder 상태.
-Mock Repository가 동작하므로 **Supabase 연결 없이 개발 가능**.
+와이어프레임 프로토타입 진행 중 (8/9 완료). develop 브랜치에서 작업 중. **미커밋 상태**.
+
+### 완료된 작업
+1. ✅ **Mock 데이터 보강** — 포트폴리오 6건(이미지 0/1/2/4/8/15개), 제품 4건(features 0/2/5/10개, 이미지 빈문자열 포함), 문의 4건(상태 3종, email null, 긴 텍스트). `next.config.ts`에 picsum.photos 도메인 추가.
+2. ✅ **홈 페이지** — 히어로 + 서비스 소개(4개) + 포트폴리오 하이라이트(3개) + 제품 요약(3개) + 견적문의 CTA. Server Component.
+3. ✅ **포트폴리오 목록/상세** — picsum 이미지 표시, 이미지 없음 fallback, 반응형 그리드(1→2→3열), 카테고리 필터, 상세 갤러리(최대 8장 + 나머지 카운트).
+4. ✅ **제품 안내** — 이미지 있음/없음 분기, features 전체 표시, 반응형 2열 그리드.
+5. ✅ **견적문의 폼** — react-hook-form + zod(inquirySchema), `"use client"`. 필드: 이름, 연락처, 이메일(선택), 서비스 유형(select), 주소, 문의 내용. 제출은 console.log. `id`/`htmlFor`/`aria-describedby` 명시적 연결.
+6. ✅ **회사소개/연락처** — 비전, 핵심 가치(3개 카드), 연혁 타임라인(5개). 연락처 정보(dl/dt/dd), 지도 placeholder, 견적문의 CTA.
+7. ✅ **관리자 대시보드** — 요약 카드 3개(포트폴리오/제품/문의 건수), 최근 문의 테이블(이름/유형/상태 배지/날짜). `th scope="col"` 적용.
+8. ✅ **다크모드 토글** — ThemeToggle 컴포넌트(☀️/🌙/💻 순환), mounted 전 아이콘 숨김(하이드레이션 불일치 방지).
+
+### 코드 리뷰 반영 사항
+- `<a>` 안의 `<article>` → `<div>`로 변경 (홈 + 포트폴리오 목록)
+- `<fieldset>`에 직접 grid 대신 `<div>` 래퍼 추가 (Firefox 호환)
+- 관리자 모바일 상단 `<h2>` → `<span>` (스크린 리더 중복 heading 방지)
+- 관리자 `main` 영역 다크모드 배경 추가
+- 폼 `label`/`input` 명시적 `id`/`htmlFor` + `aria-describedby` 에러 연결
+- 테이블 `<th scope="col">` 추가
+- 미사용 `stats.href` 제거
+
+### 다음 작업 (#9)
+9. 빌드/테스트 확인 및 커밋
+
+### 미커밋 변경 파일
+- `next.config.ts` — picsum.photos 이미지 도메인 추가
+- `src/server/mock-repositories.ts` — 데이터 확대 + picsum URL
+- `src/app/(public)/page.tsx` — 홈 페이지 5개 섹션
+- `src/app/(public)/projects/page.tsx` — 포트폴리오 목록 개선
+- `src/app/(public)/projects/[id]/page.tsx` — 포트폴리오 상세 개선
+- `src/app/(public)/products/page.tsx` — 제품 안내 구현
+- `src/app/(public)/inquiry/page.tsx` — 견적문의 폼
+- `src/app/(public)/about/page.tsx` — 회사소개
+- `src/app/(public)/contact/page.tsx` — 연락처
+- `src/app/(public)/layout.tsx` — 다크모드 토글 + ThemeToggle 컴포넌트
+- `src/app/admin/page.tsx` — 관리자 대시보드
+- `src/app/admin/layout.tsx` — 다크모드 배경 + 모바일 heading 수정
 
 ## 다음 작업: 와이어프레임 프로토타입
 
