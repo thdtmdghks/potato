@@ -66,6 +66,49 @@ https://picsum.photos/seed/{고유값}/{너비}/{높이}
 - `@/client/theme`의 `setTheme()` 사용
 - 아이콘: 해/달 (SVG 또는 이모지)
 
+---
+
+## 도메인 확정 후 작업: 콘텐츠/SEO
+
+회사명·업종·도메인이 확정된 후 진행한다. 와이어프레임 완성이 선행 조건.
+
+### 9. 콘텐츠 교체 (더미→실제 데이터)
+- Mock 데이터의 텍스트·이미지를 실제 회사 정보로 교체
+- picsum.photos → 실제 이미지 (Supabase Storage)
+- 회사소개·연혁·연락처 실제 정보 반영
+
+### 10. 페이지별 메타데이터 설정
+- 루트 `layout.tsx`에 `metadataBase: new URL('https://확정도메인')` 설정
+- 고정 페이지 (홈, 소개, 연락처, 견적문의, 목록): 정적 `export const metadata`
+  - title, description, openGraph (title, description, images)
+- 동적 페이지 (`projects/[id]` 등): `generateMetadata()`
+  - DB에서 데이터 조회 → 제목·설명·OG 이미지 동적 생성
+  - 데이터 없으면 `notFound()` 처리
+  - React `cache()`로 페이지 본문과 메타데이터 간 중복 fetch 방지
+
+### 11. JSON-LD 구조화 데이터
+- **Organization**: 홈 또는 루트 레이아웃. 회사명, URL, 로고, 연락처
+- **BreadcrumbList**: 모든 페이지. `홈 > 포트폴리오 > 프로젝트명` 경로
+- **Product 또는 Service**: 제품/서비스 상세. 도메인에 맞는 스키마 선택
+  - 정형 가격이 있으면 Product, 없으면 Service
+- 주의: 실제 콘텐츠와 반드시 일치해야 함 (불일치 시 스팸 판정)
+
+### 12. sitemap.xml / robots.txt / canonical
+- `src/app/sitemap.ts`: 정적 URL + 동적 URL (Repository에서 조회)
+  - `lastModified`로 변경된 페이지만 재크롤링 유도
+- `src/app/robots.ts`: `allow: '/'`, `disallow: '/admin/'`, sitemap URL 명시
+- admin `layout.tsx`에 `<meta name="robots" content="noindex">` 추가
+  - robots.txt의 disallow는 크롤링 차단이지 인덱싱 차단이 아님
+- canonical: `metadataBase` 설정으로 자동 적용. 쿼리 파라미터 중복 방지
+
+### 13. SEO 검증 및 커밋
+- Google Rich Results Test로 구조화 데이터 검증
+- Lighthouse SEO 점수 확인 (목표: 90+)
+- OG 미리보기 테스트 (카카오톡, 슬랙 등)
+- 빌드/테스트 통과 후 커밋
+
+---
+
 ### 기술적 결정사항
 
 | 결정 | 내용 | 이유 |
@@ -78,6 +121,11 @@ https://picsum.photos/seed/{고유값}/{너비}/{높이}
 | 데이터 조회 | Server Component → getServerRepositories() | 클라이언트 DB 접근 금지 |
 | 데이터 변경 | Client → API Route → Repository (예정) | 서버에서만 DB 접근 |
 | 머지 전략 | develop → main `--no-ff` 머지 커밋 | 히스토리 추적 가능 |
+| 정적 메타 | 고정 페이지에 `export const metadata` | 불필요한 DB 호출 없음 |
+| 동적 메타 | `[id]` 등 동적 라우트에 `generateMetadata()` | 페이지별 고유 title/OG |
+| JSON-LD | Organization + BreadcrumbList + Product/Service | 리치 스니펫, Knowledge Panel |
+| sitemap | `src/app/sitemap.ts` 동적 생성 | 새 페이지 빠른 인덱싱 |
+| canonical | `metadataBase`로 자동 적용 | 중복 URL 점수 집중 |
 
 ### 주의사항
 
