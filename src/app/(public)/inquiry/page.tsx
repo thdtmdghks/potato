@@ -3,12 +3,17 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { inquirySchema, type InquiryFormData } from "@/shared/schemas";
-import { useState } from "react";
+import { compressImage } from "@/client/image";
+import { useState, useRef } from "react";
 
+const MAX_FILES = 5;
 const serviceTypes = ["웹사이트", "앱", "디자인", "기타"];
 
 export default function Inquiry() {
   const [submitted, setSubmitted] = useState(false);
+  const [files, setFiles] = useState<File[]>([]);
+  const [compressing, setCompressing] = useState(false);
+  const fileRef = useRef<HTMLInputElement>(null);
   const {
     register,
     handleSubmit,
@@ -17,8 +22,29 @@ export default function Inquiry() {
     resolver: zodResolver(inquirySchema),
   });
 
+  const handleFiles = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const selected = Array.from(e.target.files ?? []);
+    if (selected.length === 0) return;
+    const remaining = MAX_FILES - files.length;
+    if (remaining <= 0) return;
+    setCompressing(true);
+    try {
+      const compressed = await Promise.all(
+        selected.slice(0, remaining).map((f) => compressImage(f))
+      );
+      setFiles((prev) => [...prev, ...compressed]);
+    } finally {
+      setCompressing(false);
+      if (fileRef.current) fileRef.current.value = "";
+    }
+  };
+
+  const removeFile = (index: number) => {
+    setFiles((prev) => prev.filter((_, i) => i !== index));
+  };
+
   const onSubmit = (data: InquiryFormData) => {
-    console.log("견적문의 제출:", data);
+    console.log("견적문의 제출:", data, "첨부파일:", files);
     setSubmitted(true);
   };
 
@@ -73,6 +99,33 @@ export default function Inquiry() {
         <Field label="문의 내용" id="content" error={errors.content?.message} required>
           <textarea id="content" {...register("content")} rows={5} aria-describedby={errors.content ? "content-error" : undefined} className={inputClass} placeholder="프로젝트에 대해 자세히 알려주세요." />
         </Field>
+
+        <div>
+          <label htmlFor="files" className="mb-1 block text-sm font-medium text-navy dark:text-gray-200">
+            참고 이미지 <span className="text-xs text-gray-dark dark:text-gray-400">(최대 {MAX_FILES}장, 자동 압축)</span>
+          </label>
+          <input
+            ref={fileRef}
+            id="files"
+            type="file"
+            accept="image/*"
+            multiple
+            onChange={handleFiles}
+            disabled={files.length >= MAX_FILES || compressing}
+            className={inputClass}
+          />
+          {compressing && <p className="mt-1 text-xs text-gray-dark dark:text-gray-400">압축 중...</p>}
+          {files.length > 0 && (
+            <ul className="mt-2 space-y-1">
+              {files.map((f, i) => (
+                <li key={i} className="flex items-center justify-between rounded bg-gray-light px-3 py-1 text-sm dark:bg-gray-800">
+                  <span className="truncate text-gray-dark dark:text-gray-300">{f.name} ({(f.size / 1024).toFixed(0)}KB)</span>
+                  <button type="button" onClick={() => removeFile(i)} className="ml-2 text-red-500 hover:text-red-700" aria-label={`${f.name} 삭제`}>✕</button>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
 
         <button
           type="submit"
