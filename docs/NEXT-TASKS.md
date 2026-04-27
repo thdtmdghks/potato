@@ -107,6 +107,25 @@ https://picsum.photos/seed/{고유값}/{너비}/{높이}
 - OG 미리보기 테스트 (카카오톡, 슬랙 등)
 - 빌드/테스트 통과 후 커밋
 
+### 14. 성능 최적화 및 접근성 검사
+
+**성능 최적화**
+- ISR/SSG 적용: 정적 페이지에 `revalidate` 설정 (홈, 소개, 연락처 → SSG, 포트폴리오/제품 → ISR)
+- Lighthouse Performance 점수 측정 (목표: 90+)
+- Core Web Vitals 확인: LCP(2.5s 이하), INP(200ms 이하), CLS(0.1 이하)
+- `next/image`에 `sizes`, `priority`(LCP 이미지) 속성 최적화
+- 번들 분석: `@next/bundle-analyzer`로 불필요한 클라이언트 JS 확인
+- 불필요한 `"use client"` 제거 — Server Component로 전환 가능한 부분 점검
+
+**접근성 검사**
+- Lighthouse Accessibility 점수 측정 (목표: 90+)
+- axe-core 또는 브라우저 확장으로 자동 검사
+- 키보드 네비게이션: Tab 순서, Enter/Space 동작, 포커스 표시
+- aria 레이블: 이미지 alt, 버튼/링크 레이블, 폼 필드 연결
+- 색상 대비: WCAG AA 기준 (일반 텍스트 4.5:1, 큰 텍스트 3:1), 다크모드 포함
+- 스크린 리더 테스트: 시멘틱 태그 + heading 계층 확인
+- 문제 수정 후 빌드/테스트 통과, 커밋
+
 ---
 
 ### 기술적 결정사항
@@ -126,6 +145,8 @@ https://picsum.photos/seed/{고유값}/{너비}/{높이}
 | JSON-LD | Organization + BreadcrumbList + Product/Service | 리치 스니펫, Knowledge Panel |
 | sitemap | `src/app/sitemap.ts` 동적 생성 | 새 페이지 빠른 인덱싱 |
 | canonical | `metadataBase`로 자동 적용 | 중복 URL 점수 집중 |
+| 캐싱 전략 | 정적 페이지 SSG, 동적 페이지 ISR (`revalidate`) | 서버 부하 최소화, CDN 서빙 |
+| 접근성 | WCAG AA 기준, 시멘틱 태그, 키보드 네비게이션 | 법적 요건 + SEO 가산점 |
 
 ### 주의사항
 
