@@ -1,10 +1,6 @@
 "use client";
 
-const statusLabel: Record<string, string> = {
-  pending: "대기",
-  confirmed: "확인",
-  completed: "완료",
-};
+import { statusLabel } from "../../constants";
 
 export function StatusButtons({ currentStatus, inquiryId }: { currentStatus: string; inquiryId: string }) {
   return (

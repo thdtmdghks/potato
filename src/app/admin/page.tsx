@@ -1,10 +1,5 @@
 import { getServerRepositories } from "@/server";
-
-const statusLabel: Record<string, string> = {
-  pending: "대기",
-  confirmed: "확인",
-  completed: "완료",
-};
+import { statusLabel, statusClass } from "./constants";
 
 export default async function AdminDashboard() {
   const { projects, products, inquiries } = await getServerRepositories();
@@ -48,11 +43,7 @@ export default async function AdminDashboard() {
                   <p className="font-semibold text-navy dark:text-white">{inq.name}</p>
                   <p className="mt-1 text-sm text-gray-dark dark:text-gray-300">
                     {inq.type} ·{" "}
-                    <span className={`rounded px-2 py-0.5 text-xs ${
-                      inq.status === "completed" ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300"
-                      : inq.status === "confirmed" ? "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300"
-                      : "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300"
-                    }`}>
+                    <span className={`rounded px-2 py-0.5 text-xs ${statusClass[inq.status] ?? ""}`}>
                       {statusLabel[inq.status] ?? inq.status}
                     </span>
                   </p>
@@ -78,11 +69,7 @@ export default async function AdminDashboard() {
                       <td className="py-2 pr-4 text-navy dark:text-white">{inq.name}</td>
                       <td className="py-2 pr-4 dark:text-gray-300">{inq.type}</td>
                       <td className="py-2 pr-4">
-                        <span className={`rounded px-2 py-0.5 text-xs ${
-                          inq.status === "completed" ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300"
-                          : inq.status === "confirmed" ? "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-300"
-                          : "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300"
-                        }`}>
+                        <span className={`rounded px-2 py-0.5 text-xs ${statusClass[inq.status] ?? ""}`}>
                           {statusLabel[inq.status] ?? inq.status}
                         </span>
                       </td>

@@ -2,12 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getServerRepositories } from "@/server";
 import { StatusButtons } from "./status-buttons";
-
-const statusLabel: Record<string, string> = {
-  pending: "대기",
-  confirmed: "확인",
-  completed: "완료",
-};
+import { statusLabel } from "../../constants";
 
 export default async function InquiryDetail({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
