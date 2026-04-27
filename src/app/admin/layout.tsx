@@ -17,8 +17,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     <div className="min-h-screen md:flex">
       {/* 모바일: 상단 바 */}
       <div className="flex items-center justify-between bg-navy-dark p-4 text-white md:hidden">
-        <h2 className="font-bold">관리자</h2>
-        <button onClick={() => setOpen(!open)} aria-label="메뉴">
+        <span className="font-bold">관리자</span>
+        <button onClick={() => setOpen(!open)} aria-label={open ? "메뉴 닫기" : "메뉴 열기"}>
           {open ? "✕" : "☰"}
         </button>
       </div>
@@ -40,7 +40,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         ))}
       </aside>
 
-      <main className="flex-1 p-4 md:p-8">{children}</main>
+      <main className="flex-1 bg-white p-4 dark:bg-gray-900 md:p-8">{children}</main>
     </div>
   );
 }
