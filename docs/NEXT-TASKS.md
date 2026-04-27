@@ -155,3 +155,18 @@ https://picsum.photos/seed/{고유값}/{너비}/{높이}
 - 모바일 우선 — 기본 스타일이 모바일, `md:`/`lg:`로 확장
 - `src/server/`는 클라이언트에서 import 금지
 - 커밋은 `develop` 브랜치에, Conventional Commits 한글
+
+---
+
+## 배포 전 체크리스트 (도메인 확정 후 마지막에 고려)
+
+아래 항목은 태스크 #9~#14 완료 후, 실제 배포 직전에 검토한다.
+
+- [ ] **파비콘/앱 아이콘**: `app/icon.tsx` 또는 `favicon.ico` + PWA 아이콘 (192×512px)
+- [ ] **PWA manifest**: `app/manifest.ts` — name, theme_color, icons, start_url
+- [ ] **커스텀 도메인 연결**: Vercel에 도메인 연결 + HTTPS 자동 설정
+- [ ] **Google Search Console**: 도메인 소유권 인증 + sitemap 제출
+- [ ] **방문자 추적**: Vercel Analytics (무료) 또는 GA4
+- [ ] **이메일 알림**: 견적문의 접수 시 관리자 알림 (Resend 무료 100건/일)
+- [ ] **에러 페이지**: `not-found.tsx`, `error.tsx` 커스텀 (브랜드 반영)
+- [ ] **법적 페이지**: 개인정보처리방침, 이용약관 (개인정보 수집 시 법적 필수)
