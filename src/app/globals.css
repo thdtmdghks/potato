@@ -6,12 +6,19 @@
   --color-navy: #1b2a4a;
   --color-navy-light: #2a3f6a;
   --color-navy-dark: #111d35;
+  --color-accent: #e67e22;
+  --color-accent-light: #f39c12;
+  --color-accent-dark: #d35400;
   --color-gray-dark: #374151;
   --color-gray-light: #f3f4f6;
   --color-background: #ffffff;
   --color-foreground: #171717;
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+}
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {

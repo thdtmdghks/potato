@@ -15,13 +15,14 @@ export default async function Projects({
   ]);
 
   return (
-    <>
-      <h1 className="text-3xl font-bold text-navy dark:text-white">포트폴리오</h1>
+    <div className="mx-auto max-w-6xl px-4 py-8">
+      <h1 className="text-3xl font-bold text-navy dark:text-white">시공사례</h1>
+      <p className="mt-2 text-gray-dark dark:text-gray-300">경산창호의 시공 현장을 확인하세요.</p>
 
-      <nav className="mt-4 flex gap-2 overflow-x-auto pb-2" aria-label="카테고리 필터">
+      <nav className="mt-6 flex gap-2 overflow-x-auto pb-2" aria-label="카테고리 필터">
         <Link
           href="/projects"
-          className={`shrink-0 rounded px-3 py-2 text-sm ${!category ? "bg-navy text-white" : "bg-gray-light text-gray-dark dark:bg-gray-800 dark:text-gray-300"}`}
+          className={`shrink-0 rounded-full px-4 py-2 text-sm font-medium transition-colors ${!category ? "bg-navy text-white" : "bg-gray-light text-gray-dark hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-300"}`}
         >
           전체
         </Link>
@@ -29,7 +30,7 @@ export default async function Projects({
           <Link
             key={cat}
             href={`/projects?category=${cat}`}
-            className={`shrink-0 rounded px-3 py-2 text-sm ${category === cat ? "bg-navy text-white" : "bg-gray-light text-gray-dark dark:bg-gray-800 dark:text-gray-300"}`}
+            className={`shrink-0 rounded-full px-4 py-2 text-sm font-medium transition-colors ${category === cat ? "bg-navy text-white" : "bg-gray-light text-gray-dark hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-300"}`}
           >
             {cat}
           </Link>
@@ -37,38 +38,42 @@ export default async function Projects({
       </nav>
 
       {items.length === 0 ? (
-        <p className="mt-8 text-gray-dark dark:text-gray-400">등록된 항목이 없습니다.</p>
+        <div className="mt-12 text-center">
+          <p className="text-lg text-gray-dark dark:text-gray-400">시공 사례 사진 준비중입니다.</p>
+          <p className="mt-2 text-sm text-gray-dark dark:text-gray-500">
+            곧 다양한 시공 사례를 만나보실 수 있습니다.
+          </p>
+        </div>
       ) : (
-        <ul className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <ul className="mt-8 grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-4">
           {items.map((item) => (
             <li key={item.id}>
               <Link
                 href={`/projects/${item.id}`}
-                className="block overflow-hidden rounded-lg border border-gray-200 transition-shadow hover:shadow-lg dark:border-gray-700"
+                className="group block overflow-hidden rounded-lg"
               >
                 {item.images.length > 0 ? (
                   <Image
                     src={item.images[0]}
                     alt={item.title}
-                    width={800}
-                    height={600}
-                    className="aspect-4/3 w-full object-cover"
+                    width={400}
+                    height={300}
+                    className="aspect-4/3 w-full object-cover transition-transform group-hover:scale-105"
                   />
                 ) : (
-                  <span className="flex aspect-4/3 items-center justify-center bg-gray-light text-gray-dark dark:bg-gray-800 dark:text-gray-500" aria-hidden="true">
-                    이미지 없음
+                  <span className="flex aspect-4/3 items-center justify-center bg-gray-light text-sm text-gray-dark dark:bg-gray-800 dark:text-gray-500">
+                    사진 준비중
                   </span>
                 )}
-                <div className="p-4">
-                  <span className="text-xs text-navy dark:text-blue-400">{item.category}</span>
-                  <h2 className="mt-1 font-semibold text-navy dark:text-white">{item.title}</h2>
-                  <p className="mt-1 line-clamp-2 text-sm text-gray-dark dark:text-gray-300">{item.description}</p>
+                <div className="mt-2">
+                  <span className="text-xs text-accent">{item.category}</span>
+                  <h2 className="text-sm font-medium text-navy dark:text-white">{item.title}</h2>
                 </div>
               </Link>
             </li>
           ))}
         </ul>
       )}
-    </>
+    </div>
   );
 }
