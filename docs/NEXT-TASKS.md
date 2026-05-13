@@ -101,11 +101,27 @@
 
 ---
 
-## 배포 전 체크리스트 (전환 완료 후)
+## 추가 보충 필요 (도메인 확정 전 가능)
+
+- [ ] 업체에 확인: 무료 방문 견적 여부 → 연락처 섹션 문구 수정
+- [ ] 서비스 SVG 아이콘 → Recraft AI로 전용 아이콘 제작 후 교체
+- [ ] admin noindex 메타 태그 추가 (`admin/layout.tsx`에 `<meta name="robots" content="noindex">`)
+- [ ] proxy.ts 인증 체크 활성화 (카카오 앱 설정 후)
+
+## 도메인 확정 후 작업
+
+- [ ] `metadataBase` 설정 (layout.tsx) → canonical 자동 적용
+- [ ] Open Graph `og:image` 설정 (대표 시공 사진 또는 로고)
+- [ ] `src/app/sitemap.ts` 생성 (정적 + 동적 URL)
+- [ ] robots.txt에 sitemap URL 추가
+- [ ] Google Search Console 등록 + sitemap 제출
+- [ ] 카카오톡 공유 미리보기 테스트
+
+## 배포 전 체크리스트
 
 - [ ] 카카오 개발자 앱 생성 및 키 설정
-- [ ] 카카오톡 채널 개설 및 URL 연결
+- [ ] ADMIN_KAKAO_IDS 환경변수에 사장님 카카오 ID 등록
+- [ ] 카카오톡 채널 개설 및 URL 연결 (홈 연락처 섹션 카카오톡 버튼)
 - [ ] 실제 시공 사례 사진 등록
-- [ ] SEO 메타데이터 설정
 - [ ] 도메인 연결 + Vercel 배포
-- [ ] Google Search Console 등록
+- [ ] Lighthouse SEO/성능/접근성 점수 확인 (목표: 90+)

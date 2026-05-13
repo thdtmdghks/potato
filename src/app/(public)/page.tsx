@@ -47,8 +47,32 @@ export default async function Home() {
   const { projects } = await getServerRepositories();
   const recentProjects = (await projects.getAll()).slice(0, 6);
 
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "LocalBusiness",
+    name: "경산창호",
+    description:
+      "경산·대구 샷시 전문 시공. PVC샷시, 알루미늄샷시, 방충망, 유리교체, ABS도어, 방범창.",
+    telephone: "010-3812-9922",
+    address: {
+      "@type": "PostalAddress",
+      streetAddress: "원효로40길 64-8",
+      addressLocality: "경산시",
+      addressRegion: "경상북도",
+      addressCountry: "KR",
+    },
+    openingHoursSpecification: {
+      "@type": "OpeningHoursSpecification",
+      dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+    },
+  };
+
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       {/* 히어로 */}
       <section className="bg-gradient-to-br from-navy to-navy-light py-16 text-center text-white md:py-24">
         <div className="mx-auto max-w-4xl px-4">
