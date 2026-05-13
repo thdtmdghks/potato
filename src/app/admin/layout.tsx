@@ -5,8 +5,8 @@ import { useState } from "react";
 
 const adminNav = [
   { href: "/admin", label: "대시보드" },
-  { href: "/admin/projects", label: "포트폴리오 관리" },
-  { href: "/admin/products", label: "제품 관리" },
+  { href: "/admin/projects", label: "시공사례 관리" },
+  { href: "/admin/products", label: "서비스 관리" },
   { href: "/admin/inquiries", label: "문의 관리" },
 ];
 
