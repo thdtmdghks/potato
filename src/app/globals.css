@@ -25,6 +25,7 @@ body {
   background: var(--color-background);
   color: var(--color-foreground);
   font-family: Arial, Helvetica, sans-serif;
+  word-break: keep-all;
 }
 
 .dark body {

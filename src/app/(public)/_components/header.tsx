@@ -6,7 +6,7 @@ import { useSession } from "next-auth/react";
 import ThemeToggle from "./theme-toggle";
 
 const navItems = [
-  { href: "/#services", label: "서비스" },
+  { href: "/#services", label: "시공 안내" },
   { href: "/#gallery", label: "시공사례" },
   { href: "/#about", label: "소개" },
   { href: "/#contact", label: "연락처" },

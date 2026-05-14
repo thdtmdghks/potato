@@ -6,13 +6,8 @@ import SvgIcon from "./_components/svg-icon";
 const services = [
   {
     d: "M8 8h32v32H8zM8 24h32M24 8v32M12 12h8v8h-8zM28 12h8v8h-8z",
-    title: "PVC 샷시",
-    description: "결로·외풍 해결, 단열·방음 뛰어난 이중창",
-  },
-  {
-    d: "M6 10h36v28H6zM6 24h36M24 10v28M10 14h4M34 14h4",
-    title: "알루미늄 샷시",
-    description: "슬림 프레임으로 넓은 시야, 내구성 우수",
+    title: "하이샷시",
+    description: "외풍 차단, 단열·방음 뛰어난 PVC 이중창",
   },
   {
     d: "M8 8h32v32H8zM8 16h32M8 24h32M8 32h32M16 8v32M24 8v32M32 8v32",
@@ -22,7 +17,7 @@ const services = [
   {
     d: "M10 10h28v28H10zM10 10l28 28M38 10l-28 28",
     title: "유리교체",
-    description: "복층유리·로이유리로 난방비 절감",
+    description: "이중유리·3중유리·로이유리로 난방비 절감",
   },
   {
     d: "M14 6h20v36H14zM14 6a4 4 0 0 0-4 4v28a4 4 0 0 0 4 4M30 24a2 2 0 1 0 0-4 2 2 0 0 0 0 4",
@@ -51,8 +46,7 @@ export default async function Home() {
     "@context": "https://schema.org",
     "@type": "LocalBusiness",
     name: "경산창호",
-    description:
-      "경산·대구 샷시 전문 시공. PVC샷시, 알루미늄샷시, 방충망, 유리교체, ABS도어, 방범창.",
+    description: "경산·대구 샷시 전문 시공. 하이샷시, 방충망, 유리교체, ABS도어, 방범창.",
     telephone: "010-3812-9922",
     address: {
       "@type": "PostalAddress",
@@ -78,7 +72,7 @@ export default async function Home() {
         <div className="mx-auto max-w-4xl px-4">
           <h1 className="text-3xl font-bold md:text-5xl">경산·대구 샷시 전문 시공</h1>
           <p className="mx-auto mt-4 max-w-2xl text-lg text-gray-300">
-            외풍·결로·소음, 오래된 샷시 고민 한번에 해결해 드립니다.
+            외풍·소음, 오래된 샷시 고민 한번에 해결해 드립니다.
           </p>
           <div className="mt-6 flex flex-wrap justify-center gap-3">
             <span className="rounded-full border border-white/30 bg-white/10 px-4 py-1.5 text-sm">
@@ -95,12 +89,12 @@ export default async function Home() {
             href="tel:010-3812-9922"
             className="mt-8 inline-block rounded-lg bg-accent px-8 py-3 text-lg font-bold text-white transition-colors hover:bg-accent-dark"
           >
-            📞 무료 상담·견적 받기
+            📞 상담·견적 문의하기
           </a>
         </div>
       </section>
 
-      {/* 서비스 */}
+      {/* 시공 안내 */}
       <section id="services" className="bg-gray-light py-16 dark:bg-gray-900">
         <div className="mx-auto max-w-5xl px-4">
           <h2 className="text-center text-2xl font-bold text-navy dark:text-white">

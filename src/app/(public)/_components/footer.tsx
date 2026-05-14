@@ -15,9 +15,9 @@ export default function Footer() {
             <p className="mt-1 text-sm">🕐 매주 일요일 휴무</p>
           </div>
           <div>
-            <h3 className="font-bold text-white">서비스</h3>
-            <p className="mt-2 text-sm">PVC 샷시 · 알루미늄 샷시 · 방충망</p>
-            <p className="mt-1 text-sm">유리교체 · ABS도어 · 방범창</p>
+            <h3 className="font-bold text-white">시공 안내</h3>
+            <p className="mt-2 text-sm">하이샷시 · 방충망 · 유리교체</p>
+            <p className="mt-1 text-sm">ABS도어 · 방범창</p>
           </div>
         </div>
         <div className="mt-8 border-t border-gray-600 pt-4 text-center text-sm">
