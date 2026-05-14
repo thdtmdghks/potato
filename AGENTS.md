@@ -153,5 +153,6 @@ db/                            # DB 설정 (런타임 아님, 수동 적용)
 - 모든 서비스 무료 플랜. 외부 유료 서비스 추가 금지.
 - Supabase Storage 1GB 제한 → 이미지 반드시 압축 후 업로드.
 - `/admin/*` 경로는 middleware로 인증+role 보호됨. role='admin'만 접근 가능.
+- **`git push`와 `git merge`는 사용자가 명시적으로 요청하기 전까지 절대 실행 금지.** 커밋까지만 하고 push/merge는 항상 사용자 확인 후 진행.
 - 자세한 아키텍처는 `docs/ARCHITECTURE.md` 참고.
 - 다음 작업 가이드는 `docs/NEXT-TASKS.md` 참고.
