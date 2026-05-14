@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { useSession } from "next-auth/react";
 import ThemeToggle from "./theme-toggle";
+import { BUSINESS, LINKS } from "@/shared/constants";
 
 const navItems = [
   { href: "/#services", label: "시공 안내" },
@@ -21,7 +22,7 @@ export default function Header() {
     <header className="bg-navy text-white sticky top-0 z-50">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4">
         <Link href="/" className="text-xl font-bold">
-          경산창호
+          {BUSINESS.name}
         </Link>
         <nav className="hidden gap-6 md:flex items-center">
           {navItems.map((item) => (
@@ -47,10 +48,10 @@ export default function Header() {
         </nav>
         <div className="flex items-center gap-3">
           <a
-            href="tel:010-3812-9922"
+            href={LINKS.tel}
             className="hidden sm:inline-block rounded bg-accent px-3 py-1.5 text-sm font-semibold text-white transition-colors hover:bg-accent-dark"
           >
-            📞 010-3812-9922
+            📞 {BUSINESS.phone}
           </a>
           <ThemeToggle />
           <button
@@ -86,7 +87,7 @@ export default function Header() {
               관리자
             </Link>
           )}
-          <a href="tel:010-3812-9922" className="block py-3 text-accent-light font-semibold">
+          <a href={LINKS.tel} className="block py-3 text-accent-light font-semibold">
             📞 전화 상담
           </a>
         </nav>

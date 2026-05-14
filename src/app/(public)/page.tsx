@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { getServerRepositories } from "@/server";
+import { BUSINESS, LINKS } from "@/shared/constants";
 import SvgIcon from "./_components/svg-icon";
 
 const services = [
@@ -32,10 +33,10 @@ const services = [
 ];
 
 const strengths = [
-  { number: "40년", label: "샷시 시공 경력" },
-  { number: "2014~", label: "경산창호 운영" },
+  { number: BUSINESS.experience, label: "샷시 시공 경력" },
+  { number: `${BUSINESS.since}~`, label: `${BUSINESS.name} 운영` },
   { number: "당일", label: "시공 가능" },
-  { number: "경산·대구", label: "전 지역 출장" },
+  { number: BUSINESS.region, label: "전 지역 출장" },
 ];
 
 export default async function Home() {
@@ -45,9 +46,9 @@ export default async function Home() {
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "LocalBusiness",
-    name: "경산창호",
-    description: "경산·대구 샷시 전문 시공. 하이샷시, 방충망, 유리교체, ABS도어, 방범창.",
-    telephone: "010-3812-9922",
+    name: BUSINESS.name,
+    description: BUSINESS.description,
+    telephone: BUSINESS.phone,
     address: {
       "@type": "PostalAddress",
       streetAddress: "원효로40길 64-8",
@@ -70,23 +71,23 @@ export default async function Home() {
       {/* 히어로 */}
       <section className="bg-gradient-to-br from-navy to-navy-light py-16 text-center text-white md:py-24">
         <div className="mx-auto max-w-4xl px-4">
-          <h1 className="text-3xl font-bold md:text-5xl">경산·대구 샷시 전문 시공</h1>
+          <h1 className="text-3xl font-bold md:text-5xl">{BUSINESS.slogan}</h1>
           <p className="mx-auto mt-4 max-w-2xl text-lg text-gray-300">
             외풍·소음, 오래된 샷시 고민 한번에 해결해 드립니다.
           </p>
           <div className="mt-6 flex flex-wrap justify-center gap-3">
             <span className="rounded-full border border-white/30 bg-white/10 px-4 py-1.5 text-sm">
-              🏆 40년 경력
+              🏆 {BUSINESS.experience} 경력
             </span>
             <span className="rounded-full border border-white/30 bg-white/10 px-4 py-1.5 text-sm">
               ⚡ 당일 시공
             </span>
             <span className="rounded-full border border-white/30 bg-white/10 px-4 py-1.5 text-sm">
-              📍 경산·대구 전지역
+              📍 {BUSINESS.region} 전지역
             </span>
           </div>
           <a
-            href="tel:010-3812-9922"
+            href={LINKS.tel}
             className="mt-8 inline-block rounded-lg bg-accent px-8 py-3 text-lg font-bold text-white transition-colors hover:bg-accent-dark"
           >
             📞 상담·견적 문의하기
@@ -167,7 +168,7 @@ export default async function Home() {
       <section id="about" className="bg-gray-light py-16 dark:bg-gray-900">
         <div className="mx-auto max-w-4xl px-4">
           <h2 className="text-center text-2xl font-bold text-navy dark:text-white">
-            경산창호를 선택하는 이유
+            {BUSINESS.name}를 선택하는 이유
           </h2>
           <ul className="mt-8 grid grid-cols-2 gap-6 md:grid-cols-4">
             {strengths.map((s) => (
@@ -194,40 +195,40 @@ export default async function Home() {
               <dl className="space-y-3">
                 <div className="flex gap-3">
                   <dt className="w-16 shrink-0 font-medium text-navy dark:text-gray-200">주소</dt>
-                  <dd className="text-gray-dark dark:text-gray-300">경산시 원효로40길 64-8</dd>
+                  <dd className="text-gray-dark dark:text-gray-300">{BUSINESS.address}</dd>
                 </div>
                 <div className="flex gap-3">
                   <dt className="w-16 shrink-0 font-medium text-navy dark:text-gray-200">전화</dt>
                   <dd>
-                    <a href="tel:010-3812-9922" className="text-accent hover:underline">
-                      010-3812-9922
+                    <a href={LINKS.tel} className="text-accent hover:underline">
+                      {BUSINESS.phone}
                     </a>
                   </dd>
                 </div>
                 <div className="flex gap-3">
                   <dt className="w-16 shrink-0 font-medium text-navy dark:text-gray-200">영업</dt>
-                  <dd className="text-gray-dark dark:text-gray-300">매주 일요일 휴무</dd>
+                  <dd className="text-gray-dark dark:text-gray-300">{BUSINESS.closedDay}</dd>
                 </div>
                 <div className="flex gap-3">
                   <dt className="w-16 shrink-0 font-medium text-navy dark:text-gray-200">대표</dt>
-                  <dd className="text-gray-dark dark:text-gray-300">송정관</dd>
+                  <dd className="text-gray-dark dark:text-gray-300">{BUSINESS.owner}</dd>
                 </div>
               </dl>
               <div className="flex flex-wrap gap-3 pt-4">
                 <a
-                  href="tel:010-3812-9922"
+                  href={LINKS.tel}
                   className="rounded-lg bg-accent px-5 py-2.5 font-semibold text-white transition-colors hover:bg-accent-dark"
                 >
                   📞 전화
                 </a>
                 <a
-                  href="sms:010-3812-9922"
+                  href={LINKS.sms}
                   className="rounded-lg bg-navy px-5 py-2.5 font-semibold text-white transition-colors hover:bg-navy-light"
                 >
                   💬 문자
                 </a>
                 <a
-                  href="#"
+                  href={LINKS.kakao}
                   className="rounded-lg bg-[#FEE500] px-5 py-2.5 font-semibold text-[#3C1E1E] transition-opacity hover:opacity-80"
                 >
                   💛 카카오톡
@@ -236,11 +237,11 @@ export default async function Home() {
             </div>
             <div className="overflow-hidden rounded-lg">
               <iframe
-                src="https://www.google.com/maps?q=경산시+원효로40길+64-8&output=embed"
+                src={LINKS.map}
                 className="h-64 w-full border-0 md:h-full md:min-h-[250px]"
                 allowFullScreen
                 loading="lazy"
-                title="경산창호 위치"
+                title={`${BUSINESS.name} 위치`}
               />
             </div>
           </div>
