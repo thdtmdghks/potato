@@ -76,27 +76,51 @@
 
 ---
 
-## 도메인 확정 후 작업
+## 검색 노출 작업 (배포 완료: potato-swart.vercel.app)
 
-### SEO 마무리
+### 코드 작업
 
-- [ ] `src/app/layout.tsx`에 `metadataBase: new URL('https://확정도메인')` 추가
+- [ ] `src/app/sitemap.ts` 생성 (정적: /, /projects / 동적: /projects/[id])
+- [ ] `src/app/layout.tsx`에 `metadataBase: new URL('https://potato-swart.vercel.app')` 추가
 - [ ] OG `og:image` 설정 (대표 시공 사진 또는 로고 이미지 URL)
-- [ ] `src/app/sitemap.ts` 생성:
-  ```ts
-  // 정적: /, /projects
-  // 동적: /projects/[id] (Repository에서 조회)
-  ```
-- [ ] robots.ts에 sitemap URL 추가
-- [ ] Google Search Console 등록 + sitemap 제출
-- [ ] 카카오톡/슬랙 공유 미리보기 테스트
+- [ ] 네이버 서치어드바이저 소유 확인 메타태그 추가
+- [ ] Google Search Console 소유 확인 메타태그 추가
 
-### 배포
+### 네이버 검색 등록
 
-- [ ] Vercel에 프로젝트 연결
+- [ ] 네이버 서치어드바이저 (https://searchadvisor.naver.com) 사이트 등록
+- [ ] 소유 확인 (HTML 메타태그 방식)
+- [ ] 사이트맵 제출 (`https://potato-swart.vercel.app/sitemap.xml`)
+- [ ] 연관채널 설정 (전화번호, 주소)
+
+### 구글 검색 등록
+
+- [ ] Google Search Console (https://search.google.com/search-console) 등록
+- [ ] URL 접두어 방식으로 소유 확인
+- [ ] 사이트맵 제출
+
+### 네이버 스마트플레이스 (지도 검색 — 효과 가장 큼)
+
+- [ ] https://new.smartplace.naver.com 에서 업체 등록
+- [ ] 사업자등록증 준비 필요
+- [ ] 업종: 창호/샷시 시공
+- [ ] 주소, 전화번호, 영업시간 입력
+- [ ] 등록 후 "경산 샷시", "경산 창호" 검색 시 지도에 노출
+
+### 추가 노출 채널 (선택)
+
+- [ ] 카카오맵 업체 등록 (https://business.kakao.com)
+- [ ] 네이버 블로그 개설 → 시공사례 포스팅 (SEO 백링크 효과)
+
+---
+
+## 도메인·배포 추가 작업
+
+- [ ] 커스텀 도메인 연결 (선택, 현재 potato-swart.vercel.app 사용 중)
+- [ ] 커스텀 도메인 연결 시 metadataBase, sitemap URL 업데이트
 - [ ] 환경변수 설정 (AUTH*SECRET, AUTH_KAKAO*_, ADMIN*KAKAO_IDS, SUPABASE*_)
-- [ ] 커스텀 도메인 연결
 - [ ] Lighthouse 점수 확인 (SEO/성능/접근성 목표: 90+)
+- [ ] 카카오톡/슬랙 공유 미리보기 테스트
 
 ---
 
