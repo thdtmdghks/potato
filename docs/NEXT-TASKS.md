@@ -29,7 +29,7 @@
 
 ## 다음 작업 (코드 작업 가능)
 
-### 1. admin noindex 메타 태그
+### 1. ✅ admin noindex 메타 태그
 
 - `src/app/admin/layout.tsx`에 `<meta name="robots" content="noindex">` 추가
 - robots.txt의 disallow는 크롤링 차단이지 인덱싱 차단이 아님 → 둘 다 필요
@@ -80,8 +80,8 @@
 
 ### 코드 작업
 
-- [ ] `src/app/sitemap.ts` 생성 (정적: /, /projects / 동적: /projects/[id])
-- [ ] `src/app/layout.tsx`에 `metadataBase: new URL('https://potato-swart.vercel.app')` 추가
+- [x] `src/app/sitemap.ts` 생성 (정적: /, /projects / 동적: /projects/[id])
+- [x] `src/app/layout.tsx`에 `metadataBase` 추가
 - [ ] OG `og:image` 설정 (대표 시공 사진 또는 로고 이미지 URL)
 - [ ] 네이버 서치어드바이저 소유 확인 메타태그 추가
 - [ ] Google Search Console 소유 확인 메타태그 추가
