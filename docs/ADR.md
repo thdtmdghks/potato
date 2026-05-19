@@ -265,23 +265,40 @@
 
 ---
 
-## ADR-012: 공용 UI 컴포넌트를 `app/_components/`에 배치
+## ADR-012: shadcn/ui 도입
 
-**배경:** Input, Select, Textarea 같은 공용 폼 컴포넌트가 필요. 각 파일에서 `inputClass` 문자열을 반복 선언하고 있어 중복 제거 필요.
+**배경:** Input, Select, Textarea 같은 폼 컴포넌트를 각 파일에서 `inputClass` 문자열로 반복 정의하고 있었음. 공용 컴포넌트가 필요하고, 나중에 모달/토스트 등 복잡한 컴포넌트도 필요해질 수 있음.
 
-**결정:** `src/app/_components/`에 공용 UI 컴포넌트 배치.
+**결정:** shadcn/ui 도입. `src/app/_components/`에 설치 (`ui/` 하위 폴더 없이 플랫 구조).
 
 **이유:**
 
-- Next.js 공식 문서의 "private folders" 패턴 (`_` prefix) 활용 — 라우팅에 영향 없이 colocation
-- `(public)/_components/`와 `admin/_components/`에서 모두 import 가능한 상위 위치
-- T3 Stack의 `src/server/` 패턴처럼, 기존 3분할(server/client/shared)과 충돌하지 않음
-- 이 프로젝트 규모에서 `src/components/` 별도 폴더는 과함 (컴포넌트 4개)
+- **npm 의존성 아님** — CLI로 코드를 프로젝트에 복사. 버전 관리 부담 없음. 자유롭게 수정 가능.
+- **Tailwind 네이티브** — 이미 사용 중인 Tailwind와 완벽 호환. 별도 스타일링 시스템 불필요.
+- **접근성 내장** — Base UI(Radix 후속) 기반으로 키보드 네비게이션, ARIA 자동 처리.
+- **필요한 것만 추가** — `npx shadcn add dialog` 식으로 하나씩. 안 쓰는 컴포넌트 없음.
+- **번들 크기 작음** — 사용한 컴포넌트만 포함.
+- **2026 기준 가장 인기 있는 React UI 시스템** — 커뮤니티, 예제, 레퍼런스 풍부.
+
+**`app/_components/`에 플랫 배치한 이유:**
+
+- shadcn/ui 기본은 `components/ui/`이지만, 현재 feature 컴포넌트와 단순 UI 컴포넌트가 혼재할 규모가 아님
+- `ui/` 하위 폴더는 불필요한 중첩. 파일명으로 충분히 구분됨
+- 라우트별 `_components/`(feature 컴포넌트)와 `app/_components/`(공용)로 이미 분리되어 있음
+- feature 단위 컴포넌트와 단순 UI 컴포넌트 분리가 필요해지면 그때 `ui/` 도입
+
+**감수하는 단점:**
+
+- 업데이트 수동 (버그 수정 시 직접 반영 필요. 실제로는 거의 안 바뀜)
+- 복잡한 컴포넌트(Dialog, Select 등) 사용 시 Base UI 패키지 추가됨
+
+**Select는 네이티브 유지:** shadcn/ui Select는 커스텀 드롭다운이라 모바일에서 OS 네이티브 피커를 사용하지 않음. 관리자 폼에서는 네이티브 `<select>`가 모바일 UX에 더 적합.
 
 **대안 검토:**
 
-| 대안                     | 탈락 이유                                                                                                        |
-| ------------------------ | ---------------------------------------------------------------------------------------------------------------- |
-| `src/components/`        | Next.js 관례이지만 기존 server/client/shared 3분할과 별개 계층 추가. 4개 컴포넌트에 폴더 하나 더 만드는 건 과함. |
-| `src/shared/components/` | shared는 순수 로직(타입, 스키마)만 두는 곳. `"use client"` 컴포넌트와 성격 안 맞음.                              |
-| `src/client/components/` | 가능하지만 client는 브라우저 유틸(image, theme) 전용. UI 컴포넌트와 유틸은 성격 다름.                            |
+| 대안               | 탈락 이유                                                                       |
+| ------------------ | ------------------------------------------------------------------------------- |
+| 직접 구현 유지     | 접근성 직접 관리 부담. 컴포넌트 늘어날수록 유지보수 증가.                       |
+| Material UI        | 번들 크기 큼 (~80KB). 커스터마이징 어려움. "MUI 느낌" 탈피 어려움.              |
+| Headless UI        | 컴포넌트 수 적음. shadcn/ui 대비 생태계 작음.                                   |
+| Radix UI 직접 사용 | 스타일링 전부 직접 해야 함. shadcn/ui가 이미 Base UI 위에 Tailwind 스타일 제공. |

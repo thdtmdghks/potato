@@ -5,7 +5,7 @@
 ## Stack
 
 - Next.js 16.2 (App Router) + TypeScript strict
-- Tailwind CSS 4
+- Tailwind CSS 4 + shadcn/ui (Base UI 기반)
 - Supabase (PostgreSQL + Storage) — Repository 패턴 추상화
 - Auth.js v5 (next-auth) — 카카오 로그인, 환경변수 화이트리스트 관리자
 - react-hook-form 7 + zod 4 + @hookform/resolvers 5
@@ -91,7 +91,7 @@ const items = await projects.getAll();
 
 ## Key Files
 
-- `src/app/_components/` — 공용 UI 컴포넌트 (Input, Select, Textarea, ImageThumbnail)
+- `src/app/_components/` — shadcn/ui 컴포넌트 (Input, Textarea, Label) + 프로젝트 공용 (ImageThumbnail)
 - `src/app/(public)/page.tsx` — 원페이지 랜딩 (히어로→서비스→시공사례→강점→연락처)
 - `src/app/admin/projects/_actions.ts` — 시공사례 CRUD Server Actions
 - `src/server/repositories.ts` — Repository 인터페이스
