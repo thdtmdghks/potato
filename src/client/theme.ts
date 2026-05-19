@@ -2,12 +2,27 @@ export type Theme = "light" | "dark" | "system";
 
 const STORAGE_KEY = "theme";
 
-export function getStoredTheme(): Theme {
+let listeners: (() => void)[] = [];
+
+export const subscribe = (listener: () => void) => {
+  listeners = [...listeners, listener];
+  return () => {
+    listeners = listeners.filter((l) => l !== listener);
+  };
+};
+
+const emitChange = () => {
+  for (const listener of listeners) {
+    listener();
+  }
+};
+
+export const getStoredTheme = (): Theme => {
   if (typeof window === "undefined") return "system";
   return (localStorage.getItem(STORAGE_KEY) as Theme) ?? "system";
-}
+};
 
-export function setTheme(theme: Theme) {
+export const setTheme = (theme: Theme) => {
   const root = document.documentElement;
   if (theme === "system") {
     localStorage.removeItem(STORAGE_KEY);
@@ -17,4 +32,5 @@ export function setTheme(theme: Theme) {
     localStorage.setItem(STORAGE_KEY, theme);
     root.classList.toggle("dark", theme === "dark");
   }
-}
+  emitChange();
+};

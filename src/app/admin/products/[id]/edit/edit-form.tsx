@@ -24,7 +24,7 @@ export function EditProductForm({ product }: { product: Product }) {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("제품 수정:", { id: product.id, name, description, category, features });
+    // TODO: Server Action 연동
     alert("수정 완료 (Mock)");
   };
 

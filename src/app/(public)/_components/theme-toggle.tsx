@@ -1,21 +1,14 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { getStoredTheme, setTheme, type Theme } from "@/client/theme";
+import { useSyncExternalStore } from "react";
+import { getStoredTheme, setTheme, subscribe, type Theme } from "@/client/theme";
 
 export default function ThemeToggle() {
-  const [theme, setLocal] = useState<Theme>("system");
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setLocal(getStoredTheme());
-    setMounted(true);
-  }, []);
+  const theme = useSyncExternalStore(subscribe, getStoredTheme, () => "system" as Theme);
 
   const cycle = () => {
     const next: Theme = theme === "light" ? "dark" : theme === "dark" ? "system" : "light";
     setTheme(next);
-    setLocal(next);
   };
 
   const icon = theme === "dark" ? "🌙" : theme === "light" ? "☀️" : "💻";
@@ -27,7 +20,7 @@ export default function ThemeToggle() {
       className="text-lg"
       suppressHydrationWarning
     >
-      {mounted ? icon : null}
+      {icon}
     </button>
   );
 }

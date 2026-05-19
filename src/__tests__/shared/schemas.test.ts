@@ -20,7 +20,7 @@ describe("inquirySchema", () => {
   });
 
   it("email이 없으면 통과한다", () => {
-    const { email: _, ...noEmail } = valid;
+    const { email: _email, ...noEmail } = valid;
     expect(inquirySchema.safeParse(noEmail).success).toBe(true);
   });
 

@@ -43,8 +43,8 @@ export default function Inquiry() {
     setFiles((prev) => prev.filter((_, i) => i !== index));
   };
 
-  const onSubmit = (data: InquiryFormData) => {
-    console.log("견적문의 제출:", data, "첨부파일:", files);
+  const onSubmit = (_data: InquiryFormData) => {
+    // TODO: Server Action 연동
     setSubmitted(true);
   };
 

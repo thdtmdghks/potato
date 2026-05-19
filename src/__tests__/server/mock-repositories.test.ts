@@ -83,9 +83,10 @@ describe("MockProductRepository", () => {
       features: [],
     });
     expect(created).not.toBeNull();
-    const updated = await repo.update(created!.id, { name: "수정" });
+    const createdId = created?.id ?? "";
+    const updated = await repo.update(createdId, { name: "수정" });
     expect(updated?.name).toBe("수정");
-    expect(await repo.delete(created!.id)).toBe(true);
+    expect(await repo.delete(createdId)).toBe(true);
   });
 });
 

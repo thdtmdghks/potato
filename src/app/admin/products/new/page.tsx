@@ -20,7 +20,7 @@ export default function NewProduct() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("제품 생성:", { name, description, category, features });
+    // TODO: Server Action 연동
     alert("생성 완료 (Mock)");
   };
 
