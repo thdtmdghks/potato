@@ -7,6 +7,6 @@ const OPTIONS = {
   fileType: "image/webp",
 };
 
-export async function compressImage(file: File): Promise<File> {
+export const compressImage = async (file: File): Promise<File> => {
   return imageCompression(file, OPTIONS);
-}
+};

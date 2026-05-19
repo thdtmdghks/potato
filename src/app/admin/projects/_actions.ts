@@ -10,8 +10,9 @@ const STORAGE_BUCKET = process.env.STORAGE_BUCKET ?? "images";
 const STORAGE_PATH_PREFIX = "projects";
 
 const revalidateProjects = () => {
-  revalidatePath("/admin/projects");
+  revalidatePath("/");
   revalidatePath("/projects");
+  revalidatePath("/admin/projects");
 };
 
 const uploadImages = async (storage: StorageRepository, files: File[]) => {
