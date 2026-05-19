@@ -69,7 +69,7 @@ export default async function Home() {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
       {/* 히어로 */}
-      <section className="bg-gradient-to-br from-navy to-navy-light py-16 text-center text-white md:py-24">
+      <section className="from-navy to-navy-light bg-gradient-to-br py-16 text-center text-white md:py-24">
         <div className="mx-auto max-w-4xl px-4">
           <h1 className="text-3xl font-bold md:text-5xl">{BUSINESS.slogan}</h1>
           <p className="mx-auto mt-4 max-w-2xl text-lg text-gray-300">
@@ -88,7 +88,7 @@ export default async function Home() {
           </div>
           <a
             href={LINKS.tel}
-            className="mt-8 inline-block rounded-lg bg-accent px-8 py-3 text-lg font-bold text-white transition-colors hover:bg-accent-dark"
+            className="bg-accent hover:bg-accent-dark mt-8 inline-block rounded-lg px-8 py-3 text-lg font-bold text-white transition-colors"
           >
             📞 상담·견적 문의하기
           </a>
@@ -98,10 +98,10 @@ export default async function Home() {
       {/* 시공 안내 */}
       <section id="services" className="bg-gray-light py-16 dark:bg-gray-900">
         <div className="mx-auto max-w-5xl px-4">
-          <h2 className="text-center text-2xl font-bold text-navy dark:text-white">
+          <h2 className="text-navy text-center text-2xl font-bold dark:text-white">
             이런 시공 합니다
           </h2>
-          <p className="mt-2 text-center text-sm text-gray-dark dark:text-gray-400">
+          <p className="text-gray-dark mt-2 text-center text-sm dark:text-gray-400">
             샷시 교체부터 방충망·유리·도어까지 한번에
           </p>
           <ul className="mt-8 grid grid-cols-2 gap-4 md:grid-cols-3">
@@ -111,8 +111,8 @@ export default async function Home() {
                 className="rounded-lg bg-white p-5 text-center shadow-sm dark:bg-gray-800"
               >
                 <SvgIcon d={s.d} />
-                <h3 className="mt-3 font-semibold text-navy dark:text-white">{s.title}</h3>
-                <p className="mt-1 text-sm text-gray-dark dark:text-gray-300">{s.description}</p>
+                <h3 className="text-navy mt-3 font-semibold dark:text-white">{s.title}</h3>
+                <p className="text-gray-dark mt-1 text-sm dark:text-gray-300">{s.description}</p>
               </li>
             ))}
           </ul>
@@ -122,8 +122,8 @@ export default async function Home() {
       {/* 시공사례 */}
       <section id="gallery" className="py-16">
         <div className="mx-auto max-w-5xl px-4">
-          <h2 className="text-center text-2xl font-bold text-navy dark:text-white">시공사례</h2>
-          <p className="mt-2 text-center text-sm text-gray-dark dark:text-gray-400">
+          <h2 className="text-navy text-center text-2xl font-bold dark:text-white">시공사례</h2>
+          <p className="text-gray-dark mt-2 text-center text-sm dark:text-gray-400">
             실제 현장 시공 모습을 확인하세요
           </p>
           {recentProjects.length > 0 ? (
@@ -140,7 +140,7 @@ export default async function Home() {
                         className="aspect-4/3 w-full object-cover transition-transform hover:scale-105"
                       />
                     ) : (
-                      <span className="flex aspect-4/3 items-center justify-center bg-gray-light text-sm text-gray-dark dark:bg-gray-800 dark:text-gray-500">
+                      <span className="bg-gray-light text-gray-dark flex aspect-4/3 items-center justify-center text-sm dark:bg-gray-800 dark:text-gray-500">
                         사진 준비중
                       </span>
                     )}
@@ -149,14 +149,14 @@ export default async function Home() {
               ))}
             </ul>
           ) : (
-            <p className="mt-8 text-center text-gray-dark dark:text-gray-400">
+            <p className="text-gray-dark mt-8 text-center dark:text-gray-400">
               시공 사례 사진 준비중입니다.
             </p>
           )}
           <p className="mt-6 text-center">
             <Link
               href="/projects"
-              className="text-navy underline hover:text-accent dark:text-blue-400"
+              className="text-navy hover:text-accent underline dark:text-blue-400"
             >
               시공사례 더보기 →
             </Link>
@@ -167,14 +167,14 @@ export default async function Home() {
       {/* 강점 */}
       <section id="about" className="bg-gray-light py-16 dark:bg-gray-900">
         <div className="mx-auto max-w-4xl px-4">
-          <h2 className="text-center text-2xl font-bold text-navy dark:text-white">
+          <h2 className="text-navy text-center text-2xl font-bold dark:text-white">
             {BUSINESS.name}를 선택하는 이유
           </h2>
           <ul className="mt-8 grid grid-cols-2 gap-6 md:grid-cols-4">
             {strengths.map((s) => (
               <li key={s.label} className="text-center">
-                <p className="text-3xl font-bold text-accent">{s.number}</p>
-                <p className="mt-1 text-sm text-gray-dark dark:text-gray-300">{s.label}</p>
+                <p className="text-accent text-3xl font-bold">{s.number}</p>
+                <p className="text-gray-dark mt-1 text-sm dark:text-gray-300">{s.label}</p>
               </li>
             ))}
           </ul>
@@ -184,21 +184,21 @@ export default async function Home() {
       {/* 연락처 */}
       <section id="contact" className="py-16">
         <div className="mx-auto max-w-4xl px-4">
-          <h2 className="text-center text-2xl font-bold text-navy dark:text-white">
+          <h2 className="text-navy text-center text-2xl font-bold dark:text-white">
             상담·견적 문의
           </h2>
-          <p className="mt-2 text-center text-sm text-gray-dark dark:text-gray-400">
+          <p className="text-gray-dark mt-2 text-center text-sm dark:text-gray-400">
             전화 한 통이면 빠른 견적 상담 가능합니다
           </p>
           <div className="mt-8 grid gap-8 md:grid-cols-2">
             <div className="space-y-4">
               <dl className="space-y-3">
                 <div className="flex gap-3">
-                  <dt className="w-16 shrink-0 font-medium text-navy dark:text-gray-200">주소</dt>
+                  <dt className="text-navy w-16 shrink-0 font-medium dark:text-gray-200">주소</dt>
                   <dd className="text-gray-dark dark:text-gray-300">{BUSINESS.address}</dd>
                 </div>
                 <div className="flex gap-3">
-                  <dt className="w-16 shrink-0 font-medium text-navy dark:text-gray-200">전화</dt>
+                  <dt className="text-navy w-16 shrink-0 font-medium dark:text-gray-200">전화</dt>
                   <dd>
                     <a href={LINKS.tel} className="text-accent hover:underline">
                       {BUSINESS.phone}
@@ -206,24 +206,24 @@ export default async function Home() {
                   </dd>
                 </div>
                 <div className="flex gap-3">
-                  <dt className="w-16 shrink-0 font-medium text-navy dark:text-gray-200">영업</dt>
+                  <dt className="text-navy w-16 shrink-0 font-medium dark:text-gray-200">영업</dt>
                   <dd className="text-gray-dark dark:text-gray-300">{BUSINESS.closedDay}</dd>
                 </div>
                 <div className="flex gap-3">
-                  <dt className="w-16 shrink-0 font-medium text-navy dark:text-gray-200">대표</dt>
+                  <dt className="text-navy w-16 shrink-0 font-medium dark:text-gray-200">대표</dt>
                   <dd className="text-gray-dark dark:text-gray-300">{BUSINESS.owner}</dd>
                 </div>
               </dl>
               <div className="flex flex-wrap gap-3 pt-4">
                 <a
                   href={LINKS.tel}
-                  className="rounded-lg bg-accent px-5 py-2.5 font-semibold text-white transition-colors hover:bg-accent-dark"
+                  className="bg-accent hover:bg-accent-dark rounded-lg px-5 py-2.5 font-semibold text-white transition-colors"
                 >
                   📞 전화
                 </a>
                 <a
                   href={LINKS.sms}
-                  className="rounded-lg bg-navy px-5 py-2.5 font-semibold text-white transition-colors hover:bg-navy-light"
+                  className="bg-navy hover:bg-navy-light rounded-lg px-5 py-2.5 font-semibold text-white transition-colors"
                 >
                   💬 문자
                 </a>

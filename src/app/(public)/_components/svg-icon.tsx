@@ -1,7 +1,7 @@
 export default function SvgIcon({ d }: { d: string }) {
   return (
     <svg
-      className="mx-auto h-12 w-12 text-navy dark:text-accent"
+      className="text-navy dark:text-accent mx-auto h-12 w-12"
       viewBox="0 0 48 48"
       fill="none"
       stroke="currentColor"

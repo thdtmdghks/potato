@@ -2,7 +2,13 @@
 
 import { statusLabel } from "../../constants";
 
-export function StatusButtons({ currentStatus, inquiryId }: { currentStatus: string; inquiryId: string }) {
+export function StatusButtons({
+  currentStatus,
+  inquiryId,
+}: {
+  currentStatus: string;
+  inquiryId: string;
+}) {
   return (
     <div className="flex gap-2">
       {(["pending", "confirmed", "completed"] as const).map((s) => (

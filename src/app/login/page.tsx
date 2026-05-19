@@ -5,10 +5,10 @@ import { signIn } from "next-auth/react";
 
 export default function Login() {
   return (
-    <main className="flex min-h-screen items-center justify-center bg-gray-light px-4 dark:bg-gray-900">
+    <main className="bg-gray-light flex min-h-screen items-center justify-center px-4 dark:bg-gray-900">
       <section className="w-full max-w-sm rounded-lg bg-white p-8 shadow dark:bg-gray-800">
-        <h1 className="text-center text-2xl font-bold text-navy dark:text-white">로그인</h1>
-        <p className="mt-2 text-center text-sm text-gray-dark dark:text-gray-300">
+        <h1 className="text-navy text-center text-2xl font-bold dark:text-white">로그인</h1>
+        <p className="text-gray-dark mt-2 text-center text-sm dark:text-gray-300">
           관리자 페이지에 접근하려면 로그인이 필요합니다.
         </p>
         <button
@@ -23,8 +23,8 @@ export default function Login() {
           </svg>
           카카오로 로그인
         </button>
-        <p className="mt-4 text-center text-xs text-gray-dark dark:text-gray-400">
-          <Link href="/" className="underline hover:text-navy dark:hover:text-blue-400">
+        <p className="text-gray-dark mt-4 text-center text-xs dark:text-gray-400">
+          <Link href="/" className="hover:text-navy underline dark:hover:text-blue-400">
             홈으로 돌아가기
           </Link>
         </p>

@@ -3,7 +3,7 @@ import type {
   ProductRepository,
   InquiryRepository,
   StorageRepository,
-} from './repositories';
+} from "./repositories";
 
 interface Repositories {
   projects: ProjectRepository;
@@ -13,18 +13,18 @@ interface Repositories {
 }
 
 export async function getServerRepositories(): Promise<Repositories> {
-  if (process.env.USE_MOCK === 'true' || !process.env.NEXT_PUBLIC_SUPABASE_URL) {
-    const { getMockRepositories } = await import('./mock-repositories');
+  if (process.env.USE_MOCK === "true" || !process.env.NEXT_PUBLIC_SUPABASE_URL) {
+    const { getMockRepositories } = await import("./mock-repositories");
     return getMockRepositories();
   }
 
-  const { createServerSupabase } = await import('./supabase-client');
+  const { createServerSupabase } = await import("./supabase-client");
   const {
     SupabaseProjectRepository,
     SupabaseProductRepository,
     SupabaseInquiryRepository,
     SupabaseStorageRepository,
-  } = await import('./supabase-repositories');
+  } = await import("./supabase-repositories");
 
   const supabase = await createServerSupabase();
   return {

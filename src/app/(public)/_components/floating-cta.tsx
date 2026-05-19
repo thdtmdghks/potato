@@ -5,7 +5,7 @@ export default function FloatingCta() {
     <a
       href={LINKS.tel}
       aria-label="전화 상담"
-      className="fixed bottom-5 right-5 z-50 flex items-center gap-2 rounded-full bg-accent px-4 py-3 font-bold text-white shadow-lg transition-colors hover:bg-accent-dark md:px-5"
+      className="bg-accent hover:bg-accent-dark fixed right-5 bottom-5 z-50 flex items-center gap-2 rounded-full px-4 py-3 font-bold text-white shadow-lg transition-colors md:px-5"
     >
       <svg
         className="h-5 w-5"

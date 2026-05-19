@@ -6,7 +6,7 @@ export default function Footer() {
       <div className="mx-auto max-w-6xl px-4 py-8">
         <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           <div>
-            <h3 className="font-bold text-white text-lg">{BUSINESS.name}</h3>
+            <h3 className="text-lg font-bold text-white">{BUSINESS.name}</h3>
             <p className="mt-2 text-sm">{BUSINESS.slogan}</p>
             <p className="mt-1 text-sm">{BUSINESS.experience} 경력 · 당일 시공 가능</p>
           </div>

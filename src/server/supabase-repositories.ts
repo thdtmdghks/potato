@@ -29,12 +29,21 @@ export class SupabaseProjectRepository implements ProjectRepository {
   }
 
   async create(data: Omit<Project, "id" | "created_at">): Promise<Project | null> {
-    const { data: row } = await this.db.from("projects").insert(data as never).select().single();
+    const { data: row } = await this.db
+      .from("projects")
+      .insert(data as never)
+      .select()
+      .single();
     return row;
   }
 
   async update(id: string, data: Partial<Project>): Promise<Project | null> {
-    const { data: row } = await this.db.from("projects").update(data as never).eq("id", id).select().single();
+    const { data: row } = await this.db
+      .from("projects")
+      .update(data as never)
+      .eq("id", id)
+      .select()
+      .single();
     return row;
   }
 
@@ -66,12 +75,21 @@ export class SupabaseProductRepository implements ProductRepository {
   }
 
   async create(data: Omit<Product, "id" | "created_at">): Promise<Product | null> {
-    const { data: row } = await this.db.from("products").insert(data as never).select().single();
+    const { data: row } = await this.db
+      .from("products")
+      .insert(data as never)
+      .select()
+      .single();
     return row;
   }
 
   async update(id: string, data: Partial<Product>): Promise<Product | null> {
-    const { data: row } = await this.db.from("products").update(data as never).eq("id", id).select().single();
+    const { data: row } = await this.db
+      .from("products")
+      .update(data as never)
+      .eq("id", id)
+      .select()
+      .single();
     return row;
   }
 
@@ -97,12 +115,19 @@ export class SupabaseInquiryRepository implements InquiryRepository {
   }
 
   async create(data: Omit<Inquiry, "id" | "created_at" | "status">): Promise<Inquiry | null> {
-    const { data: row } = await this.db.from("inquiries").insert(data as never).select().single();
+    const { data: row } = await this.db
+      .from("inquiries")
+      .insert(data as never)
+      .select()
+      .single();
     return row;
   }
 
   async updateStatus(id: string, status: string): Promise<boolean> {
-    const { error } = await this.db.from("inquiries").update({ status } as never).eq("id", id);
+    const { error } = await this.db
+      .from("inquiries")
+      .update({ status } as never)
+      .eq("id", id);
     return !error;
   }
 }

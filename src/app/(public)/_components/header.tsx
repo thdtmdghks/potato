@@ -19,28 +19,28 @@ export default function Header() {
   const isAdmin = (session as unknown as { role?: string })?.role === "admin";
 
   return (
-    <header className="bg-navy text-white sticky top-0 z-50">
+    <header className="bg-navy sticky top-0 z-50 text-white">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4">
         <Link href="/" className="text-xl font-bold">
           {BUSINESS.name}
         </Link>
-        <nav className="hidden gap-6 md:flex items-center">
+        <nav className="hidden items-center gap-6 md:flex">
           {navItems.map((item) => (
             <Link
               key={item.href}
               href={item.href}
-              className="transition-colors hover:text-accent-light"
+              className="hover:text-accent-light transition-colors"
             >
               {item.label}
             </Link>
           ))}
-          <Link href="/projects" className="transition-colors hover:text-accent-light">
+          <Link href="/projects" className="hover:text-accent-light transition-colors">
             갤러리
           </Link>
           {isAdmin && (
             <Link
               href="/admin"
-              className="rounded bg-accent px-3 py-1 text-sm font-semibold transition-colors hover:bg-accent-dark"
+              className="bg-accent hover:bg-accent-dark rounded px-3 py-1 text-sm font-semibold transition-colors"
             >
               관리자
             </Link>
@@ -49,7 +49,7 @@ export default function Header() {
         <div className="flex items-center gap-3">
           <a
             href={LINKS.tel}
-            className="hidden sm:inline-block rounded bg-accent px-3 py-1.5 text-sm font-semibold text-white transition-colors hover:bg-accent-dark"
+            className="bg-accent hover:bg-accent-dark hidden rounded px-3 py-1.5 text-sm font-semibold text-white transition-colors sm:inline-block"
           >
             📞 {BUSINESS.phone}
           </a>
@@ -82,12 +82,12 @@ export default function Header() {
             <Link
               href="/admin"
               onClick={() => setOpen(false)}
-              className="block py-3 text-accent-light font-semibold"
+              className="text-accent-light block py-3 font-semibold"
             >
               관리자
             </Link>
           )}
-          <a href={LINKS.tel} className="block py-3 text-accent-light font-semibold">
+          <a href={LINKS.tel} className="text-accent-light block py-3 font-semibold">
             📞 전화 상담
           </a>
         </nav>
