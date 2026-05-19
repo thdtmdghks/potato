@@ -262,3 +262,26 @@
 | Supabase Auth        | 카카오 프로바이더 공식 미지원. 커스텀 OAuth 설정 복잡.                  |
 | 자체 이메일/비밀번호 | 관리자 2명인데 회원가입 시스템 구축은 과잉. 비밀번호 보안 부담.         |
 | 네이버 로그인        | 가능하지만 카카오 대비 개발자 문서/SDK 품질 낮음. 사장님이 카카오 선호. |
+
+---
+
+## ADR-012: 공용 UI 컴포넌트를 `app/_components/`에 배치
+
+**배경:** Input, Select, Textarea 같은 공용 폼 컴포넌트가 필요. 각 파일에서 `inputClass` 문자열을 반복 선언하고 있어 중복 제거 필요.
+
+**결정:** `src/app/_components/`에 공용 UI 컴포넌트 배치.
+
+**이유:**
+
+- Next.js 공식 문서의 "private folders" 패턴 (`_` prefix) 활용 — 라우팅에 영향 없이 colocation
+- `(public)/_components/`와 `admin/_components/`에서 모두 import 가능한 상위 위치
+- T3 Stack의 `src/server/` 패턴처럼, 기존 3분할(server/client/shared)과 충돌하지 않음
+- 이 프로젝트 규모에서 `src/components/` 별도 폴더는 과함 (컴포넌트 4개)
+
+**대안 검토:**
+
+| 대안                     | 탈락 이유                                                                                                        |
+| ------------------------ | ---------------------------------------------------------------------------------------------------------------- |
+| `src/components/`        | Next.js 관례이지만 기존 server/client/shared 3분할과 별개 계층 추가. 4개 컴포넌트에 폴더 하나 더 만드는 건 과함. |
+| `src/shared/components/` | shared는 순수 로직(타입, 스키마)만 두는 곳. `"use client"` 컴포넌트와 성격 안 맞음.                              |
+| `src/client/components/` | 가능하지만 client는 브라우저 유틸(image, theme) 전용. UI 컴포넌트와 유틸은 성격 다름.                            |

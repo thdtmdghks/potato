@@ -91,6 +91,7 @@ const items = await projects.getAll();
 
 ## Key Files
 
+- `src/app/_components/` — 공용 UI 컴포넌트 (Input, Select, Textarea, ImageThumbnail)
 - `src/app/(public)/page.tsx` — 원페이지 랜딩 (히어로→서비스→시공사례→강점→연락처)
 - `src/app/admin/projects/_actions.ts` — 시공사례 CRUD Server Actions
 - `src/server/repositories.ts` — Repository 인터페이스
