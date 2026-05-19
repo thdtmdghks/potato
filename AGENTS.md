@@ -57,6 +57,8 @@ const items = await projects.getAll();
 - 컴포넌트: `function` 선언문. Server Action: `function` 선언문. 그 외 함수: arrow function.
 - named export 기본. `export default`는 Next.js 페이지/레이아웃만.
 - 라우트별 서버 로직은 `_actions.ts`, 클라이언트 컴포넌트는 `_components/`에 배치.
+- 라우트별 상수는 `_constants.ts`, 순수 함수는 `_utils.ts` + `_utils.test.ts`에 배치.
+- Server Action은 오케스트레이션만. 데이터 변환/검증은 `_utils.ts`로 분리하여 테스트.
 - Design tokens: `text-navy`, `bg-navy`, `text-accent`, `bg-accent`, `text-gray-dark`, `bg-gray-light`
 - 모든 UI에 `dark:` 변형 필수
 - 모바일 최우선: base → `sm:` → `md:` → `lg:` 순서로 확장

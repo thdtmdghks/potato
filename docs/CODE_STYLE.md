@@ -18,6 +18,16 @@ export function DeleteButton({ id }: { id: string }) {
 }
 ```
 
+### Server Action: function 선언문
+
+```ts
+"use server";
+
+export async function createProject(formData: FormData) {
+  // ...
+}
+```
+
 ### 그 외 모두: arrow function
 
 ```ts
@@ -243,10 +253,107 @@ if (files.length > MAX_UPLOAD_COUNT) {
 }
 ```
 
-스코프:
+### 상수 스코프
 
-- 여러 파일에서 사용 → `constants.ts` 또는 해당 모듈 상단
-- 한 파일에서만 사용 → 파일 상단 `const`
+| 사용 범위                   | 위치                          | 예시                      |
+| --------------------------- | ----------------------------- | ------------------------- |
+| 여러 라우트/모듈에서 공용   | `shared/constants.ts`         | `MAX_FILE_SIZE`           |
+| 한 라우트 내 여러 파일      | `_constants.ts` (라우트 로컬) | `FORM_KEYS`, `CATEGORIES` |
+| 한 파일에서만 사용          | 파일 상단 `const`             | `STORAGE_PATH_PREFIX`     |
+| 한 함수에서만 사용 (원시값) | 함수 내 정의 허용             | `const RETRY_COUNT = 3`   |
+
+---
+
+## 순수 함수 분리 + 테스트
+
+서비스 로직(Server Action, API 핸들러)에서 **데이터 변환/검증/계산**은 순수 함수로 추출한다.
+
+```ts
+// ❌ Server Action 안에 로직 직접 작성
+export async function updateProject(id: string, formData: FormData) {
+  // ...URL 파싱 로직이 여기에 인라인...
+}
+
+// ✅ 순수 함수로 추출
+// _utils.ts
+export const extractStoragePath = (url: string): string | null => {
+  const match = url.match(/\/storage\/v1\/object\/public\/[^/]+\/(.+)$/);
+  return match?.[1] ?? null;
+};
+
+// _utils.test.ts
+describe("extractStoragePath", () => {
+  it("Supabase Storage URL에서 경로를 추출한다", () => {
+    expect(
+      extractStoragePath(
+        "https://xxx.supabase.co/storage/v1/object/public/images/projects/abc.webp",
+      ),
+    ).toBe("projects/abc.webp");
+  });
+  it("잘못된 URL이면 null을 반환한다", () => {
+    expect(extractStoragePath("https://example.com/image.png")).toBeNull();
+  });
+});
+```
+
+### 파일 네이밍
+
+| 파일             | 역할                                                  |
+| ---------------- | ----------------------------------------------------- |
+| `_actions.ts`    | Server Action — 오케스트레이션만 (검증 → 호출 → 응답) |
+| `_utils.ts`      | 순수 함수 (테스트 가능한 로직)                        |
+| `_utils.test.ts` | 순수 함수 단위 테스트 (colocation)                    |
+| `_constants.ts`  | 상수                                                  |
+
+### 원칙
+
+- Server Action은 **오케스트레이션만** 담당: 입력 검증 → 외부 호출 → 결과 반환
+- 데이터 변환, URL 파싱, 비교 로직 등은 `_utils.ts`로 분리
+- 순수 함수는 반드시 테스트 작성. 모든 분기(if/else, early return)를 커버
+
+---
+
+## 에러 처리
+
+### Server Action 반환 패턴
+
+```ts
+// discriminated union — as const 필수
+return { success: false as const, error: "메시지" };
+return { success: true as const };
+```
+
+### 외부 호출 에러 처리
+
+- DB/Storage 호출 실패: null 체크 또는 try-catch → 사용자 친화적 메시지 반환
+- 실패해도 무방한 작업 (이미지 삭제 등): fire-and-forget 허용 (await 없이 호출)
+
+```ts
+// ✅ fire-and-forget — 실패해도 사용자 응답에 영향 없음
+deleteImages(storage, removedImages);
+
+// ✅ 반드시 성공해야 하는 작업 — await + 에러 처리
+const result = await projects.create(data);
+if (!result) return { success: false as const, error: "생성에 실패했습니다." };
+```
+
+### 클라이언트 에러 처리
+
+- 외부 라이브러리 호출(이미지 압축 등): try-catch로 감싸고 사용자에게 메시지 표시
+- 에러 원인별 분기가 불가능하면 일반 메시지로 충분
+
+---
+
+## 환경변수 관리
+
+| 구분                 | 환경변수로                | 상수로                            |
+| -------------------- | ------------------------- | --------------------------------- |
+| 환경별로 달라지는 값 | ✅ DB URL, API 키, 버킷명 |                                   |
+| 코드 구조적 값       |                           | ✅ Storage 경로 prefix, 폼 필드명 |
+| 보안 민감 값         | ✅ 시크릿, 토큰           |                                   |
+
+- `NEXT_PUBLIC_` prefix: 클라이언트에 노출 가능한 값만
+- `.env.local.example`에 모든 환경변수 키 기록 (값은 placeholder)
 
 ---
 
@@ -270,6 +377,8 @@ items.map((_item, idx) => idx);
 // ❌ 경고 무시
 const action = async (prev: unknown, formData: FormData) => {}; // prev 미사용 경고
 ```
+
+> 🔧 ESLint `@typescript-eslint/no-unused-vars` — `_` prefix 변수는 자동 무시됨
 
 ---
 
@@ -305,4 +414,6 @@ const name = user.name; // 이 시점에서 user는 non-null
 - [ ] 미사용 import/변수가 없는가?
 - [ ] `any`, `!` (non-null assertion)을 사용하지 않았는가?
 - [ ] 2곳 이상 중복되는 로직이 있으면 함수로 추출했는가?
-- [ ] `pnpm lint` 통과하는가?
+- [ ] 순수 함수를 분리했고, 테스트를 작성했는가?
+- [ ] 모든 분기(if/else, try/catch, early return)에 대응하는 테스트가 있는가?
+- [ ] `pnpm build` + `pnpm lint` + `pnpm test` 통과하는가?
