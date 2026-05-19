@@ -54,8 +54,9 @@ const items = await projects.getAll();
 ## Conventions
 
 - 시멘틱 HTML 필수 (`<header>`, `<nav>`, `<main>`, `<section>`, `<footer>`). `<div>` 남용 금지.
-- 컴포넌트: `function` 선언문. 그 외 함수: arrow function.
+- 컴포넌트: `function` 선언문. Server Action: `function` 선언문. 그 외 함수: arrow function.
 - named export 기본. `export default`는 Next.js 페이지/레이아웃만.
+- 라우트별 서버 로직은 `_actions.ts`, 클라이언트 컴포넌트는 `_components/`에 배치.
 - Design tokens: `text-navy`, `bg-navy`, `text-accent`, `bg-accent`, `text-gray-dark`, `bg-gray-light`
 - 모든 UI에 `dark:` 변형 필수
 - 모바일 최우선: base → `sm:` → `md:` → `lg:` 순서로 확장
