@@ -1,45 +1,46 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
 import { useSession } from "next-auth/react";
 import ThemeToggle from "./theme-toggle";
+import { BUSINESS, LINKS } from "@/shared/constants";
+import { useMenuWithHistory } from "@/client/use-menu-with-history";
 
 const navItems = [
-  { href: "/#services", label: "서비스" },
+  { href: "/#services", label: "시공 안내" },
   { href: "/#gallery", label: "시공사례" },
   { href: "/#about", label: "소개" },
   { href: "/#contact", label: "연락처" },
 ];
 
 export default function Header() {
-  const [open, setOpen] = useState(false);
+  const { open, toggle, closeMenu } = useMenuWithHistory();
   const { data: session } = useSession();
-  const isAdmin = (session as unknown as { role?: string })?.role === "admin";
+  const isAdmin = session?.role === "admin";
 
   return (
-    <header className="bg-navy text-white sticky top-0 z-50">
+    <header className="bg-navy sticky top-0 z-50 text-white">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4">
         <Link href="/" className="text-xl font-bold">
-          경산창호
+          {BUSINESS.name}
         </Link>
-        <nav className="hidden gap-6 md:flex items-center">
+        <nav className="hidden items-center gap-6 md:flex">
           {navItems.map((item) => (
             <Link
               key={item.href}
               href={item.href}
-              className="transition-colors hover:text-accent-light"
+              className="hover:text-accent-light transition-colors"
             >
               {item.label}
             </Link>
           ))}
-          <Link href="/projects" className="transition-colors hover:text-accent-light">
+          <Link href="/projects" className="hover:text-accent-light transition-colors">
             갤러리
           </Link>
           {isAdmin && (
             <Link
               href="/admin"
-              className="rounded bg-accent px-3 py-1 text-sm font-semibold transition-colors hover:bg-accent-dark"
+              className="bg-accent hover:bg-accent-dark rounded px-3 py-1 text-sm font-semibold transition-colors"
             >
               관리자
             </Link>
@@ -47,50 +48,48 @@ export default function Header() {
         </nav>
         <div className="flex items-center gap-3">
           <a
-            href="tel:010-3812-9922"
-            className="hidden sm:inline-block rounded bg-accent px-3 py-1.5 text-sm font-semibold text-white transition-colors hover:bg-accent-dark"
+            href={LINKS.tel}
+            className="bg-accent hover:bg-accent-dark hidden rounded px-3 py-1.5 text-sm font-semibold text-white transition-colors sm:inline-block"
           >
-            📞 010-3812-9922
+            📞 {BUSINESS.phone}
           </a>
           <ThemeToggle />
           <button
             className="min-h-11 min-w-11 md:hidden"
-            onClick={() => setOpen(!open)}
+            onClick={toggle}
             aria-label={open ? "메뉴 닫기" : "메뉴 열기"}
           >
             {open ? "✕" : "☰"}
           </button>
         </div>
       </div>
-      {open && (
-        <nav className="flex flex-col gap-2 px-4 pb-4 md:hidden">
+      {open && <div className="fixed inset-0 z-40 bg-black/50 md:hidden" onClick={closeMenu} />}
+      <nav
+        className={`bg-navy fixed inset-y-0 right-0 z-50 w-64 transform px-4 py-6 transition-transform md:hidden ${open ? "translate-x-0" : "translate-x-full"}`}
+      >
+        <div className="flex flex-col gap-2">
           {navItems.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              onClick={() => setOpen(false)}
-              className="block py-3"
-            >
+            <Link key={item.href} href={item.href} onClick={closeMenu} className="block py-3">
               {item.label}
             </Link>
           ))}
-          <Link href="/projects" onClick={() => setOpen(false)} className="block py-3">
+          <Link href="/projects" onClick={closeMenu} className="block py-3">
             갤러리
           </Link>
           {isAdmin && (
             <Link
               href="/admin"
-              onClick={() => setOpen(false)}
-              className="block py-3 text-accent-light font-semibold"
+              onClick={closeMenu}
+              className="text-accent-light block py-3 font-semibold"
             >
               관리자
             </Link>
           )}
-          <a href="tel:010-3812-9922" className="block py-3 text-accent-light font-semibold">
+          <a href={LINKS.tel} className="text-accent-light block py-3 font-semibold">
             📞 전화 상담
           </a>
-        </nav>
-      )}
+        </div>
+      </nav>
     </header>
   );
 }

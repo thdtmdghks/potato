@@ -16,8 +16,8 @@ export default async function Projects({
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-8">
-      <h1 className="text-3xl font-bold text-navy dark:text-white">시공사례</h1>
-      <p className="mt-2 text-gray-dark dark:text-gray-300">경산창호의 시공 현장을 확인하세요.</p>
+      <h1 className="text-navy text-3xl font-bold dark:text-white">시공사례</h1>
+      <p className="text-gray-dark mt-2 dark:text-gray-300">경산창호의 시공 현장을 확인하세요.</p>
 
       <nav className="mt-6 flex gap-2 overflow-x-auto pb-2" aria-label="카테고리 필터">
         <Link
@@ -39,8 +39,8 @@ export default async function Projects({
 
       {items.length === 0 ? (
         <div className="mt-12 text-center">
-          <p className="text-lg text-gray-dark dark:text-gray-400">시공 사례 사진 준비중입니다.</p>
-          <p className="mt-2 text-sm text-gray-dark dark:text-gray-500">
+          <p className="text-gray-dark text-lg dark:text-gray-400">시공 사례 사진 준비중입니다.</p>
+          <p className="text-gray-dark mt-2 text-sm dark:text-gray-500">
             곧 다양한 시공 사례를 만나보실 수 있습니다.
           </p>
         </div>
@@ -61,13 +61,13 @@ export default async function Projects({
                     className="aspect-4/3 w-full object-cover transition-transform group-hover:scale-105"
                   />
                 ) : (
-                  <span className="flex aspect-4/3 items-center justify-center bg-gray-light text-sm text-gray-dark dark:bg-gray-800 dark:text-gray-500">
+                  <span className="bg-gray-light text-gray-dark flex aspect-4/3 items-center justify-center text-sm dark:bg-gray-800 dark:text-gray-500">
                     사진 준비중
                   </span>
                 )}
                 <div className="mt-2">
-                  <span className="text-xs text-accent">{item.category}</span>
-                  <h2 className="text-sm font-medium text-navy dark:text-white">{item.title}</h2>
+                  <span className="text-accent text-xs">{item.category}</span>
+                  <h2 className="text-navy text-sm font-medium dark:text-white">{item.title}</h2>
                 </div>
               </Link>
             </li>

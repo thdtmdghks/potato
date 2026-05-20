@@ -14,11 +14,11 @@ export default async function ProjectDetail({ params }: { params: Promise<{ id: 
       <Link href="/projects" className="text-navy hover:underline dark:text-blue-400">
         ← 목록으로
       </Link>
-      <h1 className="mt-4 text-3xl font-bold text-navy dark:text-white">{project.title}</h1>
-      <span className="mt-2 inline-block rounded bg-gray-light px-2 py-1 text-sm dark:bg-gray-800 dark:text-gray-300">
+      <h1 className="text-navy mt-4 text-3xl font-bold dark:text-white">{project.title}</h1>
+      <span className="bg-gray-light mt-2 inline-block rounded px-2 py-1 text-sm dark:bg-gray-800 dark:text-gray-300">
         {project.category}
       </span>
-      <p className="mt-4 text-gray-dark dark:text-gray-300">{project.description}</p>
+      <p className="text-gray-dark mt-4 dark:text-gray-300">{project.description}</p>
 
       {project.images.length > 0 && (
         <section className="mt-6" aria-label="프로젝트 이미지">
@@ -36,7 +36,7 @@ export default async function ProjectDetail({ params }: { params: Promise<{ id: 
             ))}
           </ul>
           {project.images.length > 8 && (
-            <p className="mt-3 text-center text-sm text-gray-dark dark:text-gray-400">
+            <p className="text-gray-dark mt-3 text-center text-sm dark:text-gray-400">
               외 {project.images.length - 8}장
             </p>
           )}
