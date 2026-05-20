@@ -19,14 +19,13 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         token.kakaoId = account.providerAccountId;
       }
       if (token.kakaoId) {
-        token.role = adminIds.includes(token.kakaoId as string) ? "admin" : "user";
+        token.role = adminIds.includes(token.kakaoId) ? "admin" : "user";
       }
       return token;
     },
     async session({ session, token }) {
-      if (token.role) {
-        (session as unknown as { role: string }).role = token.role as string;
-      }
+      session.role = token.role;
+      session.kakaoId = token.kakaoId;
       return session;
     },
   },

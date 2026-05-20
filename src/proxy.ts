@@ -1,12 +1,15 @@
+import { NextResponse } from "next/server";
 import { auth } from "@/auth";
 
-// TODO: 카카오 로그인 설정 후 주석 해제
-export default auth(() => {
-  // const session = req.auth;
-  // const isAdmin = (session as unknown as { role?: string })?.role === 'admin';
-  // if (!session || !isAdmin) {
-  //   return NextResponse.redirect(new URL('/', req.url));
-  // }
+export default auth((req) => {
+  const session = req.auth;
+
+  if (!session) {
+    return NextResponse.redirect(new URL("/login", req.url));
+  }
+  if (session.role !== "admin") {
+    return NextResponse.redirect(new URL("/login?error=not-admin", req.url));
+  }
 });
 
 export const config = {
