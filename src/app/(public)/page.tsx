@@ -7,7 +7,7 @@ import SvgIcon from "./_components/svg-icon";
 const services = [
   {
     d: "M8 8h32v32H8zM8 24h32M24 8v32M12 12h8v8h-8zM28 12h8v8h-8z",
-    title: "하이샷시",
+    title: "하이샤시",
     description: "외풍 차단, 단열·방음 뛰어난 PVC 이중창",
   },
   {
@@ -17,7 +17,7 @@ const services = [
   },
   {
     d: "M10 10h28v28H10zM10 10l28 28M38 10l-28 28",
-    title: "유리교체",
+    title: "유리",
     description: "이중유리·3중유리·로이유리로 난방비 절감",
   },
   {
@@ -33,7 +33,7 @@ const services = [
 ];
 
 const strengths = [
-  { number: BUSINESS.experience, label: "샷시 시공 경력" },
+  { number: BUSINESS.experience, label: "샤시 시공 경력" },
   { number: `${BUSINESS.since}~`, label: `${BUSINESS.name} 운영` },
   { number: "당일", label: "시공 가능" },
   { number: BUSINESS.region, label: "전 지역 출장" },
@@ -73,7 +73,7 @@ export default async function Home() {
         <div className="mx-auto max-w-4xl px-4">
           <h1 className="text-3xl font-bold md:text-5xl">{BUSINESS.slogan}</h1>
           <p className="mx-auto mt-4 max-w-2xl text-lg text-gray-300">
-            외풍·소음, 오래된 샷시 고민 한번에 해결해 드립니다.
+            외풍·소음, 오래된 샤시 고민 한번에 해결해 드립니다.
           </p>
           <div className="mt-6 flex flex-wrap justify-center gap-3">
             <span className="rounded-full border border-white/30 bg-white/10 px-4 py-1.5 text-sm">
@@ -102,7 +102,7 @@ export default async function Home() {
             이런 시공 합니다
           </h2>
           <p className="text-gray-dark mt-2 text-center text-sm dark:text-gray-400">
-            샷시 교체부터 방충망·유리·도어까지 한번에
+            샤시 교체부터 방충망·유리·도어까지 한번에
           </p>
           <ul className="mt-8 grid grid-cols-2 gap-4 md:grid-cols-3">
             {services.map((s) => (

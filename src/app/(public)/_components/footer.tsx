@@ -19,7 +19,7 @@ export default function Footer() {
           </div>
           <div>
             <h3 className="font-bold text-white">시공 안내</h3>
-            <p className="mt-2 text-sm">하이샷시 · 방충망 · 유리교체</p>
+            <p className="mt-2 text-sm">하이샤시 · 방충망 · 유리</p>
             <p className="mt-1 text-sm">ABS도어 · 방범창</p>
           </div>
         </div>

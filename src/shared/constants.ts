@@ -9,9 +9,9 @@ export const BUSINESS = {
   closedDay: "매주 일요일 휴무",
   since: "2014",
   experience: "40년",
-  slogan: "경산·대구 샷시 전문 시공",
+  slogan: "경산·대구 샤시 전문 시공",
   description:
-    "40년 경력 샷시 전문 시공. 하이샷시, 방충망, 유리교체, ABS도어, 방범창. 경산·대구 당일시공 가능.",
+    "40년 경력 샤시(샷시) 전문 시공. 하이샤시, 방충망, 유리, ABS도어, 방범창. 경산·대구 당일시공 가능.",
 } as const;
 
 export const LINKS = {
