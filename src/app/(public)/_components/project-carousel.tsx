@@ -16,7 +16,7 @@ export function ProjectCarousel({ projects }: Props) {
   return (
     <Carousel
       opts={{ loop: true, align: "start", dragFree: true }}
-      plugins={[AutoScroll({ speed: 1, stopOnInteraction: false, stopOnMouseEnter: false })]}
+      plugins={[AutoScroll({ speed: 2, stopOnInteraction: false, stopOnMouseEnter: false })]}
       className="w-full"
     >
       <CarouselContent className="-ml-2">
