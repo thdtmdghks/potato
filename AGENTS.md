@@ -64,6 +64,12 @@ const items = await projects.getAll();
 - 모바일 최우선: base → `sm:` → `md:` → `lg:` 순서로 확장
 - 이미지 업로드: 클라이언트에서 `compressImage()` 압축 후 서버로 전송
 
+## Git
+
+- `develop`에서 작업 → `origin/develop`에 push → `main`으로 `--no-ff` merge
+- merge 커밋 메시지: 변경 내용 요약 (예: `Merge develop: 카카오 로그인 + shadcn/ui 도입`)
+- push/merge는 사용자가 명시적으로 요청하기 전까지 실행 금지
+
 ## Boundaries
 
 ### ✅ 자유롭게 가능
@@ -84,7 +90,6 @@ const items = await projects.getAll();
 
 ### 🚫 절대 금지
 
-- `git push`, `git merge` — 사용자가 명시적으로 요청하기 전까지 실행 금지
 - `git reset --hard`, `git push --force`, `git clean -f`
 - `.env.local` 시크릿 값 출력
 - 외부 유료 서비스 추가
