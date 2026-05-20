@@ -7,9 +7,7 @@ import { BUSINESS, LINKS } from "@/shared/constants";
 import { useMenuWithHistory } from "@/client/use-menu-with-history";
 
 const navItems = [
-  { href: "/#services", label: "시공 안내" },
   { href: "/#gallery", label: "시공사례" },
-  { href: "/#about", label: "소개" },
   { href: "/#contact", label: "연락처" },
 ];
 

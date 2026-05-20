@@ -5,12 +5,12 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 @theme inline {
-  --color-navy: #1b2a4a;
-  --color-navy-light: #2a3f6a;
-  --color-navy-dark: #111d35;
-  --color-accent: #e67e22;
-  --color-accent-light: #f39c12;
-  --color-accent-dark: #d35400;
+  --color-navy: #1f2937;
+  --color-navy-light: #374151;
+  --color-navy-dark: #111827;
+  --color-accent: #f97316;
+  --color-accent-light: #fb923c;
+  --color-accent-dark: #ea580c;
   --color-gray-dark: #374151;
   --color-gray-light: #f3f4f6;
   --color-background: #ffffff;

@@ -10,38 +10,41 @@ export default async function ProjectDetail({ params }: { params: Promise<{ id: 
   if (!project) notFound();
 
   return (
-    <article>
-      <Link href="/projects" className="text-navy hover:underline dark:text-blue-400">
-        ← 목록으로
-      </Link>
-      <h1 className="text-navy mt-4 text-3xl font-bold dark:text-white">{project.title}</h1>
-      <span className="bg-gray-light mt-2 inline-block rounded px-2 py-1 text-sm dark:bg-gray-800 dark:text-gray-300">
+    <article className="mx-auto max-w-4xl px-4 py-8 md:py-12">
+      <h1 className="text-navy text-2xl font-bold md:text-3xl dark:text-white">{project.title}</h1>
+      <span className="bg-gray-light mt-3 inline-block rounded-full px-3 py-1 text-sm dark:bg-gray-800 dark:text-gray-300">
         {project.category}
       </span>
-      <p className="text-gray-dark mt-4 dark:text-gray-300">{project.description}</p>
+      <p className="text-gray-dark mt-4 leading-relaxed dark:text-gray-300">
+        {project.description}
+      </p>
 
       {project.images.length > 0 && (
-        <section className="mt-6" aria-label="프로젝트 이미지">
+        <section className="mt-8" aria-label="시공 사진">
           <ul className="grid gap-3 sm:grid-cols-2">
-            {project.images.slice(0, 8).map((img, i) => (
+            {project.images.map((img, i) => (
               <li key={i}>
                 <Image
                   src={img}
-                  alt={`${project.title} 이미지 ${i + 1}`}
+                  alt={`${project.title} 시공 사진 ${i + 1}`}
                   width={800}
                   height={600}
-                  className="rounded-lg object-cover"
+                  className="aspect-[4/3] w-full rounded-lg object-cover"
                 />
               </li>
             ))}
           </ul>
-          {project.images.length > 8 && (
-            <p className="text-gray-dark mt-3 text-center text-sm dark:text-gray-400">
-              외 {project.images.length - 8}장
-            </p>
-          )}
         </section>
       )}
+
+      <div className="mt-10 pr-4 text-right">
+        <Link
+          href="/projects"
+          className="bg-navy hover:bg-navy-light inline-block rounded-lg px-6 py-2.5 text-sm font-medium text-white transition-colors"
+        >
+          목록보기
+        </Link>
+      </div>
     </article>
   );
 }
