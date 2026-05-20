@@ -9,7 +9,7 @@ export default function Footer() {
           <div>
             <h3 className="text-lg font-bold text-white">{BUSINESS.name}</h3>
             <p className="mt-2 text-sm">{BUSINESS.slogan}</p>
-            <p className="mt-1 text-sm">{BUSINESS.experience} 경력 · 당일 시공 가능</p>
+            <p className="mt-1 text-sm">{BUSINESS.experience} 경력 · 2014~ 운영</p>
           </div>
           <div>
             <h3 className="font-bold text-white">연락처</h3>
