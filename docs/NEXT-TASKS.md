@@ -4,7 +4,6 @@
 
 - [x] proxy.ts 인증 활성화
 - [x] Supabase service_role key 서버 전용 접근 (anon key 제거)
-- [ ] Server Action 인가 체크 — 각 action 시작부에 `auth()` + admin 확인
 - [x] Supabase RLS 임시 정책 삭제 (대시보드에서 수동)
 
 ## 🟠 기능 완성
