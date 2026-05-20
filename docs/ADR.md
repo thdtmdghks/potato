@@ -302,3 +302,37 @@
 | Material UI        | 번들 크기 큼 (~80KB). 커스터마이징 어려움. "MUI 느낌" 탈피 어려움.              |
 | Headless UI        | 컴포넌트 수 적음. shadcn/ui 대비 생태계 작음.                                   |
 | Radix UI 직접 사용 | 스타일링 전부 직접 해야 함. shadcn/ui가 이미 Base UI 위에 Tailwind 스타일 제공. |
+
+---
+
+## ADR-013: Supabase service_role key 서버 전용 접근
+
+**배경:** Supabase는 클라이언트에서 직접 DB에 접근하는 BaaS 모델을 기본으로 한다. `anon key`를 클라이언트에 노출하고 RLS로 접근을 제어하는 방식. 하지만 우리는 Next.js Server Component/Action에서만 DB에 접근하므로 클라이언트 노출이 불필요하다.
+
+**결정:** `service_role key`로 서버에서만 접근. `anon key` 사용하지 않음. RLS는 활성화하되 정책 없음 (기본 deny).
+
+**구조:**
+
+- `SUPABASE_URL` — 서버 전용 환경변수 (`NEXT_PUBLIC_` 아님)
+- `SUPABASE_SERVICE_ROLE_KEY` — 서버 전용. RLS 우회.
+- RLS 활성화 + 정책 없음 → `anon key`로는 읽기/쓰기 모두 불가
+- 인가는 서버 레벨에서 처리 (proxy.ts + Server Action)
+
+**이유:**
+
+- 클라이언트에 DB 접근 정보 일절 노출 안 됨
+- RLS 정책 관리 불필요 (서버 코드가 유일한 접근 경로)
+- `service_role key`는 서버 환경변수에만 존재 → 외부 노출 불가
+- Supabase를 순수 "관리형 PostgreSQL + Storage"로 사용
+
+**감수하는 단점:**
+
+- `service_role key` 유출 시 DB 전체 접근 가능 → 환경변수 관리 철저히
+- Supabase Auth, Realtime 등 클라이언트 기능 사용 불가 (필요 없음)
+
+**대안 검토:**
+
+| 대안                | 탈락 이유                                                                      |
+| ------------------- | ------------------------------------------------------------------------------ |
+| anon key + RLS 정책 | 클라이언트에 키 노출. RLS 정책 관리 복잡. 우리는 서버에서만 접근하므로 불필요. |
+| Supabase Auth 연동  | Auth.js와 이중 인증 구조. 복잡도 증가. 관리자 2명인데 과잉.                    |

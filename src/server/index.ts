@@ -13,7 +13,7 @@ interface Repositories {
 }
 
 export async function getServerRepositories(): Promise<Repositories> {
-  if (process.env.USE_MOCK === "true" || !process.env.NEXT_PUBLIC_SUPABASE_URL) {
+  if (process.env.USE_MOCK === "true" || !process.env.SUPABASE_URL) {
     const { getMockRepositories } = await import("./mock-repositories");
     return getMockRepositories();
   }
