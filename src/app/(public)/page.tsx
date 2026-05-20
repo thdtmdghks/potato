@@ -1,8 +1,8 @@
 import Link from "next/link";
-import Image from "next/image";
 import { getServerRepositories } from "@/server";
 import { BUSINESS, LINKS } from "@/shared/constants";
 import SvgIcon from "./_components/svg-icon";
+import { ProjectCarousel } from "./_components/project-carousel";
 
 const services = [
   {
@@ -41,7 +41,7 @@ const strengths = [
 
 export default async function Home() {
   const { projects } = await getServerRepositories();
-  const recentProjects = (await projects.getAll()).slice(0, 6);
+  const recentProjects = await projects.getAll();
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -126,42 +126,18 @@ export default async function Home() {
           <p className="text-gray-dark mt-2 text-center text-sm dark:text-gray-400">
             실제 현장 시공 모습을 확인하세요
           </p>
-          {recentProjects.length > 0 ? (
-            <ul className="mt-8 grid grid-cols-2 gap-3 md:grid-cols-3">
-              {recentProjects.map((p) => (
-                <li key={p.id}>
-                  <Link href={`/projects/${p.id}`} className="block overflow-hidden rounded-lg">
-                    {p.images.length > 0 ? (
-                      <Image
-                        src={p.images[0]}
-                        alt={p.title}
-                        width={400}
-                        height={300}
-                        className="aspect-4/3 w-full object-cover transition-transform hover:scale-105"
-                      />
-                    ) : (
-                      <span className="bg-gray-light text-gray-dark flex aspect-4/3 items-center justify-center text-sm dark:bg-gray-800 dark:text-gray-500">
-                        사진 준비중
-                      </span>
-                    )}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <p className="text-gray-dark mt-8 text-center dark:text-gray-400">
-              시공 사례 사진 준비중입니다.
-            </p>
-          )}
-          <p className="mt-6 text-center">
-            <Link
-              href="/projects"
-              className="text-navy hover:text-accent underline dark:text-blue-400"
-            >
-              시공사례 더보기 →
-            </Link>
-          </p>
         </div>
+        <div className="mt-8">
+          <ProjectCarousel projects={recentProjects} />
+        </div>
+        <p className="mt-6 text-center">
+          <Link
+            href="/projects"
+            className="text-navy hover:text-accent underline dark:text-blue-400"
+          >
+            시공사례 더보기 →
+          </Link>
+        </p>
       </section>
 
       {/* 강점 */}
