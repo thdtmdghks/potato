@@ -77,13 +77,13 @@ export default async function Home() {
           </p>
           <div className="mt-6 flex flex-wrap justify-center gap-3">
             <span className="rounded-full border border-white/30 bg-white/10 px-4 py-1.5 text-sm">
-              🏆 {BUSINESS.experience} 경력
+              ⚡ {BUSINESS.region} 전지역 당일 시공
             </span>
             <span className="rounded-full border border-white/30 bg-white/10 px-4 py-1.5 text-sm">
-              ⚡ 당일 시공
+              🏆 LX, KCC, 예림 시공
             </span>
             <span className="rounded-full border border-white/30 bg-white/10 px-4 py-1.5 text-sm">
-              📍 {BUSINESS.region} 전지역
+              🔧 확실한 A/S
             </span>
           </div>
           <a
