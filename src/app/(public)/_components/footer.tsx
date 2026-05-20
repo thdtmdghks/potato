@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { BUSINESS } from "@/shared/constants";
 
 export default function Footer() {
@@ -26,6 +27,12 @@ export default function Footer() {
           <p>
             © {new Date().getFullYear()} {BUSINESS.name}. 대표 {BUSINESS.owner}.
           </p>
+          <Link
+            href="/admin"
+            className="mt-2 inline-block text-xs text-gray-600 hover:text-gray-400"
+          >
+            관리자
+          </Link>
         </div>
       </div>
     </footer>

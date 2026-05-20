@@ -30,6 +30,23 @@ export default async function AdminProjects() {
                 key={item.id}
                 className="rounded-lg border border-gray-200 p-4 dark:border-gray-700"
               >
+                {item.images.length > 0 && (
+                  <div className="mb-2 flex gap-1 overflow-x-auto">
+                    {item.images.slice(0, 4).map((url) => (
+                      <img
+                        key={url}
+                        src={url}
+                        alt=""
+                        className="h-16 w-16 shrink-0 rounded object-cover"
+                      />
+                    ))}
+                    {item.images.length > 4 && (
+                      <span className="bg-gray-light text-gray-dark flex h-16 w-16 shrink-0 items-center justify-center rounded text-xs dark:bg-gray-800 dark:text-gray-400">
+                        +{item.images.length - 4}
+                      </span>
+                    )}
+                  </div>
+                )}
                 <p className="text-navy font-semibold dark:text-white">{item.title}</p>
                 <p className="text-gray-dark mt-1 text-sm dark:text-gray-300">
                   {item.category} · 이미지 {item.images.length}장

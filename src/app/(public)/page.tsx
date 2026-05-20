@@ -227,12 +227,6 @@ export default async function Home() {
                 >
                   💬 문자
                 </a>
-                <a
-                  href={LINKS.kakao}
-                  className="rounded-lg bg-[#FEE500] px-5 py-2.5 font-semibold text-[#3C1E1E] transition-opacity hover:opacity-80"
-                >
-                  💛 카카오톡
-                </a>
               </div>
             </div>
             <div className="overflow-hidden rounded-lg">
