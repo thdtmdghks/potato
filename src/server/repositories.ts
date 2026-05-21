@@ -30,3 +30,10 @@ export interface StorageRepository {
   delete(bucket: string, path: string): Promise<boolean>;
   getPublicUrl(bucket: string, path: string): string;
 }
+
+export interface Repositories {
+  projects: ProjectRepository;
+  products: ProductRepository;
+  inquiries: InquiryRepository;
+  storage: StorageRepository;
+}

@@ -4,6 +4,7 @@ import type {
   ProductRepository,
   InquiryRepository,
   StorageRepository,
+  Repositories,
 } from "./repositories";
 
 // --- Mock 데이터 ---
@@ -262,7 +263,7 @@ export class MockStorageRepository implements StorageRepository {
   }
 }
 
-export function getMockRepositories() {
+export function createMockRepositories(): Repositories {
   return {
     projects: new MockProjectRepository(),
     products: new MockProductRepository(),
