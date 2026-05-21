@@ -18,6 +18,7 @@ const mockProjects: Project[] = [
     description: "아파트 거실 PVC 이중창 교체 시공. 단열 성능 대폭 개선.",
     category: "하이샤시",
     images: [IMG("pvc1"), IMG("pvc1b")],
+    created_by: "4904776698",
     created_at: "2025-03-15T00:00:00Z",
   },
   {
@@ -26,6 +27,7 @@ const mockProjects: Project[] = [
     description: "상가 전면 알루미늄 샤시 교체. 내구성과 디자인 모두 만족.",
     category: "하이샤시",
     images: [IMG("alu1"), IMG("alu1b")],
+    created_by: "4904776698",
     created_at: "2025-03-10T00:00:00Z",
   },
   {
@@ -34,6 +36,7 @@ const mockProjects: Project[] = [
     description: "빌라 전 세대 방충망 교체 시공. 미세망으로 업그레이드.",
     category: "방충망",
     images: [IMG("mesh1")],
+    created_by: "4904776698",
     created_at: "2025-02-20T00:00:00Z",
   },
   {
@@ -42,6 +45,7 @@ const mockProjects: Project[] = [
     description: "결로 문제 해결을 위한 복층유리 교체. 단열 효과 확인.",
     category: "유리",
     images: [IMG("glass1"), IMG("glass1b"), IMG("glass1c")],
+    created_by: "4904776698",
     created_at: "2025-02-15T00:00:00Z",
   },
   {
@@ -50,6 +54,7 @@ const mockProjects: Project[] = [
     description: "화장실 ABS 도어 3개소 설치. 방수 성능 우수.",
     category: "ABS도어",
     images: [IMG("door1")],
+    created_by: "4904776698",
     created_at: "2025-01-25T00:00:00Z",
   },
   {
@@ -58,6 +63,7 @@ const mockProjects: Project[] = [
     description: "1층 세대 방범창 설치. 안전하고 깔끔한 마감.",
     category: "방범창",
     images: [IMG("sec1"), IMG("sec1b")],
+    created_by: "4904776698",
     created_at: "2025-01-10T00:00:00Z",
   },
 ];

@@ -8,6 +8,7 @@ export interface Database {
           description: string;
           category: string;
           images: string[];
+          created_by: string;
           created_at: string;
         };
         Insert: Omit<Database["public"]["Tables"]["projects"]["Row"], "id" | "created_at">;
