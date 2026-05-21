@@ -1,10 +1,5 @@
 import { describe, it, expect, beforeEach } from "vitest";
-import {
-  MockProjectRepository,
-  MockProductRepository,
-  MockInquiryRepository,
-  MockStorageRepository,
-} from "@/server/mock-repositories";
+import { MockProjectRepository, MockStorageRepository } from "@/server/mock-repositories";
 
 describe("MockProjectRepository", () => {
   let repo: MockProjectRepository;
@@ -44,6 +39,7 @@ describe("MockProjectRepository", () => {
       description: "설명",
       category: "웹",
       images: [],
+      created_by: "system",
     });
     expect(created).not.toBeNull();
     expect((await repo.getAll()).length).toBe(before + 1);
@@ -61,61 +57,6 @@ describe("MockProjectRepository", () => {
 
   it("delete는 없는 항목에 false를 반환한다", async () => {
     expect(await repo.delete("nonexistent")).toBe(false);
-  });
-});
-
-describe("MockProductRepository", () => {
-  let repo: MockProductRepository;
-  beforeEach(() => {
-    repo = new MockProductRepository();
-  });
-
-  it("getAll은 전체 목록을 반환한다", async () => {
-    expect((await repo.getAll()).length).toBeGreaterThan(0);
-  });
-
-  it("CRUD가 동작한다", async () => {
-    const created = await repo.create({
-      name: "신규",
-      description: "설명",
-      category: "앱",
-      image: "",
-      features: [],
-    });
-    expect(created).not.toBeNull();
-    const createdId = created?.id ?? "";
-    const updated = await repo.update(createdId, { name: "수정" });
-    expect(updated?.name).toBe("수정");
-    expect(await repo.delete(createdId)).toBe(true);
-  });
-});
-
-describe("MockInquiryRepository", () => {
-  let repo: MockInquiryRepository;
-  beforeEach(() => {
-    repo = new MockInquiryRepository();
-  });
-
-  it("create는 status를 pending으로 설정한다", async () => {
-    const created = await repo.create({
-      name: "테스트",
-      phone: "010-0000-0000",
-      email: null,
-      type: "웹",
-      address: "서울",
-      content: "문의",
-    });
-    expect(created?.status).toBe("pending");
-  });
-
-  it("updateStatus는 상태를 변경한다", async () => {
-    expect(await repo.updateStatus("1", "completed")).toBe(true);
-    const item = await repo.getById("1");
-    expect(item?.status).toBe("completed");
-  });
-
-  it("updateStatus는 없는 항목에 false를 반환한다", async () => {
-    expect(await repo.updateStatus("nonexistent", "completed")).toBe(false);
   });
 });
 

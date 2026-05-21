@@ -1,4 +1,4 @@
-import type { Project, Product, Inquiry } from "@/shared/types";
+import type { Project } from "@/shared/types";
 
 export interface ProjectRepository {
   getAll(category?: string): Promise<Project[]>;
@@ -9,22 +9,6 @@ export interface ProjectRepository {
   delete(id: string): Promise<boolean>;
 }
 
-export interface ProductRepository {
-  getAll(category?: string): Promise<Product[]>;
-  getById(id: string): Promise<Product | null>;
-  getCategories(): Promise<string[]>;
-  create(data: Omit<Product, "id" | "created_at">): Promise<Product | null>;
-  update(id: string, data: Partial<Product>): Promise<Product | null>;
-  delete(id: string): Promise<boolean>;
-}
-
-export interface InquiryRepository {
-  getAll(status?: string): Promise<Inquiry[]>;
-  getById(id: string): Promise<Inquiry | null>;
-  create(data: Omit<Inquiry, "id" | "created_at" | "status">): Promise<Inquiry | null>;
-  updateStatus(id: string, status: string): Promise<boolean>;
-}
-
 export interface StorageRepository {
   upload(bucket: string, path: string, file: File | Blob): Promise<string | null>;
   delete(bucket: string, path: string): Promise<boolean>;
@@ -33,7 +17,5 @@ export interface StorageRepository {
 
 export interface Repositories {
   projects: ProjectRepository;
-  products: ProductRepository;
-  inquiries: InquiryRepository;
   storage: StorageRepository;
 }

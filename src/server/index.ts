@@ -16,18 +16,12 @@ export async function getServerRepositories(): Promise<Repositories> {
 
   if (!globalThis.__supabase_repositories) {
     const { createServerSupabase } = await import("./supabase-client");
-    const {
-      SupabaseProjectRepository,
-      SupabaseProductRepository,
-      SupabaseInquiryRepository,
-      SupabaseStorageRepository,
-    } = await import("./supabase-repositories");
+    const { SupabaseProjectRepository, SupabaseStorageRepository } =
+      await import("./supabase-repositories");
 
     const supabase = await createServerSupabase();
     globalThis.__supabase_repositories = {
       projects: new SupabaseProjectRepository(supabase),
-      products: new SupabaseProductRepository(supabase),
-      inquiries: new SupabaseInquiryRepository(supabase),
       storage: new SupabaseStorageRepository(supabase),
     };
   }
