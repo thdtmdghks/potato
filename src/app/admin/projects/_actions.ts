@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { getServerRepositories } from "@/server";
+import { auth } from "@/auth";
 import { projectSchema } from "@/shared/schemas";
 import type { StorageRepository } from "@/server/repositories";
 import { FORM_KEYS } from "./_constants";
@@ -39,6 +40,9 @@ const deleteImages = (storage: StorageRepository, urls: string[]) => {
 };
 
 export async function createProject(formData: FormData) {
+  const session = await auth();
+  if (!session?.kakaoId) return { success: false as const, error: "인증이 필요합니다." };
+
   const parsed = projectSchema.safeParse({
     title: formData.get(FORM_KEYS.title),
     description: formData.get(FORM_KEYS.description),
@@ -52,7 +56,11 @@ export async function createProject(formData: FormData) {
   const { storage, projects } = await getServerRepositories();
   const imageUrls = await uploadImages(storage, formData.getAll(FORM_KEYS.images) as File[]);
 
-  const result = await projects.create({ ...parsed.data, images: imageUrls });
+  const result = await projects.create({
+    ...parsed.data,
+    images: imageUrls,
+    created_by: session.kakaoId,
+  });
   if (!result) return { success: false as const, error: "생성에 실패했습니다." };
 
   revalidateProjects();

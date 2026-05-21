@@ -5,6 +5,7 @@ create table projects (
   description text not null,
   category text not null,
   images text[] default '{}',
+  created_by text not null,
   created_at timestamptz default now()
 );
 
