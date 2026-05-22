@@ -1,21 +1,52 @@
-export interface Database {
+export type ProjectRow = {
+  id: string;
+  title: string;
+  description: string;
+  category: string;
+  images: string[];
+  created_by: string;
+  created_at: string;
+};
+
+export type Database = {
   public: {
     Tables: {
       projects: {
-        Row: {
-          id: string;
+        Row: ProjectRow;
+        Insert: {
+          id?: string;
           title: string;
           description: string;
           category: string;
           images: string[];
           created_by: string;
-          created_at: string;
+          created_at?: string;
         };
-        Insert: Omit<Database["public"]["Tables"]["projects"]["Row"], "id" | "created_at">;
-        Update: Partial<Database["public"]["Tables"]["projects"]["Insert"]>;
+        Update: {
+          id?: string;
+          title?: string;
+          description?: string;
+          category?: string;
+          images?: string[];
+          created_by?: string;
+          created_at?: string;
+        };
+        Relationships: [];
       };
     };
+    Views: {
+      [_ in never]: never;
+    };
+    Functions: {
+      [_ in never]: never;
+    };
+    Enums: {
+      [_ in never]: never;
+    };
+    CompositeTypes: {
+      [_ in never]: never;
+    };
   };
-}
+};
 
-export type Project = Database["public"]["Tables"]["projects"]["Row"];
+export type Project = ProjectRow;

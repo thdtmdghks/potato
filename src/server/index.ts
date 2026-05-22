@@ -6,7 +6,7 @@ declare global {
 }
 
 export async function getServerRepositories(): Promise<Repositories> {
-  if (process.env.USE_MOCK === "true" || !process.env.SUPABASE_URL) {
+  if (!process.env.SUPABASE_URL) {
     if (!globalThis.__mock_repositories) {
       const { createMockRepositories } = await import("./mock-repositories");
       globalThis.__mock_repositories = createMockRepositories();
