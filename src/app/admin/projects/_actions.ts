@@ -6,6 +6,7 @@ import { auth } from "@/auth";
 import { projectSchema } from "@/shared/schemas";
 import type { StorageRepository } from "@/server/repositories";
 import { FORM_KEYS } from "./_constants";
+import { logError, logWarn } from "@/server/logger";
 
 const STORAGE_BUCKET = process.env.STORAGE_BUCKET ?? "images";
 const STORAGE_PATH_PREFIX = "projects";
@@ -40,73 +41,116 @@ const deleteImages = (storage: StorageRepository, urls: string[]) => {
 };
 
 export async function createProject(formData: FormData) {
-  const session = await auth();
-  if (!session?.kakaoId) return { success: false as const, error: "인증이 필요합니다." };
+  try {
+    const session = await auth();
+    if (!session?.kakaoId) {
+      logWarn("admin.projects.createProject", "비인증 사용자의 프로젝트 생성 시도");
+      return { success: false as const, error: "인증이 필요합니다." };
+    }
 
-  const parsed = projectSchema.safeParse({
-    title: formData.get(FORM_KEYS.title),
-    description: formData.get(FORM_KEYS.description),
-    category: formData.get(FORM_KEYS.category),
-  });
+    const parsed = projectSchema.safeParse({
+      title: formData.get(FORM_KEYS.title),
+      description: formData.get(FORM_KEYS.description),
+      category: formData.get(FORM_KEYS.category),
+    });
 
-  if (!parsed.success) {
-    return { success: false as const, error: parsed.error.issues[0].message };
+    if (!parsed.success) {
+      return { success: false as const, error: parsed.error.issues[0].message };
+    }
+
+    const { storage, projects } = await getServerRepositories();
+    const imageUrls = await uploadImages(storage, formData.getAll(FORM_KEYS.images) as File[]);
+
+    const result = await projects.create({
+      ...parsed.data,
+      images: imageUrls,
+      created_by: session.kakaoId,
+    });
+    if (!result) {
+      return { success: false as const, error: "생성에 실패했습니다." };
+    }
+
+    revalidateProjects();
+    return { success: true as const };
+  } catch (error) {
+    logError("admin.projects.createProject", error, {
+      title: formData.get(FORM_KEYS.title),
+      category: formData.get(FORM_KEYS.category),
+    });
+    return { success: false as const, error: "서버 오류가 발생했습니다." };
   }
-
-  const { storage, projects } = await getServerRepositories();
-  const imageUrls = await uploadImages(storage, formData.getAll(FORM_KEYS.images) as File[]);
-
-  const result = await projects.create({
-    ...parsed.data,
-    images: imageUrls,
-    created_by: session.kakaoId,
-  });
-  if (!result) return { success: false as const, error: "생성에 실패했습니다." };
-
-  revalidateProjects();
-  return { success: true as const };
 }
 
 export async function updateProject(id: string, formData: FormData) {
-  const parsed = projectSchema.safeParse({
-    title: formData.get(FORM_KEYS.title),
-    description: formData.get(FORM_KEYS.description),
-    category: formData.get(FORM_KEYS.category),
-  });
+  try {
+    const session = await auth();
+    if (!session?.kakaoId) {
+      logWarn("admin.projects.updateProject", "비인증 사용자의 프로젝트 수정 시도", { id });
+      return { success: false as const, error: "인증이 필요합니다." };
+    }
 
-  if (!parsed.success) {
-    return { success: false as const, error: parsed.error.issues[0].message };
+    const parsed = projectSchema.safeParse({
+      title: formData.get(FORM_KEYS.title),
+      description: formData.get(FORM_KEYS.description),
+      category: formData.get(FORM_KEYS.category),
+    });
+
+    if (!parsed.success) {
+      return { success: false as const, error: parsed.error.issues[0].message };
+    }
+
+    const { storage, projects } = await getServerRepositories();
+    const project = await projects.getById(id);
+    if (!project) return { success: false as const, error: "프로젝트를 찾을 수 없습니다." };
+
+    const existingImages = formData.getAll(FORM_KEYS.existingImages) as string[];
+    const newImageUrls = await uploadImages(storage, formData.getAll(FORM_KEYS.images) as File[]);
+
+    const result = await projects.update(id, {
+      ...parsed.data,
+      images: [...existingImages, ...newImageUrls],
+    });
+    if (!result) {
+      return { success: false as const, error: "수정에 실패했습니다." };
+    }
+
+    const removedImages = project.images.filter((url) => !existingImages.includes(url));
+    deleteImages(storage, removedImages);
+
+    revalidateProjects();
+    return { success: true as const };
+  } catch (error) {
+    logError("admin.projects.updateProject", error, {
+      id,
+      title: formData.get(FORM_KEYS.title),
+      category: formData.get(FORM_KEYS.category),
+    });
+    return { success: false as const, error: "서버 오류가 발생했습니다." };
   }
-
-  const { storage, projects } = await getServerRepositories();
-  const project = await projects.getById(id);
-  if (!project) return { success: false as const, error: "프로젝트를 찾을 수 없습니다." };
-
-  const existingImages = formData.getAll(FORM_KEYS.existingImages) as string[];
-  const newImageUrls = await uploadImages(storage, formData.getAll(FORM_KEYS.images) as File[]);
-
-  const result = await projects.update(id, {
-    ...parsed.data,
-    images: [...existingImages, ...newImageUrls],
-  });
-  if (!result) return { success: false as const, error: "수정에 실패했습니다." };
-
-  const removedImages = project.images.filter((url) => !existingImages.includes(url));
-  deleteImages(storage, removedImages);
-
-  revalidateProjects();
-  return { success: true as const };
 }
 
 export async function deleteProject(id: string) {
-  const { storage, projects } = await getServerRepositories();
-  const project = await projects.getById(id);
+  try {
+    const session = await auth();
+    if (!session?.kakaoId) {
+      logWarn("admin.projects.deleteProject", "비인증 사용자의 프로젝트 삭제 시도", { id });
+      return { success: false as const, error: "인증이 필요합니다." };
+    }
 
-  const success = await projects.delete(id);
-  if (!success) return { success: false as const, error: "삭제에 실패했습니다." };
+    const { storage, projects } = await getServerRepositories();
+    const project = await projects.getById(id);
 
-  if (project) deleteImages(storage, project.images);
+    const success = await projects.delete(id);
+    if (!success) {
+      return { success: false as const, error: "삭제에 실패했습니다." };
+    }
 
-  revalidateProjects();
-  return { success: true as const };
+    if (project) deleteImages(storage, project.images);
+
+    revalidateProjects();
+    return { success: true as const };
+  } catch (error) {
+    logError("admin.projects.deleteProject", error, { id });
+    return { success: false as const, error: "서버 오류가 발생했습니다." };
+  }
 }
