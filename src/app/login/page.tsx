@@ -37,7 +37,9 @@ function LoginContent() {
             관리자 페이지에 접근하려면 로그인이 필요합니다.
           </p>
           <button
-            onClick={() => signIn("kakao", { callbackUrl: "/admin" })}
+            onClick={() =>
+              signIn("kakao", { callbackUrl: searchParams.get("callbackUrl") || "/admin" })
+            }
             className="mt-6 flex w-full items-center justify-center gap-2 rounded-lg bg-[#FEE500] px-4 py-3 text-sm font-semibold text-[#3C1E1E] transition-opacity hover:opacity-90"
           >
             <svg className="h-5 w-5" viewBox="0 0 24 24" aria-hidden="true">
