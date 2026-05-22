@@ -33,10 +33,12 @@ export default async function AdminProjects() {
                 {item.images.length > 0 && (
                   <div className="mb-2 flex gap-1 overflow-x-auto">
                     {item.images.slice(0, 4).map((url) => (
-                      <img
+                      <Image
                         key={url}
                         src={url}
                         alt=""
+                        width={64}
+                        height={64}
                         className="h-16 w-16 shrink-0 rounded object-cover"
                       />
                     ))}

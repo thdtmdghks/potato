@@ -1,42 +1,26 @@
 import { describe, it, expect } from "vitest";
-import { inquirySchema } from "@/shared/schemas";
+import { projectSchema } from "@/shared/schemas";
 
 const valid = {
-  name: "홍길동",
-  phone: "010-1234-5678",
-  email: "test@example.com",
-  type: "웹사이트",
-  address: "서울시",
-  content: "문의합니다",
+  title: "프로젝트 제목",
+  description: "프로젝트 설명",
+  category: "하이샤시",
 };
 
-describe("inquirySchema", () => {
+describe("projectSchema", () => {
   it("유효한 데이터를 통과시킨다", () => {
-    expect(inquirySchema.safeParse(valid).success).toBe(true);
+    expect(projectSchema.safeParse(valid).success).toBe(true);
   });
 
-  it("email이 빈 문자열이면 통과한다", () => {
-    expect(inquirySchema.safeParse({ ...valid, email: "" }).success).toBe(true);
+  it("title이 비어있으면 실패한다", () => {
+    expect(projectSchema.safeParse({ ...valid, title: "" }).success).toBe(false);
   });
 
-  it("email이 없으면 통과한다", () => {
-    const { email: _email, ...noEmail } = valid;
-    expect(inquirySchema.safeParse(noEmail).success).toBe(true);
+  it("description이 비어있으면 실패한다", () => {
+    expect(projectSchema.safeParse({ ...valid, description: "" }).success).toBe(false);
   });
 
-  it("name이 비어있으면 실패한다", () => {
-    expect(inquirySchema.safeParse({ ...valid, name: "" }).success).toBe(false);
-  });
-
-  it("phone이 비어있으면 실패한다", () => {
-    expect(inquirySchema.safeParse({ ...valid, phone: "" }).success).toBe(false);
-  });
-
-  it("잘못된 email이면 실패한다", () => {
-    expect(inquirySchema.safeParse({ ...valid, email: "invalid" }).success).toBe(false);
-  });
-
-  it("content가 비어있으면 실패한다", () => {
-    expect(inquirySchema.safeParse({ ...valid, content: "" }).success).toBe(false);
+  it("category가 비어있으면 실패한다", () => {
+    expect(projectSchema.safeParse({ ...valid, category: "" }).success).toBe(false);
   });
 });

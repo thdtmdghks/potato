@@ -1,11 +1,7 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
-import type { Database, Project, Product, Inquiry } from "@/shared/types";
-import type {
-  ProjectRepository,
-  ProductRepository,
-  InquiryRepository,
-  StorageRepository,
-} from "./repositories";
+import type { Database, Project } from "@/shared/types";
+import type { ProjectRepository, StorageRepository } from "./repositories";
+import { logError } from "./logger";
 
 export class SupabaseProjectRepository implements ProjectRepository {
   constructor(private db: SupabaseClient<Database>) {}
@@ -13,122 +9,65 @@ export class SupabaseProjectRepository implements ProjectRepository {
   async getAll(category?: string): Promise<Project[]> {
     let query = this.db.from("projects").select("*").order("created_at", { ascending: false });
     if (category) query = query.eq("category", category);
-    const { data } = await query;
+    const { data, error } = await query;
+    if (error) {
+      logError("SupabaseProjectRepository.getAll", error, { category });
+      return [];
+    }
     return data ?? [];
   }
 
   async getById(id: string): Promise<Project | null> {
-    const { data } = await this.db.from("projects").select("*").eq("id", id).single();
+    const { data, error } = await this.db.from("projects").select("*").eq("id", id).single();
+    if (error) {
+      logError("SupabaseProjectRepository.getById", error, { id });
+      return null;
+    }
     return data;
   }
 
   async getCategories(): Promise<string[]> {
-    const { data } = await this.db.from("projects").select("category");
+    const { data, error } = await this.db.from("projects").select("category");
+    if (error) {
+      logError("SupabaseProjectRepository.getCategories", error);
+      return [];
+    }
     const rows = data as { category: string }[] | null;
     return [...new Set(rows?.map((d) => d.category) ?? [])];
   }
 
   async create(data: Omit<Project, "id" | "created_at">): Promise<Project | null> {
-    const { data: row } = await this.db
-      .from("projects")
-      .insert(data as never)
-      .select()
-      .single();
+    const { data: row, error } = await this.db.from("projects").insert(data).select().single();
+
+    if (error) {
+      logError("SupabaseProjectRepository.create", error, data);
+      return null;
+    }
     return row;
   }
 
   async update(id: string, data: Partial<Project>): Promise<Project | null> {
-    const { data: row } = await this.db
+    const { data: row, error } = await this.db
       .from("projects")
-      .update(data as never)
+      .update(data)
       .eq("id", id)
       .select()
       .single();
+
+    if (error) {
+      logError("SupabaseProjectRepository.update", error, { id, data });
+      return null;
+    }
     return row;
   }
 
   async delete(id: string): Promise<boolean> {
     const { error } = await this.db.from("projects").delete().eq("id", id);
-    return !error;
-  }
-}
-
-export class SupabaseProductRepository implements ProductRepository {
-  constructor(private db: SupabaseClient<Database>) {}
-
-  async getAll(category?: string): Promise<Product[]> {
-    let query = this.db.from("products").select("*").order("created_at", { ascending: false });
-    if (category) query = query.eq("category", category);
-    const { data } = await query;
-    return data ?? [];
-  }
-
-  async getById(id: string): Promise<Product | null> {
-    const { data } = await this.db.from("products").select("*").eq("id", id).single();
-    return data;
-  }
-
-  async getCategories(): Promise<string[]> {
-    const { data } = await this.db.from("products").select("category");
-    const rows = data as { category: string }[] | null;
-    return [...new Set(rows?.map((d) => d.category) ?? [])];
-  }
-
-  async create(data: Omit<Product, "id" | "created_at">): Promise<Product | null> {
-    const { data: row } = await this.db
-      .from("products")
-      .insert(data as never)
-      .select()
-      .single();
-    return row;
-  }
-
-  async update(id: string, data: Partial<Product>): Promise<Product | null> {
-    const { data: row } = await this.db
-      .from("products")
-      .update(data as never)
-      .eq("id", id)
-      .select()
-      .single();
-    return row;
-  }
-
-  async delete(id: string): Promise<boolean> {
-    const { error } = await this.db.from("products").delete().eq("id", id);
-    return !error;
-  }
-}
-
-export class SupabaseInquiryRepository implements InquiryRepository {
-  constructor(private db: SupabaseClient<Database>) {}
-
-  async getAll(status?: string): Promise<Inquiry[]> {
-    let query = this.db.from("inquiries").select("*").order("created_at", { ascending: false });
-    if (status) query = query.eq("status", status);
-    const { data } = await query;
-    return data ?? [];
-  }
-
-  async getById(id: string): Promise<Inquiry | null> {
-    const { data } = await this.db.from("inquiries").select("*").eq("id", id).single();
-    return data;
-  }
-
-  async create(data: Omit<Inquiry, "id" | "created_at" | "status">): Promise<Inquiry | null> {
-    const { data: row } = await this.db
-      .from("inquiries")
-      .insert(data as never)
-      .select()
-      .single();
-    return row;
-  }
-
-  async updateStatus(id: string, status: string): Promise<boolean> {
-    const { error } = await this.db
-      .from("inquiries")
-      .update({ status } as never)
-      .eq("id", id);
-    return !error;
+    if (error) {
+      logError("SupabaseProjectRepository.delete", error, { id });
+      return false;
+    }
+    return true;
   }
 }
 
@@ -137,12 +76,20 @@ export class SupabaseStorageRepository implements StorageRepository {
 
   async upload(bucket: string, path: string, file: File | Blob): Promise<string | null> {
     const { error } = await this.db.storage.from(bucket).upload(path, file);
-    return error ? null : this.getPublicUrl(bucket, path);
+    if (error) {
+      logError("SupabaseStorageRepository.upload", error, { bucket, path });
+      return null;
+    }
+    return this.getPublicUrl(bucket, path);
   }
 
   async delete(bucket: string, path: string): Promise<boolean> {
     const { error } = await this.db.storage.from(bucket).remove([path]);
-    return !error;
+    if (error) {
+      logError("SupabaseStorageRepository.delete", error, { bucket, path });
+      return false;
+    }
+    return true;
   }
 
   getPublicUrl(bucket: string, path: string): string {

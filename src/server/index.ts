@@ -1,36 +1,30 @@
-import type {
-  ProjectRepository,
-  ProductRepository,
-  InquiryRepository,
-  StorageRepository,
-} from "./repositories";
+import type { Repositories } from "./repositories";
 
-interface Repositories {
-  projects: ProjectRepository;
-  products: ProductRepository;
-  inquiries: InquiryRepository;
-  storage: StorageRepository;
+declare global {
+  var __mock_repositories: Repositories | undefined;
+  var __supabase_repositories: Repositories | undefined;
 }
 
 export async function getServerRepositories(): Promise<Repositories> {
-  if (process.env.USE_MOCK === "true" || !process.env.SUPABASE_URL) {
-    const { getMockRepositories } = await import("./mock-repositories");
-    return getMockRepositories();
+  if (!process.env.SUPABASE_URL) {
+    if (!globalThis.__mock_repositories) {
+      const { createMockRepositories } = await import("./mock-repositories");
+      globalThis.__mock_repositories = createMockRepositories();
+    }
+    return globalThis.__mock_repositories;
   }
 
-  const { createServerSupabase } = await import("./supabase-client");
-  const {
-    SupabaseProjectRepository,
-    SupabaseProductRepository,
-    SupabaseInquiryRepository,
-    SupabaseStorageRepository,
-  } = await import("./supabase-repositories");
+  if (!globalThis.__supabase_repositories) {
+    const { createServerSupabase } = await import("./supabase-client");
+    const { SupabaseProjectRepository, SupabaseStorageRepository } =
+      await import("./supabase-repositories");
 
-  const supabase = await createServerSupabase();
-  return {
-    projects: new SupabaseProjectRepository(supabase),
-    products: new SupabaseProductRepository(supabase),
-    inquiries: new SupabaseInquiryRepository(supabase),
-    storage: new SupabaseStorageRepository(supabase),
-  };
+    const supabase = await createServerSupabase();
+    globalThis.__supabase_repositories = {
+      projects: new SupabaseProjectRepository(supabase),
+      storage: new SupabaseStorageRepository(supabase),
+    };
+  }
+
+  return globalThis.__supabase_repositories;
 }
