@@ -1,4 +1,5 @@
 import type { NextConfig } from "next";
+import "./src/shared/env";
 
 const nextConfig: NextConfig = {
   allowedDevOrigins: ["172.30.1.50"],
