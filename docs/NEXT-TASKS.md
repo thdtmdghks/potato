@@ -2,15 +2,15 @@
 
 ## 🟠 기능
 
-- [ ] 로그인 callbackUrl 동적 처리 (현재 "/" 고정)
+- [x] 로그인 callbackUrl 동적 처리 (현재 "/" 고정)
 
 ## 🟡 코드 품질
 
-- [ ] `as never` 타입 캐스팅 제거 — Supabase CLI `gen types`로 타입 생성
-- [ ] Supabase Repository error 무시 → error 발생 시 throw 또는 로깅
+- [x] `as never` 타입 캐스팅 제거 — Database 타입 Insert/Update 명시적 정의로 해결
+- [x] Supabase Repository error 무시 → logError로 Discord 알림 전송
 - [ ] `export default` → named export (header, footer, floating-cta, svg-icon, theme-toggle)
 - [ ] 순수 함수 분리 + 테스트 (`_actions.ts`의 `extractStoragePath` → `_utils.ts`)
-- [ ] `@supabase/ssr` 패키지 제거 (미사용)
+- [x] `@supabase/ssr` 패키지 제거 (미사용)
 
 ## 🟢 개선
 
