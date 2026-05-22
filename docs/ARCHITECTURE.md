@@ -12,23 +12,23 @@
 │  │                  │  │                       │  │
 │  │  /               │  │  /admin (Auth.js 보호)│  │
 │  │  /about          │  │  /admin/projects      │  │
-│  │  /projects       │  │  /admin/products      │  │
-│  │  /projects/[id]  │  │  /admin/inquiries     │  │
-│  │  /products       │  │  /admin/login         │  │
-│  │  /inquiry        │  │                       │  │
+│  │  /projects       │  │  /admin/projects/new  │  │
+│  │  /projects/[id]  │  │  /admin/login         │  │
 │  │  /contact        │  │                       │  │
 │  └────────┬─────────┘  └──────────┬────────────┘  │
 │           │                       │               │
 │  ┌────────┴───────────────────────┴────────────┐  │
 │  │         Server Layer (서버에서만 실행)        │  │
 │  │                                             │  │
-│  │  API Routes (/api/*)                        │  │
-│  │  Server Components                          │  │
+│  │  Server Components & Server Actions         │  │
 │  │  Auth.js (인증 보호)                         │  │
+│  │  Env Validation (Zod)                       │  │
 │  │         ↓                                   │  │
 │  │  Repository 인터페이스 (repositories.ts)     │  │
 │  │         ↓                                   │  │
 │  │  Supabase 구현체 (supabase-repositories.ts) │  │
+│  │         ↓                                   │  │
+│  │  Server Logger (logger.ts)                  │  │
 │  └─────────────────────┬───────────────────────┘  │
 └────────────────────────┼──────────────────────────┘
                          │
@@ -135,9 +135,8 @@ export async function getServerRepositories() {
 | 페이지                    | 렌더링 방식          | 이유                |
 | ------------------------- | -------------------- | ------------------- |
 | `/`, `/about`, `/contact` | Static (SSG)         | 정적 콘텐츠         |
-| `/projects`, `/products`  | Dynamic (SSR)        | DB에서 실시간 fetch |
+| `/projects`               | Dynamic (SSR)        | DB에서 실시간 fetch |
 | `/projects/[id]`          | Dynamic (SSR)        | 동적 파라미터       |
-| `/inquiry`                | Client Component     | 폼 상태 관리        |
 | `/admin/*`                | Client + Server 혼합 | 인증 + CRUD         |
 
 ## Data Flow
@@ -152,26 +151,26 @@ export async function getServerRepositories() {
   → HTML 렌더링 → 브라우저
 ```
 
-### 2. 데이터 변경 (클라이언트 → API Route → Repository)
+### 2. 데이터 변경 (클라이언트 → Server Action → Repository)
 
 ```
 브라우저 (폼 입력)
-  → POST /api/inquiry (API Route)
-  → zod 서버 검증
-  → getServerRepositories().inquiries.create()
+  → Server Action 호출 (예: createProject)
+  → Zod 스키마 서버 검증
+  → getServerRepositories().projects.create()
   → Supabase 구현체 → DB INSERT
-  → 200 OK → 브라우저
+  → 성공 여부 반환 및 클라이언트 라우터 갱신 (revalidatePath)
 ```
 
-### 3. 이미지 업로드 (클라이언트 압축 → API Route → Storage)
+### 3. 이미지 업로드 (클라이언트 압축 → Server Action → Storage)
 
 ```
 브라우저 (파일 선택)
-  → compressImage() (WebP 변환, ≤200KB, 클라이언트)
-  → POST /api/upload (API Route)
+  → compressImage() (WebP 압축, ≤200KB, 클라이언트)
+  → Server Action 호출
   → getServerRepositories().storage.upload()
-  → Supabase Storage
-  → 공개 URL 반환
+  → Supabase Storage 업로드
+  → 공개 URL 반환 및 DB 레코드 매핑
 ```
 
 ### 4. 이미지 조회
@@ -186,16 +185,16 @@ export async function getServerRepositories() {
 ## 인증 흐름
 
 ```
-/admin/* 접근
-  → proxy.ts
-  → Auth.js auth() 세션 확인 (DB 독립적)
-  → 미인증 → /login 리다이렉트
-  → 인증됨 → 통과
+/admin/* 접근 시도
+  → proxy.ts (미들웨어)
+  → Auth.js auth() 세션 확인
+  ├─ 미인증 → /login?callbackUrl=원래주소 리다이렉트
+  └─ 인증됨 → 통과
 
 /login
-  → Auth.js signIn() (Google OAuth)
-  → /api/auth/[...nextauth] (Auth.js API Route)
-  → 성공 → /admin 리다이렉트
+  → Auth.js signIn("kakao", { callbackUrl })
+  → 카카오 OAuth 인증 진행
+  → 성공 시 원래 요청했던 callbackUrl로 동적 리다이렉트
 ```
 
 ## 반응형 레이아웃 (모바일 우선)
@@ -230,7 +229,7 @@ export async function getServerRepositories() {
                           └────────┴─────────────────┘
 ```
 
-## DB 스키마
+## DB 스키마 및 마이그레이션
 
 ### projects (포트폴리오)
 
@@ -241,54 +240,37 @@ export async function getServerRepositories() {
 | description | text        | 설명            |
 | category    | text        | 카테고리        |
 | images      | text[]      | 이미지 URL 배열 |
+| created_by  | text        | 생성자 관리자ID |
 | created_at  | timestamptz | 생성일          |
-
-### products (제품)
-
-| 컬럼        | 타입        | 설명            |
-| ----------- | ----------- | --------------- |
-| id          | uuid (PK)   | 자동 생성       |
-| name        | text        | 제품명          |
-| description | text        | 설명            |
-| category    | text        | 카테고리        |
-| image       | text        | 대표 이미지 URL |
-| features    | text[]      | 특징 목록       |
-| created_at  | timestamptz | 생성일          |
-
-### inquiries (견적문의)
-
-| 컬럼       | 타입        | 설명                         |
-| ---------- | ----------- | ---------------------------- |
-| id         | uuid (PK)   | 자동 생성                    |
-| name       | text        | 이름                         |
-| phone      | text        | 연락처                       |
-| email      | text?       | 이메일 (선택)                |
-| type       | text        | 문의 유형                    |
-| address    | text        | 주소                         |
-| content    | text        | 문의 내용                    |
-| status     | text        | 상태 (신규/확인/상담중/완료) |
-| created_at | timestamptz | 생성일                       |
-
-### push_subscriptions (푸시 알림 구독)
-
-| 컬럼       | 타입        | 설명            |
-| ---------- | ----------- | --------------- |
-| id         | uuid (PK)   | 자동 생성       |
-| endpoint   | text        | 푸시 엔드포인트 |
-| keys       | jsonb       | 암호화 키       |
-| user_id    | uuid (FK)   | auth.users 참조 |
-| created_at | timestamptz | 생성일          |
 
 ### RLS 정책
 
-| 테이블             | SELECT      | INSERT      | UPDATE/DELETE |
-| ------------------ | ----------- | ----------- | ------------- |
-| projects           | 누구나      | 인증 사용자 | 인증 사용자   |
-| products           | 누구나      | 인증 사용자 | 인증 사용자   |
-| inquiries          | 인증 사용자 | 누구나      | 인증 사용자   |
-| push_subscriptions | 인증 사용자 | 인증 사용자 | 인증 사용자   |
+| 테이블   | SELECT | INSERT      | UPDATE/DELETE |
+| -------- | ------ | ----------- | ------------- |
+| projects | 누구나 | 인증 사용자 | 인증 사용자   |
 
-SQL: `db/schema.sql`
+SQL 마이그레이션: [supabase/migrations/20260521000001_initial_schema.sql](file:///Users/a-26-001/Workspace/potato/supabase/migrations/20260521000001_initial_schema.sql)
+
+---
+
+## 실시간 에러 모니터링 및 환경변수 검증
+
+### 1. 환경변수 정적 검증 (Env Validation)
+
+애플리케이션 빌드 타임 및 서버 구동 즉시 `zod` 스키마([src/shared/env.ts](file:///Users/a-26-001/Workspace/potato/src/shared/env.ts))를 사용해 환경변수의 무결성을 파싱합니다. 누락되거나 부적절한 값(URL 오류 등)이 감지되면 서버는 즉시 구동을 멈추고 에러를 콘솔에 출력하여 배포 사고를 미연에 차단합니다.
+
+### 2. 이원화 디스코드 웹훅 전송 아키텍처
+
+Vercel Hobby(무료 플랜)의 짧은 로그 보존 한계를 극복하기 위해, 실시간으로 에러와 경고를 스마트폰 푸시로 모니터링할 수 있는 **이원화 디스코드 웹훅**을 구성합니다.
+
+- **시스템 에러 (`DISCORD_ERROR_WEBHOOK_URL`)** 🔴
+  - DB 쿼리 실패, 스토리지 업로드 에러, 기타 코딩 실수 등 서비스 핵심 동작 실패.
+  - 전송 시 스택 트레이스의 상위 5줄과 시도했던 페이로드 데이터를 디스코드 카드로 전송. (관리자는 실시간 디스코드 푸시를 켜두고 대응)
+- **경고 및 보안 감지 (`DISCORD_WARN_WEBHOOK_URL`)** 🟡
+  - 비로그인 상태의 `/admin` 강제 진입, 비관리자의 로그인 시도, 비정상 API 파라미터 유입 등.
+  - 전송 시 접근 IP, 쿼리, 시도 세션 정보 등을 카드 형태로 전송. (관리자는 이 채널의 알림을 무음으로 끄고 히스토리성 확인용으로만 활용)
+
+모든 디스코드 알림 발송은 비동기 백그라운드(`Non-blocking fetch`)로 수행되어 사용자 측 트랜잭션 속도를 저하시키지 않습니다.
 
 ## 디자인 토큰 (globals.css)
 
