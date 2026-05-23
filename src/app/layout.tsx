@@ -27,6 +27,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="ko" data-scroll-behavior="smooth" suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+        <meta name="naver-site-verification" content="4c6dab20be04767928aaeacb20a4575d4e733bfb" />
+        <meta
+          name="google-site-verification"
+          content="Cu1JoCVayI6up4Oj0VLtAMitzqo4v-aANlndWt4nuQg"
+        />
       </head>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <SessionProvider>{children}</SessionProvider>
