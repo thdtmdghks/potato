@@ -39,6 +39,7 @@ export default async function AdminProjects() {
                         alt=""
                         width={64}
                         height={64}
+                        sizes="64px"
                         className="h-16 w-16 shrink-0 rounded object-cover"
                       />
                     ))}
@@ -104,6 +105,7 @@ export default async function AdminProjects() {
                           alt=""
                           width={80}
                           height={60}
+                          sizes="80px"
                           className="h-10 w-14 rounded object-cover"
                         />
                       ) : (

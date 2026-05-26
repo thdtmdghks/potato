@@ -56,6 +56,7 @@ export default async function ProjectDetail({ params }: { params: Promise<{ id: 
                   alt={`${project.title} 시공 사진 ${i + 1}`}
                   width={800}
                   height={600}
+                  sizes="(max-width: 640px) 100vw, 50vw"
                   className="aspect-[4/3] w-full rounded-lg object-cover"
                 />
               </li>

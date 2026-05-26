@@ -32,6 +32,7 @@ export function ProjectCarousel({ projects }: Props) {
                   alt={`${project.title} 시공사례`}
                   width={400}
                   height={300}
+                  sizes="(max-width: 640px) 66vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
                   priority={idx === 0}
                   className="aspect-[4/3] w-full object-cover transition-transform hover:scale-105"
                 />
