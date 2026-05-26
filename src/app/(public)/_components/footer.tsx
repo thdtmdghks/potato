@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { BUSINESS } from "@/shared/constants";
 
-export default function Footer() {
+export function Footer() {
   return (
     <footer className="bg-navy-dark text-gray-300">
       <div className="mx-auto max-w-6xl px-4 py-8">

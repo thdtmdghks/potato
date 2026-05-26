@@ -15,6 +15,7 @@ export function ImageThumbnail({ url, onRemove }: ImageThumbnailProps) {
         alt=""
         width={100}
         height={75}
+        sizes="100px"
         className="h-[75px] w-[100px] rounded object-cover"
       />
       <button

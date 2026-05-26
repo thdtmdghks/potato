@@ -11,10 +11,9 @@
 │  │  (Server Comp.)  │  │  (Client + Server)    │  │
 │  │                  │  │                       │  │
 │  │  /               │  │  /admin (Auth.js 보호)│  │
-│  │  /about          │  │  /admin/projects      │  │
-│  │  /projects       │  │  /admin/projects/new  │  │
-│  │  /projects/[id]  │  │  /admin/login         │  │
-│  │  /contact        │  │                       │  │
+│  │  /projects       │  │  /admin/projects      │  │
+│  │  /projects/[id]  │  │  /admin/projects/new  │  │
+│  │                  │  │                       │  │
 │  └────────┬─────────┘  └──────────┬────────────┘  │
 │           │                       │               │
 │  ┌────────┴───────────────────────┴────────────┐  │
@@ -53,7 +52,8 @@ src/
 │   ├── index.ts                  # getServerRepositories() 팩토리
 │   ├── repositories.ts           # Repository 인터페이스 정의
 │   ├── supabase-client.ts        # Supabase 서버 클라이언트 생성
-│   └── supabase-repositories.ts  # Supabase 구현체
+│   ├── supabase-repositories.ts  # Supabase 구현체
+│   └── logger.ts                 # Discord 웹훅 로거
 │
 ├── client/     # 클라이언트 전용 — 브라우저에서 실행되는 유틸리티
 │   └── ...
@@ -95,12 +95,11 @@ Supabase에 직접 의존하는 파일은 **2개**뿐입니다:
 interface ProjectRepository {
   getAll(category?: string): Promise<Project[]>;
   getById(id: string): Promise<Project | null>;
-  getCategories(): Promise<string[]>;
   create(data): Promise<Project | null>;
   update(id, data): Promise<Project | null>;
   delete(id): Promise<boolean>;
 }
-// ProductRepository, InquiryRepository, StorageRepository 동일 구조
+// StorageRepository 동일 구조
 ```
 
 ### 사용법
@@ -132,12 +131,12 @@ export async function getServerRepositories() {
 
 ## 렌더링 전략
 
-| 페이지                    | 렌더링 방식          | 이유                |
-| ------------------------- | -------------------- | ------------------- |
-| `/`, `/about`, `/contact` | Static (SSG)         | 정적 콘텐츠         |
-| `/projects`               | Dynamic (SSR)        | DB에서 실시간 fetch |
-| `/projects/[id]`          | Dynamic (SSR)        | 동적 파라미터       |
-| `/admin/*`                | Client + Server 혼합 | 인증 + CRUD         |
+| 페이지           | 렌더링 방식          | 이유                |
+| ---------------- | -------------------- | ------------------- |
+| `/`              | Static (SSG)         | 정적 콘텐츠         |
+| `/projects`      | Dynamic (SSR)        | DB에서 실시간 fetch |
+| `/projects/[id]` | Dynamic (SSR)        | 동적 파라미터       |
+| `/admin/*`       | Client + Server 혼합 | 인증 + CRUD         |
 
 ## Data Flow
 
@@ -223,9 +222,8 @@ export async function getServerRepositories() {
 ┌──────────────┐          ┌────────┬─────────────────┐
 │ 관리자    ☰  │          │사이드바│                 │
 ├──────────────┤          │        │   콘텐츠         │
-│   콘텐츠     │          │포트폴리오│                │
-└──────────────┘          │제품    │                 │
-                          │문의    │                 │
+│   콘텐츠     │          │시공사례│                 │
+└──────────────┘          │        │                 │
                           └────────┴─────────────────┘
 ```
 
