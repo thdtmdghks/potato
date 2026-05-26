@@ -1,7 +1,34 @@
 import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
+import type { Metadata } from "next";
 import { getServerRepositories } from "@/server";
+import { BUSINESS } from "@/shared/constants";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}): Promise<Metadata> {
+  const { id } = await params;
+  const { projects } = await getServerRepositories();
+  const project = await projects.getById(id);
+  if (!project) return {};
+
+  const title = `${project.title} — ${BUSINESS.region} 샤시(샷시) | ${BUSINESS.name}`;
+  const description = `${BUSINESS.region} ${project.category} 시공사례 — ${project.description} 샤시(샷시) 전문 ${BUSINESS.name} ${BUSINESS.phone}`;
+
+  return {
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      type: "article",
+      locale: "ko_KR",
+    },
+  };
+}
 
 export default async function ProjectDetail({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;

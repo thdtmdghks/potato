@@ -16,7 +16,7 @@ export const metadata: Metadata = {
   description: `${BUSINESS.description} ${BUSINESS.phone}`,
   openGraph: {
     title: `${BUSINESS.name} - ${BUSINESS.slogan}`,
-    description: "외풍·소음, 오래된 샤시 고민 한번에 해결. 당일 시공 가능.",
+    description: "외풍·소음, 오래된 샤시 고민 한번에 해결. 경산·대구 당일 시공 가능. 010-3812-9922",
     type: "website",
     locale: "ko_KR",
   },
