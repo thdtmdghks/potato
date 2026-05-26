@@ -8,7 +8,7 @@ export const BUSINESS = {
   region: "경산·대구",
   closedDay: "매주 일요일 휴무",
   since: "2014",
-  slogan: "경산·대구 샤시(샷시) 전문 시공",
+  slogan: "경산·대구 샤시 전문 시공",
   description:
     "경산 샤시(샷시) 전문 시공. 하이샤시, 방충망, 유리, ABS도어, 방범창. 경산·대구 당일시공 가능.",
 } as const;
