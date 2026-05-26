@@ -29,6 +29,7 @@ export default function Footer() {
           </p>
           <Link
             href="/admin"
+            prefetch={false}
             className="mt-2 inline-block text-xs text-gray-600 hover:text-gray-400"
           >
             관리자
