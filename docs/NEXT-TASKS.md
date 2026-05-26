@@ -2,15 +2,14 @@
 
 ## 🟠 기능
 
-- [x] 로그인 callbackUrl 동적 처리 (현재 "/" 고정)
+- [ ] 시공사례 상세 페이지 개별 메타데이터 (generateMetadata로 title, description 자동 생성)
+- [ ] 기존 시공사례 설명 보강 (관리자 페이지에서 수정)
+- [ ] OG `og:image` 설정
 
 ## 🟡 코드 품질
 
-- [x] `as never` 타입 캐스팅 제거 — Database 타입 Insert/Update 명시적 정의로 해결
-- [x] Supabase Repository error 무시 → logError로 Discord 알림 전송
 - [ ] `export default` → named export (header, footer, floating-cta, svg-icon, theme-toggle)
 - [ ] 순수 함수 분리 + 테스트 (`_actions.ts`의 `extractStoragePath` → `_utils.ts`)
-- [x] `@supabase/ssr` 패키지 제거 (미사용)
 
 ## 🟢 개선
 
@@ -29,10 +28,8 @@
 
 ### 검색 노출
 
-- [ ] 네이버 스마트플레이스 업체 등록 (효과 가장 큼)
-- [ ] 네이버 서치어드바이저 등록 + 사이트맵 제출
-- [ ] Google Search Console 등록 + 사이트맵 제출
-- [ ] OG `og:image` 설정
+- [ ] 네이버 블로그 시공 후기 작성 + 사이트 링크 (백링크)
+- [ ] 시공사례 꾸준히 추가 (주 1~2개)
 
 ### 카카오톡 채널
 
@@ -43,4 +40,3 @@
 
 - [ ] 커스텀 도메인 연결 시 metadataBase, sitemap URL 업데이트
 - [ ] Lighthouse 점수 확인 (목표: 90+)
-- [ ] DB 마이그레이션 실행 (`db/migrate-created-by.sql`)
