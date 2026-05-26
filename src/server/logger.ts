@@ -52,7 +52,12 @@ export function logError(context: string, error: unknown, payload?: unknown) {
   const webhookUrl = env.DISCORD_ERROR_WEBHOOK_URL;
   if (!webhookUrl) return;
 
-  const errorMessage = error instanceof Error ? error.message : String(error);
+  const errorMessage =
+    error instanceof Error
+      ? error.message
+      : typeof error === "object" && error !== null && "message" in error
+        ? String((error as { message: unknown }).message)
+        : JSON.stringify(error);
   const coreStack = getSanitizedStack(error);
   const nodeEnv = process.env.NODE_ENV?.toUpperCase() || "LOCAL";
 
