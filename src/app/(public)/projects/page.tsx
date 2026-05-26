@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { getServerRepositories } from "@/server";
+import { CATEGORIES } from "@/shared/constants";
 
 export default async function Projects({
   searchParams,
@@ -9,10 +10,8 @@ export default async function Projects({
 }) {
   const { category } = await searchParams;
   const { projects } = await getServerRepositories();
-  const [items, categories] = await Promise.all([
-    projects.getAll(category),
-    projects.getCategories(),
-  ]);
+  const items = await projects.getAll(category);
+  const categories = CATEGORIES;
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-8">

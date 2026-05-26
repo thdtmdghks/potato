@@ -27,11 +27,6 @@ describe("MockProjectRepository", () => {
     expect(await repo.getById("nonexistent")).toBeNull();
   });
 
-  it("getCategories는 중복 없는 카테고리 목록을 반환한다", async () => {
-    const cats = await repo.getCategories();
-    expect(cats.length).toBe(new Set(cats).size);
-  });
-
   it("create는 새 항목을 추가한다", async () => {
     const before = (await repo.getAll()).length;
     const created = await repo.create({

@@ -74,9 +74,6 @@ export class MockProjectRepository implements ProjectRepository {
   async getById(id: string) {
     return this.data.find((p) => p.id === id) ?? null;
   }
-  async getCategories() {
-    return [...new Set(this.data.map((p) => p.category))];
-  }
   async create(data: Omit<Project, "id" | "created_at">) {
     const item = { ...data, id: crypto.randomUUID(), created_at: new Date().toISOString() };
     this.data.unshift(item);

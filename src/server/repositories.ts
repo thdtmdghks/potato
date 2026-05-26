@@ -3,7 +3,6 @@ import type { Project } from "@/shared/types";
 export interface ProjectRepository {
   getAll(category?: string): Promise<Project[]>;
   getById(id: string): Promise<Project | null>;
-  getCategories(): Promise<string[]>;
   create(data: Omit<Project, "id" | "created_at">): Promise<Project | null>;
   update(id: string, data: Partial<Project>): Promise<Project | null>;
   delete(id: string): Promise<boolean>;

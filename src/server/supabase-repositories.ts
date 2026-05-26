@@ -26,19 +26,8 @@ export class SupabaseProjectRepository implements ProjectRepository {
     return data;
   }
 
-  async getCategories(): Promise<string[]> {
-    const { data, error } = await this.db.from("projects").select("category");
-    if (error) {
-      logError("SupabaseProjectRepository.getCategories", error);
-      return [];
-    }
-    const rows = data as { category: string }[] | null;
-    return [...new Set(rows?.map((d) => d.category) ?? [])];
-  }
-
   async create(data: Omit<Project, "id" | "created_at">): Promise<Project | null> {
     const { data: row, error } = await this.db.from("projects").insert(data).select().single();
-
     if (error) {
       logError("SupabaseProjectRepository.create", error, data);
       return null;
@@ -53,7 +42,6 @@ export class SupabaseProjectRepository implements ProjectRepository {
       .eq("id", id)
       .select()
       .single();
-
     if (error) {
       logError("SupabaseProjectRepository.update", error, { id, data });
       return null;

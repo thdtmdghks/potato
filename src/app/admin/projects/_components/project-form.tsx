@@ -13,7 +13,8 @@ import { Textarea } from "@/app/_components/textarea";
 import { Label } from "@/app/_components/label";
 import { ImageThumbnail } from "@/app/_components/image-thumbnail";
 import { createProject, updateProject } from "../_actions";
-import { FORM_KEYS, CATEGORIES } from "../_constants";
+import { FORM_KEYS } from "../_constants";
+import { CATEGORIES } from "@/shared/constants";
 
 interface Props {
   project?: Project;
