@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useSession } from "next-auth/react";
-import ThemeToggle from "./theme-toggle";
+import { ThemeToggle } from "./theme-toggle";
 import { BUSINESS, LINKS } from "@/shared/constants";
 import { useMenuWithHistory } from "@/client/use-menu-with-history";
 
@@ -11,7 +11,7 @@ const navItems = [
   { href: "/#contact", label: "연락처" },
 ];
 
-export default function Header() {
+export function Header() {
   const { open, toggle, closeMenu } = useMenuWithHistory();
   const { data: session } = useSession();
   const isAdmin = session?.role === "admin";

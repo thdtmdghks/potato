@@ -1,6 +1,6 @@
 import { LINKS } from "@/shared/constants";
 
-export default function FloatingCta() {
+export function FloatingCta() {
   return (
     <a
       href={LINKS.tel}

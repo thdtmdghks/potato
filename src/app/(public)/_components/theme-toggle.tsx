@@ -3,7 +3,7 @@
 import { useSyncExternalStore } from "react";
 import { getStoredTheme, setTheme, subscribe, type Theme } from "@/client/theme";
 
-export default function ThemeToggle() {
+export function ThemeToggle() {
   const theme = useSyncExternalStore(subscribe, getStoredTheme, () => "system" as Theme);
 
   const cycle = () => {

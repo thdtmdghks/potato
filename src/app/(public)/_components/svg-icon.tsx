@@ -1,4 +1,4 @@
-export default function SvgIcon({ d }: { d: string }) {
+export function SvgIcon({ d }: { d: string }) {
   return (
     <svg
       className="text-navy dark:text-accent mx-auto h-12 w-12"
