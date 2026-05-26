@@ -28,7 +28,7 @@ shared/ → 양쪽에서 import ✅
 
 ### Repository 패턴 + Mock 자동 전환
 
-`NEXT_PUBLIC_SUPABASE_URL` 미설정 시 Mock Repository로 자동 전환. DB 없이 개발/빌드 가능.
+`SUPABASE_URL` 미설정 시 Mock Repository로 자동 전환. DB 없이 개발/빌드 가능.
 
 ```ts
 // 서버에서 데이터 접근 시 항상 이 패턴:
@@ -103,7 +103,9 @@ const items = await projects.getAll();
 - `src/app/admin/projects/_actions.ts` — 시공사례 CRUD Server Actions
 - `src/server/repositories.ts` — Repository 인터페이스
 - `src/server/index.ts` — `getServerRepositories()` 팩토리
+- `src/server/logger.ts` — Discord 웹훅 로거 (logError, logWarn)
 - `src/shared/schemas.ts` — Zod 스키마
 - `src/shared/types.ts` — DB 타입 정의
+- `src/shared/env.ts` — 환경변수 빌드타임 검증
 - `src/proxy.ts` — 관리자 인증 middleware
 - `docs/NEXT-TASKS.md` — 다음 작업 가이드

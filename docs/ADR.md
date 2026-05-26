@@ -148,7 +148,7 @@
 
 **배경:** Supabase 무료 플랜은 프로젝트 2개 제한. 개발 중 DB 없이도 작업할 수 있어야 하고, 나중에 DB를 바꿀 가능성도 열어둬야 함.
 
-**결정:** DB 접근을 Repository 인터페이스로 추상화. `NEXT_PUBLIC_SUPABASE_URL` 미설정 시 Mock으로 자동 전환.
+**결정:** DB 접근을 Repository 인터페이스로 추상화. `SUPABASE_URL` 미설정 시 Mock으로 자동 전환.
 
 **이유:**
 
