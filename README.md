@@ -47,17 +47,25 @@ src/
 
 ## 기술적 도전
 
+### Zod 스키마 서버/클라이언트 단일화
+
+하나의 Zod 스키마(`shared/schemas.ts`)를 클라이언트 폼 검증(`zodResolver`)과 서버 Server Action 검증(`safeParse`)에서 동시에 import합니다. 검증 규칙 변경 시 한 곳만 수정하면 양쪽에 반영되고, `z.infer`로 TypeScript 타입도 자동 추론됩니다.
+
+### 클라이언트 이미지 압축 파이프라인
+
+Vercel 서버리스 함수에서 Sharp를 실행하면 메모리/시간 제한에 걸릴 수 있어, 업로드 전 브라우저에서 WebP 변환 + 200KB 이하 압축을 수행합니다. 서버 비용 없이 Supabase Storage 무료 1GB 내에서 ~5,000장 저장 가능한 구조입니다.
+
 ### 환경변수 빌드타임 검증
 
-Vercel 환경변수를 수동 등록하다 보니 누락 가능성이 있어, `next.config.ts`에서 Zod 스키마로 즉시 검증. 프로덕션 빌드 시 필수 변수가 없으면 빌드 자체를 차단하여 장애를 사전에 방지합니다.
+`next.config.ts` 진입점에서 Zod 스키마로 모든 필수 환경변수를 즉시 검증합니다. Vercel에서 환경변수를 수동 등록하다 발생하는 누락/오타를 빌드 단계에서 차단하여, 배포 후 런타임에서야 터지는 사고를 방지합니다.
 
-### Discord 웹훅 실시간 모니터링
+### Discord 웹훅 이원화 모니터링
 
-Vercel Hobby 플랜의 1시간 로그 보존 한계를 극복하기 위해, 에러(🔴)와 보안 경고(🟡) 채널을 분리한 Discord 웹훅을 구현. Non-blocking fetch로 사용자 응답 속도에 영향 없이 관리자에게 실시간 알림을 전송합니다.
+Vercel Hobby 플랜의 로그 보존이 1시간이라 사후 분석이 불가능합니다. 이를 해결하기 위해 에러(🔴)와 보안 경고(🟡) 채널을 분리한 Discord 웹훅을 구현했습니다. Non-blocking fetch로 응답 속도에 영향 없이 스택 트레이스와 페이로드를 실시간 전송합니다. Sentry 없이 무비용으로 운영 가시성을 확보했습니다.
 
-### Mock 자동 전환
+### Repository 패턴 + globalThis 싱글톤
 
-Supabase 무료 플랜 제약(프로젝트 2개 제한) 속에서 DB 없이도 개발/빌드/테스트가 가능하도록 Repository 패턴으로 추상화. 환경변수 유무에 따라 Supabase ↔ Mock 구현체를 자동 전환합니다.
+`SUPABASE_URL` 유무에 따라 Supabase 구현체와 Mock 구현체를 자동 전환합니다. DB 없이도 개발/빌드/테스트가 가능합니다. Next.js dev 모드에서 HMR이 모듈을 재로드해도 Mock 데이터가 유실되지 않도록 `globalThis`에 인스턴스를 캐싱하는 싱글톤 패턴을 적용했습니다.
 
 ## 설계 결정
 
