@@ -3,7 +3,8 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { getServerRepositories } from "@/server";
-import { BUSINESS } from "@/shared/constants";
+import { getProjectDetailMetadata } from "./_utils";
+import { ProjectJsonLd } from "./_components/project-json-ld";
 
 export async function generateMetadata({
   params,
@@ -11,38 +12,7 @@ export async function generateMetadata({
   params: Promise<{ id: string }>;
 }): Promise<Metadata> {
   const { id } = await params;
-  const { projects } = await getServerRepositories();
-  const project = await projects.getById(id);
-  if (!project) return {};
-
-  const title = `${project.title} — ${BUSINESS.region} 샤시(샷시) | ${BUSINESS.name}`;
-  const description = `${BUSINESS.region} ${project.category} 시공사례 — ${project.description} 샤시(샷시) 전문 ${BUSINESS.name} ${BUSINESS.phone}`;
-
-  const ogImages = project.images.map((img) => ({
-    url: img,
-    alt: project.title,
-  }));
-
-  return {
-    title,
-    description,
-    alternates: {
-      canonical: `/projects/${id}`,
-    },
-    openGraph: {
-      title,
-      description,
-      type: "article",
-      locale: "ko_KR",
-      images: ogImages.length > 0 ? ogImages : undefined,
-    },
-    twitter: {
-      card: "summary_large_image",
-      title,
-      description,
-      images: project.images.length > 0 ? [project.images[0]] : undefined,
-    },
-  };
+  return getProjectDetailMetadata(id);
 }
 
 export default async function ProjectDetail({ params }: { params: Promise<{ id: string }> }) {
@@ -51,45 +21,9 @@ export default async function ProjectDetail({ params }: { params: Promise<{ id: 
   const project = await projects.getById(id);
   if (!project) notFound();
 
-  const jsonLd = {
-    "@context": "https://schema.org",
-    "@type": "Article",
-    headline: project.title,
-    description: project.description,
-    image: project.images.length > 0 ? project.images : ["/og-image.png"],
-    datePublished: new Date(project.created_at).toISOString(),
-    author: {
-      "@type": "LocalBusiness",
-      name: BUSINESS.name,
-      telephone: BUSINESS.phone,
-      address: {
-        "@type": "PostalAddress",
-        streetAddress: "원효로40길 64-8",
-        addressLocality: "경산시",
-        addressRegion: "경상북도",
-        addressCountry: "KR",
-      },
-    },
-    publisher: {
-      "@type": "LocalBusiness",
-      name: BUSINESS.name,
-      telephone: BUSINESS.phone,
-      address: {
-        "@type": "PostalAddress",
-        streetAddress: "원효로40길 64-8",
-        addressLocality: "경산시",
-        addressRegion: "경상북도",
-        addressCountry: "KR",
-      },
-    },
-  };
-
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-      />
+      <ProjectJsonLd project={project} />
       <article className="mx-auto max-w-4xl px-4 py-8 md:py-12">
         <h1 className="text-navy text-2xl font-bold md:text-3xl dark:text-white">
           {project.title}
