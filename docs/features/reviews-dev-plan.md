@@ -8,7 +8,7 @@
 ## 📊 진행 상황 판 (Progress Tracker)
 
 - [x] **Phase 1**: DB 스키마 생성 및 마이그레이션 (Commit 1)
-- [ ] **Phase 2**: Auth.js 세션 정보에 카카오 프로필 매핑 (Commit 2)
+- [x] **Phase 2**: Auth.js 세션 정보에 카카오 프로필 매핑 (Commit 2)
 - [ ] **Phase 3**: 개인정보 처리방침 페이지 및 푸터 연동 (Commit 3)
 - [ ] **Phase 4**: 관리자 페이지: 리뷰 초대 링크 생성 및 카톡 공유 (Commit 4)
 - [ ] **Phase 5**: 후기 작성/수정 UI 및 비즈니스 로직 (Commit 5)
