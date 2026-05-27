@@ -51,43 +51,84 @@ export default async function ProjectDetail({ params }: { params: Promise<{ id: 
   const project = await projects.getById(id);
   if (!project) notFound();
 
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: project.title,
+    description: project.description,
+    image: project.images.length > 0 ? project.images : ["/og-image.png"],
+    datePublished: new Date(project.created_at).toISOString(),
+    author: {
+      "@type": "LocalBusiness",
+      name: BUSINESS.name,
+      telephone: BUSINESS.phone,
+      address: {
+        "@type": "PostalAddress",
+        streetAddress: "원효로40길 64-8",
+        addressLocality: "경산시",
+        addressRegion: "경상북도",
+        addressCountry: "KR",
+      },
+    },
+    publisher: {
+      "@type": "LocalBusiness",
+      name: BUSINESS.name,
+      telephone: BUSINESS.phone,
+      address: {
+        "@type": "PostalAddress",
+        streetAddress: "원효로40길 64-8",
+        addressLocality: "경산시",
+        addressRegion: "경상북도",
+        addressCountry: "KR",
+      },
+    },
+  };
+
   return (
-    <article className="mx-auto max-w-4xl px-4 py-8 md:py-12">
-      <h1 className="text-navy text-2xl font-bold md:text-3xl dark:text-white">{project.title}</h1>
-      <span className="bg-gray-light mt-3 inline-block rounded-full px-3 py-1 text-sm dark:bg-gray-800 dark:text-gray-300">
-        {project.category}
-      </span>
-      <p className="text-gray-dark mt-4 leading-relaxed dark:text-gray-300">
-        {project.description}
-      </p>
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <article className="mx-auto max-w-4xl px-4 py-8 md:py-12">
+        <h1 className="text-navy text-2xl font-bold md:text-3xl dark:text-white">
+          {project.title}
+        </h1>
+        <span className="bg-gray-light mt-3 inline-block rounded-full px-3 py-1 text-sm dark:bg-gray-800 dark:text-gray-300">
+          {project.category}
+        </span>
+        <p className="text-gray-dark mt-4 leading-relaxed dark:text-gray-300">
+          {project.description}
+        </p>
 
-      {project.images.length > 0 && (
-        <section className="mt-8" aria-label="시공 사진">
-          <ul className="grid gap-3 sm:grid-cols-2">
-            {project.images.map((img, i) => (
-              <li key={i}>
-                <Image
-                  src={img}
-                  alt={`${project.title} 시공 사진 ${i + 1}`}
-                  width={800}
-                  height={600}
-                  sizes="(max-width: 640px) 100vw, 50vw"
-                  className="aspect-[4/3] w-full rounded-lg object-cover"
-                />
-              </li>
-            ))}
-          </ul>
-        </section>
-      )}
+        {project.images.length > 0 && (
+          <section className="mt-8" aria-label="시공 사진">
+            <ul className="grid gap-3 sm:grid-cols-2">
+              {project.images.map((img, i) => (
+                <li key={i}>
+                  <Image
+                    src={img}
+                    alt={`${project.title} 시공 사진 ${i + 1}`}
+                    width={800}
+                    height={600}
+                    sizes="(max-width: 640px) 100vw, 50vw"
+                    className="aspect-[4/3] w-full rounded-lg object-cover"
+                  />
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
 
-      <div className="mt-10 pr-4 text-right">
-        <Link
-          href="/projects"
-          className="bg-navy hover:bg-navy-light inline-block rounded-lg px-6 py-2.5 text-sm font-medium text-white transition-colors"
-        >
-          목록보기
-        </Link>
-      </div>
-    </article>
+        <div className="mt-10 pr-4 text-right">
+          <Link
+            href="/projects"
+            className="bg-navy hover:bg-navy-light inline-block rounded-lg px-6 py-2.5 text-sm font-medium text-white transition-colors"
+          >
+            목록보기
+          </Link>
+        </div>
+      </article>
+    </>
   );
 }
