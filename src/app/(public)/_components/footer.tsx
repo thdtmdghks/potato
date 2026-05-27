@@ -27,13 +27,15 @@ export function Footer() {
           <p>
             © {new Date().getFullYear()} {BUSINESS.name}. 대표 {BUSINESS.owner}.
           </p>
-          <Link
-            href="/admin"
-            prefetch={false}
-            className="mt-2 inline-block text-xs text-gray-600 hover:text-gray-400"
-          >
-            관리자
-          </Link>
+          <div className="mt-2 flex justify-center gap-3 text-xs text-gray-600">
+            <Link href="/privacy" className="hover:text-gray-400">
+              개인정보 처리방침
+            </Link>
+            <span>|</span>
+            <Link href="/admin" prefetch={false} className="hover:text-gray-400">
+              관리자
+            </Link>
+          </div>
         </div>
       </div>
     </footer>
