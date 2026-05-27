@@ -28,6 +28,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   },
   callbacks: {
     async jwt({ token, account, profile }) {
+      // console.log("JWT Callback - token:", token);
+      // console.log("JWT Callback - account:", account, "profile:", profile);
       if (account?.provider === "kakao") {
         token.kakaoId = account.providerAccountId;
         const kakaoProfile = (

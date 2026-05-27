@@ -7,6 +7,7 @@ import { useMenuWithHistory } from "@/client/use-menu-with-history";
 const adminNav = [
   { href: "/admin", label: "대시보드" },
   { href: "/admin/projects", label: "시공사례 관리" },
+  { href: "/admin/reviews", label: "리뷰 관리" },
 ];
 
 export default function AdminLayoutClient({ children }: { children: React.ReactNode }) {
