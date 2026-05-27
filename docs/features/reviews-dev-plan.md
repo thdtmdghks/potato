@@ -7,7 +7,7 @@
 
 ## 📊 진행 상황 판 (Progress Tracker)
 
-- [ ] **Phase 1**: DB 스키마 생성 및 마이그레이션 (Commit 1)
+- [x] **Phase 1**: DB 스키마 생성 및 마이그레이션 (Commit 1)
 - [ ] **Phase 2**: Auth.js 세션 정보에 카카오 프로필 매핑 (Commit 2)
 - [ ] **Phase 3**: 개인정보 처리방침 페이지 및 푸터 연동 (Commit 3)
 - [ ] **Phase 4**: 관리자 페이지: 리뷰 초대 링크 생성 및 카톡 공유 (Commit 4)
@@ -15,6 +15,7 @@
 - [ ] **Phase 6**: 마이페이지: 내가 쓴 후기 확인 (Commit 6)
 - [ ] **Phase 7**: 관리자 페이지: 후기 승인 및 수정 요청 승인 제어 (Commit 7)
 - [ ] **Phase 8**: 메인 랜딩 페이지 연동 및 검증 (Commit 8)
+- [ ] **Phase 9**: 아키텍처 문서 현행화 (Commit 9)
 
 ---
 
@@ -40,7 +41,6 @@
   - [NEW] `supabase/migrations/20260527000001_reviews_schema.sql` 생성
     - `reviews` 테이블 (id, kakao_id, author_name, author_avatar, rating, content, images, status, created_at)
     - `review_edits` 테이블 (review_id, rating, content, images, created_at)
-    - RLS 정책 적용 (SELECT: status='approved'는 전체 공개, INSERT/UPDATE: 소유주 본인만 허용)
 
 ### [Phase 2] Auth.js 세션 정보에 카카오 프로필 매핑 (Commit 2)
 
@@ -100,3 +100,9 @@
 - **작업**:
   - [MODIFY] `src/app/(public)/page.tsx` 수정 (하단에 시공 후기 캐러셀 섹션 추가, `status = 'approved'` 데이터만 로드)
   - 빌드 및 린트 최종 검증 (`pnpm run build` && `pnpm run lint`)
+
+### [Phase 9] 아키텍처 문서 현행화 (Commit 9)
+
+- **목표**: 새롭게 도입된 리뷰 시스템 설계와 DB 테이블 구조를 프로젝트 전체 아키텍처 문서에 최신화하여 일관성 유지.
+- **작업**:
+  - [MODIFY] `docs/ARCHITECTURE.md` 수정 (DB 스키마 설명에 `reviews` 및 `review_edits` 추가, 카카오 로그인 기반 리뷰 인증 흐름도 및 RLS 차단 정책 최신화)

@@ -8,6 +8,26 @@ export type ProjectRow = {
   created_at: string;
 };
 
+export type ReviewRow = {
+  id: string;
+  kakao_id: string;
+  author_name: string;
+  author_avatar: string;
+  rating: number;
+  content: string;
+  images: string[];
+  status: string;
+  created_at: string;
+};
+
+export type ReviewEditRow = {
+  review_id: string;
+  rating: number;
+  content: string;
+  images: string[];
+  created_at: string;
+};
+
 export type Database = {
   public: {
     Tables: {
@@ -33,6 +53,57 @@ export type Database = {
         };
         Relationships: [];
       };
+      reviews: {
+        Row: ReviewRow;
+        Insert: {
+          id: string;
+          kakao_id: string;
+          author_name: string;
+          author_avatar: string;
+          rating: number;
+          content: string;
+          images?: string[];
+          status?: string;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          kakao_id?: string;
+          author_name?: string;
+          author_avatar?: string;
+          rating?: number;
+          content?: string;
+          images?: string[];
+          status?: string;
+          created_at?: string;
+        };
+        Relationships: [];
+      };
+      review_edits: {
+        Row: ReviewEditRow;
+        Insert: {
+          review_id: string;
+          rating: number;
+          content: string;
+          images?: string[];
+          created_at?: string;
+        };
+        Update: {
+          review_id?: string;
+          rating?: number;
+          content?: string;
+          images?: string[];
+          created_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "review_edits_review_id_fkey";
+            columns: ["review_id"];
+            referencedRelation: "reviews";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
     };
     Views: {
       [_ in never]: never;
@@ -50,3 +121,5 @@ export type Database = {
 };
 
 export type Project = ProjectRow;
+export type Review = ReviewRow;
+export type ReviewEdit = ReviewEditRow;
