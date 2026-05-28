@@ -7,11 +7,11 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import type { Project } from "@/shared/types";
 import { projectSchema, type ProjectFormData } from "@/shared/schemas";
-import { compressImage } from "@/client/image";
+import { useImageUpload } from "@/client/use-image-upload";
 import { Input } from "@/app/_components/input";
 import { Textarea } from "@/app/_components/textarea";
 import { Label } from "@/app/_components/label";
-import { ImageThumbnail } from "@/app/_components/image-thumbnail";
+import { ImageUpload } from "@/app/_components/image-upload";
 import { createProject, updateProject } from "../_actions";
 import { FORM_KEYS } from "../_constants";
 import { CATEGORIES } from "@/shared/constants";
@@ -37,11 +37,21 @@ export function ProjectForm({ project }: Props) {
     },
   });
 
-  const [existingImages, setExistingImages] = useState<string[]>(project?.images ?? []);
-  const [previews, setPreviews] = useState<string[]>([]);
-  const [compressedFiles, setCompressedFiles] = useState<File[]>([]);
-  const [compressing, setCompressing] = useState(false);
   const [serverError, setServerError] = useState("");
+
+  const {
+    existingImages,
+    compressedFiles,
+    previews,
+    compressing,
+    handleFiles,
+    removeExisting,
+    removeNew,
+  } = useImageUpload({
+    initialImages: project?.images ?? [],
+    maxCount: 20,
+    onError: (msg) => setServerError(msg),
+  });
 
   const onSubmit = async (data: ProjectFormData) => {
     setServerError("");
@@ -65,40 +75,6 @@ export function ProjectForm({ project }: Props) {
     }
 
     router.push("/admin/projects");
-  };
-
-  const handleFiles = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = Array.from(e.target.files ?? []);
-    if (files.length === 0) return;
-
-    setCompressing(true);
-    const compressed: File[] = [];
-    const urls: string[] = [];
-
-    for (const file of files) {
-      try {
-        const result = await compressImage(file);
-        compressed.push(result);
-        urls.push(URL.createObjectURL(result));
-      } catch {
-        setServerError(`"${file.name}" 압축에 실패했습니다. 다른 이미지를 사용해주세요.`);
-      }
-    }
-
-    setCompressedFiles((prev) => [...prev, ...compressed]);
-    setPreviews((prev) => [...prev, ...urls]);
-    setCompressing(false);
-    e.target.value = "";
-  };
-
-  const removeExisting = (idx: number) => {
-    setExistingImages((prev) => prev.filter((_, i) => i !== idx));
-  };
-
-  const removeNew = (idx: number) => {
-    URL.revokeObjectURL(previews[idx]);
-    setPreviews((prev) => prev.filter((_, i) => i !== idx));
-    setCompressedFiles((prev) => prev.filter((_, i) => i !== idx));
   };
 
   return (
@@ -162,35 +138,17 @@ export function ProjectForm({ project }: Props) {
           )}
         </div>
 
-        <div>
-          <span className="text-sm font-medium">사진</span>
-
-          {existingImages.length > 0 && (
-            <div className="mt-1.5 flex flex-wrap gap-2">
-              {existingImages.map((url, idx) => (
-                <ImageThumbnail key={url} url={url} onRemove={() => removeExisting(idx)} />
-              ))}
-            </div>
-          )}
-
-          {previews.length > 0 && (
-            <div className="mt-1.5 flex flex-wrap gap-2">
-              {previews.map((url, idx) => (
-                <ImageThumbnail key={url} url={url} onRemove={() => removeNew(idx)} />
-              ))}
-            </div>
-          )}
-
-          <input
-            type="file"
-            accept="image/*"
-            multiple
-            onChange={handleFiles}
-            className="text-muted-foreground file:bg-primary file:text-primary-foreground hover:file:bg-primary/90 mt-1.5 block w-full text-sm file:mr-3 file:rounded-lg file:border-0 file:px-4 file:py-2 file:text-sm"
-          />
-          {compressing && <p className="text-muted-foreground mt-1 text-xs">이미지 압축 중...</p>}
-          <p className="text-muted-foreground mt-1 text-xs">WebP로 자동 변환, 최대 200KB</p>
-        </div>
+        <ImageUpload
+          label="사진"
+          description="WebP로 자동 변환, 최대 200KB"
+          existingImages={existingImages}
+          previews={previews}
+          compressing={compressing}
+          maxCount={20}
+          onFilesChange={handleFiles}
+          onRemoveExisting={removeExisting}
+          onRemoveNew={removeNew}
+        />
 
         {serverError && <p className="text-sm text-red-500">{serverError}</p>}
 
