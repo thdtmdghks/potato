@@ -1,4 +1,4 @@
-import type { Project } from "@/shared/types";
+import type { Project, Review, ReviewEdit } from "@/shared/types";
 
 export interface ProjectRepository {
   getAll(category?: string): Promise<Project[]>;
@@ -14,7 +14,27 @@ export interface StorageRepository {
   getPublicUrl(bucket: string, path: string): string;
 }
 
+export interface ReviewRepository {
+  getById(id: string): Promise<Review | null>;
+  getByKakaoId(kakaoId: string): Promise<Review[]>;
+  getAllApproved(): Promise<Review[]>;
+  getAllPending(): Promise<Review[]>;
+  create(data: Omit<Review, "created_at" | "status">): Promise<Review | null>;
+  update(id: string, data: Partial<Review>): Promise<Review | null>;
+  delete(id: string): Promise<boolean>;
+}
+
+export interface ReviewEditRepository {
+  getById(reviewId: string): Promise<ReviewEdit | null>;
+  getAll(): Promise<ReviewEdit[]>;
+  getAllWithOriginal(): Promise<(ReviewEdit & { original: Review })[]>;
+  upsert(data: ReviewEdit): Promise<ReviewEdit | null>;
+  delete(reviewId: string): Promise<boolean>;
+}
+
 export interface Repositories {
   projects: ProjectRepository;
   storage: StorageRepository;
+  reviews: ReviewRepository;
+  reviewEdits: ReviewEditRepository;
 }
