@@ -7,3 +7,12 @@ export const projectSchema = z.object({
 });
 
 export type ProjectFormData = z.infer<typeof projectSchema>;
+
+export const reviewSchema = z.object({
+  content: z
+    .string()
+    .min(5, "후기는 최소 5자 이상 입력해주세요.")
+    .max(1000, "후기는 최대 1000자까지 작성할 수 있습니다."),
+});
+
+export type ReviewFormData = z.infer<typeof reviewSchema>;
