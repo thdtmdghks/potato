@@ -27,7 +27,7 @@ export function AdminReviewsView({ pendingReviews, editRequests }: Props) {
       if (!res.success) {
         setActionError(res.error);
       }
-    } catch (err) {
+    } catch {
       setActionError("서버 오류가 발생했습니다.");
     } finally {
       setLoadingId(null);
