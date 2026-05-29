@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import type { Review } from "@/shared/types";
+import { formatDate } from "@/shared/utils";
 
 interface Props {
   reviews: Review[];
@@ -50,9 +51,7 @@ export function PendingReviewsList({ reviews, loadingId, onApprove, onDelete }: 
                         {review.author_name}
                       </span>
                       <span className="mx-1.5 text-gray-300 dark:text-gray-700">|</span>
-                      <span className="text-xs text-gray-400">
-                        {new Date(review.created_at).toLocaleDateString()}
-                      </span>
+                      <span className="text-xs text-gray-400">{formatDate(review.created_at)}</span>
                     </div>
                   </div>
 
