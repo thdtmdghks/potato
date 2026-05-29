@@ -10,6 +10,7 @@ import {
   CarouselPrevious,
 } from "@/app/_components/carousel";
 
+import AutoScroll from "embla-carousel-auto-scroll";
 import { formatDate } from "@/shared/utils";
 
 interface Props {
@@ -21,7 +22,11 @@ export function ReviewCarousel({ reviews }: Props) {
 
   return (
     <div className="relative mx-auto max-w-5xl px-8">
-      <Carousel opts={{ loop: false, align: "start" }} className="w-full">
+      <Carousel
+        opts={{ loop: true, align: "start", dragFree: true }}
+        plugins={[AutoScroll({ speed: 1.2, stopOnInteraction: false, stopOnMouseEnter: true })]}
+        className="w-full"
+      >
         <CarouselContent className="-ml-4">
           {reviews.map((review) => (
             <CarouselItem key={review.id} className="basis-full pl-4 sm:basis-1/2">
