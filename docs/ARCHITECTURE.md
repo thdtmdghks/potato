@@ -131,12 +131,14 @@ export async function getServerRepositories() {
 
 ## 렌더링 전략
 
-| 페이지           | 렌더링 방식          | 이유                  |
-| ---------------- | -------------------- | --------------------- |
-| `/`              | Dynamic (SSR)        | DB에서 시공사례 fetch |
-| `/projects`      | Dynamic (SSR)        | DB에서 실시간 fetch   |
-| `/projects/[id]` | Dynamic (SSR)        | 동적 파라미터         |
-| `/admin/*`       | Client + Server 혼합 | 인증 + CRUD           |
+| 페이지           | 렌더링 방식          | 이유                       |
+| ---------------- | -------------------- | -------------------------- |
+| `/`              | Dynamic (SSR)        | DB에서 시공사례 fetch      |
+| `/projects`      | Dynamic (SSR)        | DB에서 실시간 fetch        |
+| `/projects/[id]` | Dynamic (SSR)        | 동적 파라미터              |
+| `/reviews/write` | Dynamic (SSR)        | 동적 파라미터 및 세션 체크 |
+| `/reviews/my`    | Dynamic (SSR)        | 세션 기반 작성 내역 조회   |
+| `/admin/*`       | Client + Server 혼합 | 인증 + CRUD                |
 
 ## Data Flow
 
@@ -241,13 +243,41 @@ export async function getServerRepositories() {
 | created_by  | text        | 생성자 관리자ID |
 | created_at  | timestamptz | 생성일          |
 
+### reviews (고객 시공 후기)
+
+| 컬럼          | 타입        | 설명                                  |
+| ------------- | ----------- | ------------------------------------- |
+| id            | uuid (PK)   | 수동 생성 (요청 UUID)                 |
+| kakao_id      | text        | 작성자 카카오 ID                      |
+| author_name   | text        | 작성자 이름                           |
+| author_avatar | text        | 작성자 아바타 URL                     |
+| content       | text        | 후기 본문                             |
+| images        | text[]      | 시공 완료 사진 URL 배열               |
+| status        | text        | 노출 상태 ('pending' 또는 'approved') |
+| created_at    | timestamptz | 생성일                                |
+| updated_at    | timestamptz | 최종 수정/승인일                      |
+
+### review_edits (시공 후기 수정 요청 대기)
+
+| 컬럼       | 타입        | 설명                                         |
+| ---------- | ----------- | -------------------------------------------- |
+| review_id  | uuid (PK)   | `reviews.id` 외래키 참조 (ON DELETE CASCADE) |
+| content    | text        | 수정 요청 본문                               |
+| images     | text[]      | 수정 요청 사진 URL 배열                      |
+| created_at | timestamptz | 수정 요청 생성일                             |
+
 ### RLS 정책
 
-| 테이블   | SELECT | INSERT      | UPDATE/DELETE |
-| -------- | ------ | ----------- | ------------- |
-| projects | 누구나 | 인증 사용자 | 인증 사용자   |
+| 테이블       | SELECT               | INSERT                         | UPDATE/DELETE        |
+| ------------ | -------------------- | ------------------------------ | -------------------- |
+| projects     | 누구나               | 인증 사용자                    | 인증 사용자          |
+| reviews      | 누구나               | 누구나 (카카오 로그인 검증 후) | 인증 사용자 (관리자) |
+| review_edits | 인증 사용자 (관리자) | 누구나 (카카오 로그인 검증 후) | 인증 사용자 (관리자) |
 
-SQL 마이그레이션: [supabase/migrations/20260521000001_initial_schema.sql](file:///Users/a-26-001/Workspace/potato/supabase/migrations/20260521000001_initial_schema.sql)
+SQL 마이그레이션:
+
+- 초기화: [supabase/migrations/20260521000001_initial_schema.sql](file:///Users/a-26-001/Workspace/potato/supabase/migrations/20260521000001_initial_schema.sql)
+- 리뷰 시스템 추가: [supabase/migrations/20260527000001_reviews_schema.sql](file:///Users/a-26-001/Workspace/potato/supabase/migrations/20260527000001_reviews_schema.sql)
 
 ---
 
