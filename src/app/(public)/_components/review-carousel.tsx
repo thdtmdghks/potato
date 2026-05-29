@@ -20,6 +20,9 @@ interface Props {
 export function ReviewCarousel({ reviews }: Props) {
   if (reviews.length === 0) return null;
 
+  // TODO: (추후 작업) 리뷰 텍스트가 길어질 경우를 대비해, 카드 클릭 시
+  // 전체 후기 본문과 등록된 모든 고해상도 이미지를 크게 볼 수 있는
+  // 반투명 유리 배경의 상세 보기 모달(Modal) 팝업 기능 추가 예정 (안 1)
   return (
     <div className="relative mx-auto max-w-5xl px-8">
       <Carousel
