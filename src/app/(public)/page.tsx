@@ -2,11 +2,13 @@ import Link from "next/link";
 import { getServerRepositories } from "@/server";
 import { BUSINESS, LINKS } from "@/shared/constants";
 import { ProjectCarousel } from "./_components/project-carousel";
+import { ReviewCarousel } from "./_components/review-carousel";
 import { ROUTES } from "@/shared/routes";
 
 export default async function Home() {
-  const { projects } = await getServerRepositories();
+  const { projects, reviews } = await getServerRepositories();
   const recentProjects = await projects.getAll();
+  const approvedReviews = await reviews.getAllApproved();
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -86,6 +88,19 @@ export default async function Home() {
           </Link>
         </div>
       </section>
+
+      {/* 시공후기 */}
+      {approvedReviews.length > 0 && (
+        <section className="border-t border-gray-100 bg-gray-50/30 py-20 dark:border-gray-800 dark:bg-gray-950/10">
+          <div className="mx-auto mb-12 max-w-5xl px-4 text-center">
+            <h2 className="text-navy text-2xl font-bold dark:text-white">고객 시공 후기</h2>
+            <p className="text-gray-dark mt-2 text-sm dark:text-gray-400">
+              실제 경산창호를 이용하신 고객님들의 생생한 한마디입니다
+            </p>
+          </div>
+          <ReviewCarousel reviews={approvedReviews} />
+        </section>
+      )}
 
       {/* 연락처 */}
       <section id="contact" className="bg-gray-50 py-16 dark:bg-gray-900/50">
