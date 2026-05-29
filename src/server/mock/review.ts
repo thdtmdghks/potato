@@ -10,7 +10,8 @@ export class MockReviewRepository implements ReviewRepository {
       kakao_id: "mock_kakao_1",
       author_name: "홍길동",
       author_avatar: "https://picsum.photos/seed/avatar1/100/100",
-      content: "경산창호 하이샤시 시공 정말 마음에 듭니다! 단열이 아주 잘 돼요.",
+      content:
+        "경산창호 하이샤시 시공 정말 마음에 듭니다! 단열이 아주 잘 돼요. 원래 겨울만 되면 창가에서 찬 바람이 쌩쌩 불어서 보일러를 아무리 틀어도 추웠는데, 샤시 교체하고 나서는 온 집안이 훈훈합니다. 소음 차단도 확실해서 밖에서 차 지나다니는 소리가 하나도 안 들려요. 꼼꼼하게 시공해 주신 사장님 정말 감사드리고 주변에도 적극 추천하겠습니다!",
       images: [IMG("pvc1"), IMG("pvc1b")],
       status: "approved",
       created_at: new Date(Date.now() - 86400000 * 5).toISOString(),
