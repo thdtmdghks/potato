@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import { auth } from "@/auth";
 import { getServerRepositories } from "@/server";
-import { getReviewWriteState } from "./_utils";
+import { getReviewWriteState, isValidUUID } from "./_utils";
 import { ReviewWriteView } from "./_components/review-write-view";
+import { ROUTES } from "@/shared/routes";
 
 // 검색 엔진 색인 차단
 export const metadata: Metadata = {
@@ -20,7 +21,17 @@ interface PageProps {
 export default async function ReviewWritePage({ searchParams }: PageProps) {
   const resolvedSearchParams = await searchParams;
   const id = typeof resolvedSearchParams.id === "string" ? resolvedSearchParams.id : "";
+
+  if (!isValidUUID(id)) {
+    return <ReviewWriteView state={{ type: "INVALID_LINK" }} />;
+  }
+
   const session = await auth();
+  if (!session?.kakaoId) {
+    return (
+      <ReviewWriteView state={{ type: "AUTH_REQUIRED", redirectTo: ROUTES.writeReview(id) }} />
+    );
+  }
 
   const { reviews, reviewEdits } = await getServerRepositories();
 
