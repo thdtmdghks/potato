@@ -15,6 +15,7 @@ import { ImageUpload } from "@/app/_components/image-upload";
 import { createProject, updateProject } from "../_actions";
 import { FORM_KEYS } from "../_constants";
 import { CATEGORIES } from "@/shared/constants";
+import { ROUTES } from "@/shared/routes";
 
 interface Props {
   project?: Project;
@@ -74,12 +75,12 @@ export function ProjectForm({ project }: Props) {
       return;
     }
 
-    router.push("/admin/projects");
+    router.push(ROUTES.admin.projects);
   };
 
   return (
     <>
-      <Link href="/admin/projects" className="text-navy hover:underline dark:text-blue-400">
+      <Link href={ROUTES.admin.projects} className="text-navy hover:underline dark:text-blue-400">
         ← 목록으로
       </Link>
       <h1 className="text-navy mt-4 text-2xl font-bold dark:text-white">

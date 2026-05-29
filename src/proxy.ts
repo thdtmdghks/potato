@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/auth";
 import { logWarn } from "@/server/logger";
+import { ROUTES } from "@/shared/routes";
 
 export default auth((req) => {
   const session = req.auth;
@@ -15,7 +16,7 @@ export default auth((req) => {
     });
 
     const callbackUrl = encodeURIComponent(path + req.nextUrl.search);
-    return NextResponse.redirect(new URL(`/login?callbackUrl=${callbackUrl}`, req.url));
+    return NextResponse.redirect(new URL(`${ROUTES.login}?callbackUrl=${callbackUrl}`, req.url));
   }
 
   if (session.role !== "admin") {
@@ -28,7 +29,7 @@ export default auth((req) => {
       userAgent: req.headers.get("user-agent") || "unknown",
     });
 
-    return NextResponse.redirect(new URL("/login?error=not-admin", req.url));
+    return NextResponse.redirect(new URL(`${ROUTES.login}?error=not-admin`, req.url));
   }
 });
 

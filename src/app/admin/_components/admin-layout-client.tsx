@@ -3,11 +3,12 @@
 import Link from "next/link";
 import { useSession, signOut } from "next-auth/react";
 import { useMenuWithHistory } from "@/client/use-menu-with-history";
+import { ROUTES } from "@/shared/routes";
 
 const adminNav = [
-  { href: "/admin", label: "대시보드" },
-  { href: "/admin/projects", label: "시공사례 관리" },
-  { href: "/admin/reviews", label: "리뷰 관리" },
+  { href: ROUTES.admin.root, label: "대시보드" },
+  { href: ROUTES.admin.projects, label: "시공사례 관리" },
+  { href: ROUTES.admin.reviews, label: "리뷰 관리" },
 ];
 
 export default function AdminLayoutClient({ children }: { children: React.ReactNode }) {
@@ -43,14 +44,14 @@ export default function AdminLayoutClient({ children }: { children: React.ReactN
 
         <div className="mt-6 border-t border-white/20 pt-4">
           <Link
-            href="/"
+            href={ROUTES.home}
             className="mb-3 block rounded px-3 py-2 text-sm text-white/60 hover:bg-white/10 hover:text-white"
           >
             홈페이지 보기
           </Link>
           {kakaoId && <p className="mb-2 text-xs text-white/60">ID: {kakaoId}</p>}
           <button
-            onClick={() => signOut({ callbackUrl: "/" })}
+            onClick={() => signOut({ callbackUrl: ROUTES.home })}
             className="w-full rounded bg-white/10 px-3 py-2 text-sm hover:bg-white/20"
           >
             로그아웃

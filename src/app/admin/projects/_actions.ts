@@ -7,14 +7,15 @@ import { projectSchema } from "@/shared/schemas";
 import type { StorageRepository } from "@/server/repositories";
 import { FORM_KEYS } from "./_constants";
 import { logError, logWarn } from "@/server/logger";
+import { ROUTES } from "@/shared/routes";
 
 const STORAGE_BUCKET = process.env.STORAGE_BUCKET ?? "images";
 const STORAGE_PATH_PREFIX = "projects";
 
 const revalidateProjects = () => {
-  revalidatePath("/");
-  revalidatePath("/projects");
-  revalidatePath("/admin/projects");
+  revalidatePath(ROUTES.home);
+  revalidatePath(ROUTES.projects);
+  revalidatePath(ROUTES.admin.projects);
 };
 
 const uploadImages = async (storage: StorageRepository, files: File[]) => {
