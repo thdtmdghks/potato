@@ -3,10 +3,16 @@ import Link from "next/link";
 import { Button } from "@/app/_components/button";
 
 interface AuthRequiredCardProps {
-  id: string;
+  redirectTo: string;
+  title?: string;
+  description?: string;
 }
 
-export function AuthRequiredCard({ id }: AuthRequiredCardProps) {
+export function AuthRequiredCard({
+  redirectTo,
+  title = "본인 인증이 필요합니다",
+  description = "경산창호 후기 시스템은 실제 시공을 진행한\n고객님의 신뢰성 있는 작성만을 보증하기 위해\n카카오 로그인을 통한 실명 인증 후 서비스를 제공합니다.",
+}: AuthRequiredCardProps) {
   return (
     <main className="mx-auto max-w-md px-4 py-16 text-center">
       <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-lg dark:border-gray-800 dark:bg-gray-900">
@@ -27,19 +33,15 @@ export function AuthRequiredCard({ id }: AuthRequiredCardProps) {
             </svg>
           </div>
         </div>
-        <h1 className="text-navy text-xl font-bold dark:text-white">본인 인증이 필요합니다</h1>
-        <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">
-          경산창호 후기 시스템은 실제 시공을 진행한
-          <br />
-          고객님의 신뢰성 있는 작성만을 보증하기 위해
-          <br />
-          카카오 로그인을 통한 실명 인증 후 후기를 등록합니다.
+        <h1 className="text-navy text-xl font-bold dark:text-white">{title}</h1>
+        <p className="mt-2 text-sm leading-relaxed whitespace-pre-line text-gray-600 dark:text-gray-400">
+          {description}
         </p>
 
         <form
           action={async () => {
             "use server";
-            await signIn("kakao", { redirectTo: `/reviews/write?id=${id}` });
+            await signIn("kakao", { redirectTo });
           }}
           className="mt-6"
         >

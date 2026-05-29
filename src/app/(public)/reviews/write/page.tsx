@@ -3,9 +3,10 @@ import { auth } from "@/auth";
 import { getServerRepositories } from "@/server";
 import { ReviewForm } from "./_components/review-form";
 import { InvalidLinkCard } from "./_components/invalid-link-card";
-import { AuthRequiredCard } from "./_components/auth-required-card";
+import { AuthRequiredCard } from "@/app/_components/auth-required-card";
 import { UnauthorizedCard } from "./_components/unauthorized-card";
 import Link from "next/link";
+import { isValidUUID } from "./_utils";
 
 // 검색 엔진 색인 차단
 export const metadata: Metadata = {
@@ -20,14 +21,12 @@ interface PageProps {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }
 
-const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
-
 export default async function ReviewWritePage({ searchParams }: PageProps) {
   const resolvedSearchParams = await searchParams;
   const id = typeof resolvedSearchParams.id === "string" ? resolvedSearchParams.id : "";
 
   // 1. UUID 검증
-  if (!id || !UUID_REGEX.test(id)) {
+  if (!isValidUUID(id)) {
     return <InvalidLinkCard />;
   }
 

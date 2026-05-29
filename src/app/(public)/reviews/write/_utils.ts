@@ -1,0 +1,9 @@
+const UUID_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+
+/**
+ * 전달받은 문자열이 올바른 UUID v4 형식인지 검증합니다.
+ */
+export function isValidUUID(id: string): boolean {
+  if (!id) return false;
+  return UUID_REGEX.test(id);
+}
