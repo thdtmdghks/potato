@@ -2,8 +2,18 @@ import type { Review, ReviewEdit } from "@/shared/types";
 import type { ReviewEditRepository } from "../repositories";
 import type { MockReviewRepository } from "./review";
 
+const IMG = (seed: string, w = 800, h = 600) => `https://picsum.photos/seed/${seed}/${w}/${h}`;
+
 export class MockReviewEditRepository implements ReviewEditRepository {
-  private editsData: ReviewEdit[] = [];
+  private editsData: ReviewEdit[] = [
+    {
+      review_id: "99999999-9999-9999-9999-999999999999",
+      content:
+        "샤시 시공하고 1년 지났는데, 튼튼하고 아주 좋습니다. 추천합니다! (추가: 겨울철 결로 현상도 완전히 없어졌네요. 아주 만족스럽습니다.)",
+      images: [IMG("pvc2"), IMG("pvc3")],
+      created_at: new Date(Date.now() - 86400000).toISOString(),
+    },
+  ];
 
   constructor(private reviewsRepo: MockReviewRepository) {}
 

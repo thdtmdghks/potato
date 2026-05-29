@@ -22,10 +22,21 @@ export class MockReviewRepository implements ReviewRepository {
       author_name: "이순신",
       author_avatar: "",
       content: "방충망 교체 깔끔하게 해주셨네요. 친절하십니다.",
-      images: [],
+      images: [IMG("mesh1")],
       status: "pending",
       created_at: new Date(Date.now() - 86400000).toISOString(),
       updated_at: new Date(Date.now() - 86400000).toISOString(),
+    },
+    {
+      id: "99999999-9999-9999-9999-999999999999",
+      kakao_id: "mock_kakao_3",
+      author_name: "임꺽정",
+      author_avatar: "https://picsum.photos/seed/avatar3/100/100",
+      content: "샤시 시공하고 1년 지났는데, 튼튼하고 아주 좋습니다. 추천합니다.",
+      images: [IMG("pvc2")],
+      status: "approved",
+      created_at: new Date(Date.now() - 86400000 * 30).toISOString(),
+      updated_at: new Date(Date.now() - 86400000 * 30).toISOString(),
     },
   ];
 
