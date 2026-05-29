@@ -58,7 +58,7 @@ export class SupabaseReviewEditRepository implements ReviewEditRepository {
       });
   }
 
-  async upsert(data: ReviewEdit): Promise<ReviewEdit | null> {
+  async upsert(data: Omit<ReviewEdit, "created_at">): Promise<ReviewEdit | null> {
     const { data: row, error } = await this.db.from("review_edits").upsert(data).select().single();
     if (error) {
       logError("SupabaseReviewEditRepository.upsert", error, data);

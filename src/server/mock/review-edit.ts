@@ -29,9 +29,12 @@ export class MockReviewEditRepository implements ReviewEditRepository {
     return result.sort((a, b) => b.created_at.localeCompare(a.created_at));
   }
 
-  async upsert(data: ReviewEdit): Promise<ReviewEdit | null> {
+  async upsert(data: Omit<ReviewEdit, "created_at">): Promise<ReviewEdit | null> {
     const idx = this.editsData.findIndex((e) => e.review_id === data.review_id);
-    const item = { ...data, created_at: new Date().toISOString() };
+    const item: ReviewEdit = {
+      ...data,
+      created_at: new Date().toISOString(),
+    };
     if (idx === -1) {
       this.editsData.push(item);
     } else {

@@ -28,7 +28,7 @@ export interface ReviewEditRepository {
   getById(reviewId: string): Promise<ReviewEdit | null>;
   getAll(): Promise<ReviewEdit[]>;
   getAllWithOriginal(): Promise<(ReviewEdit & { original: Review })[]>;
-  upsert(data: ReviewEdit): Promise<ReviewEdit | null>;
+  upsert(data: Omit<ReviewEdit, "created_at">): Promise<ReviewEdit | null>;
   delete(reviewId: string): Promise<boolean>;
 }
 
