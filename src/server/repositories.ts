@@ -19,7 +19,7 @@ export interface ReviewRepository {
   getByKakaoId(kakaoId: string): Promise<Review[]>;
   getAllApproved(): Promise<Review[]>;
   getAllPending(): Promise<Review[]>;
-  create(data: Omit<Review, "created_at" | "status">): Promise<Review | null>;
+  create(data: Omit<Review, "created_at" | "status" | "updated_at">): Promise<Review | null>;
   update(id: string, data: Partial<Review>): Promise<Review | null>;
   delete(id: string): Promise<boolean>;
 }

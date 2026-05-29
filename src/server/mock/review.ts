@@ -14,6 +14,7 @@ export class MockReviewRepository implements ReviewRepository {
       images: [IMG("pvc1"), IMG("pvc1b")],
       status: "approved",
       created_at: new Date(Date.now() - 86400000 * 5).toISOString(),
+      updated_at: new Date(Date.now() - 86400000 * 5).toISOString(),
     },
     {
       id: "88888888-8888-8888-8888-888888888888",
@@ -24,6 +25,7 @@ export class MockReviewRepository implements ReviewRepository {
       images: [],
       status: "pending",
       created_at: new Date(Date.now() - 86400000).toISOString(),
+      updated_at: new Date(Date.now() - 86400000).toISOString(),
     },
   ];
 
@@ -47,11 +49,12 @@ export class MockReviewRepository implements ReviewRepository {
       .sort((a, b) => b.created_at.localeCompare(a.created_at));
   }
 
-  async create(data: Omit<Review, "created_at" | "status">): Promise<Review | null> {
+  async create(data: Omit<Review, "created_at" | "status" | "updated_at">): Promise<Review | null> {
     const item: Review = {
       ...data,
       status: "pending",
       created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
     };
     this.reviewsData.push(item);
     return item;
@@ -60,7 +63,11 @@ export class MockReviewRepository implements ReviewRepository {
   async update(id: string, data: Partial<Review>): Promise<Review | null> {
     const idx = this.reviewsData.findIndex((r) => r.id === id);
     if (idx === -1) return null;
-    this.reviewsData[idx] = { ...this.reviewsData[idx], ...data };
+    this.reviewsData[idx] = {
+      ...this.reviewsData[idx],
+      ...data,
+      updated_at: new Date().toISOString(),
+    };
     return this.reviewsData[idx];
   }
 

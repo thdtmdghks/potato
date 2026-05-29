@@ -17,6 +17,7 @@ export type ReviewRow = {
   images: string[];
   status: string;
   created_at: string;
+  updated_at: string;
 };
 
 export type ReviewEditRow = {
@@ -62,6 +63,7 @@ export type Database = {
           images?: string[];
           status?: string;
           created_at?: string;
+          updated_at?: string;
         };
         Update: {
           id?: string;
@@ -72,6 +74,7 @@ export type Database = {
           images?: string[];
           status?: string;
           created_at?: string;
+          updated_at?: string;
         };
         Relationships: [];
       };

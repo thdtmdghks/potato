@@ -7,7 +7,8 @@ CREATE TABLE reviews (
   content text NOT NULL,
   images text[] DEFAULT '{}' NOT NULL,
   status text DEFAULT 'pending' NOT NULL,
-  created_at timestamptz DEFAULT now() NOT NULL
+  created_at timestamptz DEFAULT now() NOT NULL,
+  updated_at timestamptz DEFAULT now() NOT NULL
 );
 
 -- 수정 요청 대기 테이블 생성 (1대1 매핑)

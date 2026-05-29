@@ -56,7 +56,7 @@ export class SupabaseReviewRepository implements ReviewRepository {
     return data ?? [];
   }
 
-  async create(data: Omit<Review, "created_at" | "status">): Promise<Review | null> {
+  async create(data: Omit<Review, "created_at" | "status" | "updated_at">): Promise<Review | null> {
     const { data: row, error } = await this.db
       .from("reviews")
       .insert({ ...data, status: "pending" })
@@ -72,7 +72,7 @@ export class SupabaseReviewRepository implements ReviewRepository {
   async update(id: string, data: Partial<Review>): Promise<Review | null> {
     const { data: row, error } = await this.db
       .from("reviews")
-      .update(data)
+      .update({ ...data, updated_at: new Date().toISOString() })
       .eq("id", id)
       .select()
       .single();
