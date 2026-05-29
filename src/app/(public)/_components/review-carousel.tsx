@@ -24,7 +24,7 @@ export function ReviewCarousel({ reviews }: Props) {
     <div className="relative mx-auto max-w-5xl px-8">
       <Carousel
         opts={{ loop: true, align: "start", dragFree: true }}
-        plugins={[AutoScroll({ speed: 1.2, stopOnInteraction: false, stopOnMouseEnter: true })]}
+        plugins={[AutoScroll({ speed: 1.2, stopOnInteraction: false, stopOnMouseEnter: false })]}
         className="w-full"
       >
         <CarouselContent className="-ml-4">
@@ -52,7 +52,7 @@ export function ReviewCarousel({ reviews }: Props) {
 
                 {/* 2. 후기 내용 */}
                 <div className="flex-1 space-y-3">
-                  <p className="line-clamp-4 min-h-[4.5rem] text-sm leading-relaxed text-gray-600 dark:text-gray-300">
+                  <p className="line-clamp-4 min-h-[3rem] text-sm leading-relaxed text-gray-600 dark:text-gray-300">
                     {review.content}
                   </p>
                 </div>
