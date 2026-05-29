@@ -6,6 +6,7 @@ import { auth } from "@/auth";
 import { reviewSchema } from "@/shared/schemas";
 import type { StorageRepository } from "@/server/repositories";
 import { logError } from "@/server/logger";
+import { ROUTES } from "@/shared/routes";
 
 const STORAGE_BUCKET = process.env.STORAGE_BUCKET ?? "images";
 const STORAGE_PATH_PREFIX = "reviews";
@@ -70,7 +71,6 @@ export async function submitReview(id: string, formData: FormData) {
         kakao_id: session.kakaoId,
         author_name: session.user?.name ?? "고객",
         author_avatar: session.user?.image ?? "",
-        rating: 5,
         content: parsed.data.content,
         images: finalImageUrls,
       });
@@ -89,7 +89,6 @@ export async function submitReview(id: string, formData: FormData) {
       if (existingReview.status === "pending") {
         // 2. 대기 상태 직접 수정 (reviews 테이블 바로 업데이트)
         const result = await reviews.update(id, {
-          rating: 5,
           content: parsed.data.content,
           images: finalImageUrls,
         });
@@ -108,10 +107,8 @@ export async function submitReview(id: string, formData: FormData) {
         // 3. 승인 상태 수정 요청 (review_edits 테이블에 upsert)
         const result = await reviewEdits.upsert({
           review_id: id,
-          rating: 5,
           content: parsed.data.content,
           images: finalImageUrls,
-          created_at: new Date().toISOString(),
         });
 
         if (!result) {
@@ -121,10 +118,10 @@ export async function submitReview(id: string, formData: FormData) {
       }
     }
 
-    revalidatePath("/");
-    revalidatePath("/admin/reviews");
-    revalidatePath(`/reviews/write?id=${id}`);
-    revalidatePath("/reviews/my");
+    revalidatePath(ROUTES.home);
+    revalidatePath(ROUTES.admin.reviews);
+    revalidatePath(ROUTES.writeReview(id));
+    revalidatePath(ROUTES.myReviews);
     return { success: true as const };
   } catch (error) {
     logError("reviews.submitReview", error, { id });

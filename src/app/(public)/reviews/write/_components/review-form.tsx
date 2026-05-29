@@ -9,6 +9,7 @@ import { Label } from "@/app/_components/label";
 import { Textarea } from "@/app/_components/textarea";
 import { submitReview } from "../_actions";
 import { useRouter } from "next/navigation";
+import { ROUTES } from "@/shared/routes";
 import { ReviewAvatar } from "./review-avatar";
 import { ImageUpload } from "@/app/_components/image-upload";
 import { useImageUpload } from "@/client/use-image-upload";
@@ -16,7 +17,6 @@ import { useImageUpload } from "@/client/use-image-upload";
 interface ReviewFormProps {
   id: string;
   initialData: {
-    rating: number;
     content: string;
     images: string[];
   } | null;
@@ -84,7 +84,7 @@ export function ReviewForm({ id, initialData, isApproved, userProfile }: ReviewF
         setServerError(result.error);
         return;
       }
-      router.push("/reviews/my");
+      router.push(ROUTES.myReviews);
     });
   };
 

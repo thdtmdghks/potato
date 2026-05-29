@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Button } from "@/app/_components/button";
+import { ROUTES } from "@/shared/routes";
 
 export function UnauthorizedCard() {
   return (
@@ -12,12 +13,12 @@ export function UnauthorizedCard() {
           본인의 후기만 수정할 수 있습니다.
         </p>
         <div className="mt-6 flex flex-col space-y-2">
-          <Link href="/reviews/my">
+          <Link href={ROUTES.myReviews}>
             <Button className="bg-navy hover:bg-navy/90 w-full text-white dark:bg-blue-600 dark:hover:bg-blue-700">
               내가 작성한 후기 보기
             </Button>
           </Link>
-          <Link href="/">
+          <Link href={ROUTES.home}>
             <Button variant="outline" className="w-full">
               홈페이지로 이동
             </Button>

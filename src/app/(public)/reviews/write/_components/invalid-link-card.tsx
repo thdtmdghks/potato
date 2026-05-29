@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Button } from "@/app/_components/button";
+import { ROUTES } from "@/shared/routes";
 
 export function InvalidLinkCard() {
   return (
@@ -12,7 +13,7 @@ export function InvalidLinkCard() {
           대표님께 새 리뷰 요청 링크를 발급받아 주세요.
         </p>
         <div className="mt-6">
-          <Link href="/">
+          <Link href={ROUTES.home}>
             <Button className="bg-navy hover:bg-navy/90 text-white dark:bg-blue-600 dark:hover:bg-blue-700">
               홈페이지로 이동
             </Button>
