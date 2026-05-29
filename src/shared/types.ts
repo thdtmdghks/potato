@@ -13,7 +13,6 @@ export type ReviewRow = {
   kakao_id: string;
   author_name: string;
   author_avatar: string;
-  rating: number;
   content: string;
   images: string[];
   status: string;
@@ -22,7 +21,6 @@ export type ReviewRow = {
 
 export type ReviewEditRow = {
   review_id: string;
-  rating: number;
   content: string;
   images: string[];
   created_at: string;
@@ -60,7 +58,6 @@ export type Database = {
           kakao_id: string;
           author_name: string;
           author_avatar: string;
-          rating: number;
           content: string;
           images?: string[];
           status?: string;
@@ -71,7 +68,6 @@ export type Database = {
           kakao_id?: string;
           author_name?: string;
           author_avatar?: string;
-          rating?: number;
           content?: string;
           images?: string[];
           status?: string;
@@ -83,14 +79,12 @@ export type Database = {
         Row: ReviewEditRow;
         Insert: {
           review_id: string;
-          rating: number;
           content: string;
           images?: string[];
           created_at?: string;
         };
         Update: {
           review_id?: string;
-          rating?: number;
           content?: string;
           images?: string[];
           created_at?: string;
