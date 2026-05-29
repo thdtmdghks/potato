@@ -1,6 +1,7 @@
 import { signIn } from "@/auth";
 import Link from "next/link";
 import { Button } from "@/app/_components/button";
+import { ROUTES } from "@/shared/routes";
 
 interface AuthRequiredCardProps {
   redirectTo: string;
@@ -54,7 +55,7 @@ export function AuthRequiredCard({
         </form>
 
         <Link
-          href="/"
+          href={ROUTES.home}
           className="mt-4 block text-xs text-gray-400 hover:underline dark:text-gray-500"
         >
           취소하고 경산창호 홈으로 돌아가기

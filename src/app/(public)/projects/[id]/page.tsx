@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { notFound } from "next/navigation";
+import { ROUTES } from "@/shared/routes";
 import type { Metadata } from "next";
 import { getServerRepositories } from "@/server";
 import { getProjectDetailMetadata } from "./_utils";
@@ -56,7 +57,7 @@ export default async function ProjectDetail({ params }: { params: Promise<{ id: 
 
         <div className="mt-10 pr-4 text-right">
           <Link
-            href="/projects"
+            href={ROUTES.projects}
             className="bg-navy hover:bg-navy-light inline-block rounded-lg px-6 py-2.5 text-sm font-medium text-white transition-colors"
           >
             목록보기

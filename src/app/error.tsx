@@ -3,6 +3,7 @@
 import { useEffect, useRef } from "react";
 import Link from "next/link";
 import { reportUnexpectedError } from "@/app/_actions";
+import { ROUTES } from "@/shared/routes";
 
 interface ErrorProps {
   error: Error & { digest?: string };
@@ -55,7 +56,7 @@ export default function RootError({ error, reset }: ErrorProps) {
             다시 시도
           </button>
           <Link
-            href="/"
+            href={ROUTES.home}
             className="hover:bg-gray-light rounded-lg border border-gray-200 px-6 py-2.5 text-sm font-semibold text-gray-700 transition-colors dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-800"
           >
             홈으로 이동

@@ -2,6 +2,7 @@ import Link from "next/link";
 import { getServerRepositories } from "@/server";
 import { BUSINESS, LINKS } from "@/shared/constants";
 import { ProjectCarousel } from "./_components/project-carousel";
+import { ROUTES } from "@/shared/routes";
 
 export default async function Home() {
   const { projects } = await getServerRepositories();
@@ -77,7 +78,10 @@ export default async function Home() {
           <ProjectCarousel projects={recentProjects} />
         </div>
         <div className="mx-auto mt-6 max-w-5xl px-4 text-right">
-          <Link href="/projects" className="text-navy hover:text-accent text-sm dark:text-blue-400">
+          <Link
+            href={ROUTES.projects}
+            className="text-navy hover:text-accent text-sm dark:text-blue-400"
+          >
             전체보기 →
           </Link>
         </div>

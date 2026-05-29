@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { BUSINESS } from "@/shared/constants";
+import { ROUTES } from "@/shared/routes";
 
 export function Footer() {
   return (
@@ -28,11 +29,11 @@ export function Footer() {
             © {new Date().getFullYear()} {BUSINESS.name}. 대표 {BUSINESS.owner}.
           </p>
           <div className="mt-2 flex justify-center gap-3 text-xs text-gray-600">
-            <Link href="/privacy" className="hover:text-gray-400">
+            <Link href={ROUTES.privacy} className="hover:text-gray-400">
               개인정보 처리방침
             </Link>
             <span>|</span>
-            <Link href="/admin" prefetch={false} className="hover:text-gray-400">
+            <Link href={ROUTES.admin.root} prefetch={false} className="hover:text-gray-400">
               관리자
             </Link>
           </div>
