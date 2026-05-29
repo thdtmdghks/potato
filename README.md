@@ -12,6 +12,7 @@
 - **Server Actions** — 오케스트레이션만 담당, 순수 로직은 분리하여 단위 테스트 가능
 - **서버/클라이언트/공용 3분할** — 폴더 경계를 넘는 import 금지로 관심사 분리
 - **Auth.js v5 카카오 로그인** — 환경변수 기반 관리자 권한 제어 (DB 변경 불필요)
+- **고객 후기(리뷰) 및 검토 시스템** — 카카오 로그인 인증 기반 후기 작성/수정 요청, 관리자 승인(신규 승인 & 수정 대조 승인) 2단계 파이프라인 구축 및 RLS 보안 적용
 - **이미지 최적화** — browser-image-compression으로 WebP 변환 + 200KB 제한 후 Supabase Storage 업로드
 - **환경변수 빌드타임 검증** — Zod 스키마로 필수 환경변수 누락 시 빌드 차단, 배포 사고 방지
 - **Discord 웹훅 실시간 모니터링** — 에러/보안 이벤트를 채널 분리하여 알림 (Sentry 대체)
@@ -67,6 +68,10 @@ Vercel Hobby 플랜의 로그 보존이 1시간이라 사후 분석이 불가능
 
 `SUPABASE_URL` 유무에 따라 Supabase 구현체와 Mock 구현체를 자동 전환합니다. DB 없이도 개발/빌드/테스트가 가능합니다. Next.js dev 모드에서 HMR이 모듈을 재로드해도 Mock 데이터가 유실되지 않도록 `globalThis`에 인스턴스를 캐싱하는 싱글톤 패턴을 적용했습니다.
 
+### 카카오 인증 기반 하이브리드 후기 파이프라인
+
+일반 고객은 카카오 로그인을 통해 본인이 작성한 후기를 안전하게 관리할 수 있으며, 악성/광고성 리뷰 노출을 예방하기 위해 대표자가 관리자 CMS에서 최종 승인해야만 홈페이지에 노출됩니다. 고객이 후기를 수정할 경우, 기존 노출 중인 원본은 유지하되 백그라운드(`review_edits` 테이블)에 수정 요청안을 임시 적재하여 관리자가 원본과 대조하여 승인/반려할 수 있도록 설계했습니다. 이 과정에서 Supabase의 RLS 정책을 통해 작성자 본인 및 관리자 외의 데이터 변조 위협을 원천 차단했습니다.
+
 ## 설계 결정
 
 주요 기술 선택의 이유는 문서로 기록했습니다:
@@ -74,6 +79,7 @@ Vercel Hobby 플랜의 로그 보존이 1시간이라 사후 분석이 불가능
 - [`docs/ADR.md`](docs/ADR.md) — Architecture Decision Records
 - [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) — 시스템 아키텍처
 - [`docs/CODE_STYLE.md`](docs/CODE_STYLE.md) — 코딩 컨벤션
+- [`docs/features/reviews-dev-plan.md`](docs/features/reviews-dev-plan.md) — 후기 시스템 개발 계획서 및 설정 가이드
 
 ## 시작하기
 
