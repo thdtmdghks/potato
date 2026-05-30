@@ -66,7 +66,7 @@ export async function createProject(formData: FormData) {
     const primaryImageIndex =
       primaryImageIndexStr !== null ? parseInt(String(primaryImageIndexStr), 10) : null;
     let primaryImage: string | null = null;
-    if (primaryImageIndex !== null && imageUrls[primaryImageIndex]) {
+    if (primaryImageIndex !== null && !isNaN(primaryImageIndex) && imageUrls[primaryImageIndex]) {
       primaryImage = imageUrls[primaryImageIndex];
     } else if (imageUrls.length > 0) {
       primaryImage = imageUrls[0];
@@ -131,7 +131,11 @@ export async function updateProject(id: string, formData: FormData) {
       finalImages.includes(primaryImageVal)
     ) {
       primaryImage = primaryImageVal;
-    } else if (primaryImageIndex !== null && newImageUrls[primaryImageIndex]) {
+    } else if (
+      primaryImageIndex !== null &&
+      !isNaN(primaryImageIndex) &&
+      newImageUrls[primaryImageIndex]
+    ) {
       primaryImage = newImageUrls[primaryImageIndex];
     } else if (finalImages.length > 0) {
       primaryImage = finalImages[0];
