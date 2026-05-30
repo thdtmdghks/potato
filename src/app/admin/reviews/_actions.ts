@@ -17,11 +17,14 @@ async function verifyAdmin() {
   }
 }
 
-export async function approveReview(id: string) {
+export async function approveReview(id: string, primaryImage: string | null) {
   try {
     await verifyAdmin();
     const { reviews } = await getServerRepositories();
-    const result = await reviews.update(id, { status: REVIEW_STATUS.APPROVED });
+    const result = await reviews.update(id, {
+      status: REVIEW_STATUS.APPROVED,
+      primary_image: primaryImage,
+    });
     if (!result) {
       return { success: false as const, error: "승인 처리에 실패했습니다." };
     }
@@ -62,10 +65,21 @@ export async function approveReviewEdit(reviewId: string) {
       return { success: false as const, error: "수정 대기 항목을 찾을 수 없습니다." };
     }
 
+    const review = await reviews.getById(reviewId);
+    const originalPrimary = review?.primary_image ?? null;
+    let newPrimary = originalPrimary;
+    if (!edit.images || edit.images.length === 0) {
+      newPrimary = null;
+    } else if (!originalPrimary || !edit.images.includes(originalPrimary)) {
+      newPrimary = edit.images[0];
+    }
+
     // 원본 리뷰 업데이트
     const result = await reviews.update(reviewId, {
       content: edit.content,
       images: edit.images,
+      rating: edit.rating,
+      primary_image: newPrimary,
       status: REVIEW_STATUS.APPROVED,
     });
 
