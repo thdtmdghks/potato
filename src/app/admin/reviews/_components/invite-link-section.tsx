@@ -1,13 +1,15 @@
 "use client";
 
 import { useState } from "react";
+import { generateUUIDv7 } from "@/shared/utils";
 
 export function InviteLinkSection() {
   const [generatedLink, setGeneratedLink] = useState("");
   const [copied, setCopied] = useState(false);
 
   const handleGenerateLink = async () => {
-    const uuid = crypto.randomUUID();
+    const uuid = generateUUIDv7();
+
     const link = `${window.location.origin}/reviews/write?id=${uuid}`;
     setGeneratedLink(link);
     setCopied(false);
