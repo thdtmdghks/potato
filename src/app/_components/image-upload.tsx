@@ -1,8 +1,9 @@
 "use client";
 
-import type { ChangeEvent } from "react";
+import { useState, type ChangeEvent } from "react";
 import { Label } from "./label";
 import { ImageThumbnail } from "./image-thumbnail";
+import { LightboxModal } from "./lightbox-modal";
 
 interface ImageUploadProps {
   label?: string;
@@ -34,6 +35,7 @@ export function ImageUpload({
   onSelectPrimary,
 }: ImageUploadProps) {
   const totalCount = existingImages.length + previews.length;
+  const [activeLightboxUrl, setActiveLightboxUrl] = useState<string | null>(null);
 
   return (
     <div className="space-y-2">
@@ -51,7 +53,8 @@ export function ImageUpload({
             key={`existing-${idx}`}
             url={url}
             isPrimary={primaryImageUrl === url}
-            onSelectPrimary={() => onSelectPrimary?.(url)}
+            onSelectPrimary={onSelectPrimary ? () => onSelectPrimary(url) : undefined}
+            onPreview={() => setActiveLightboxUrl(url)}
             onRemove={() => onRemoveExisting(idx)}
           />
         ))}
@@ -62,14 +65,15 @@ export function ImageUpload({
             key={`new-${idx}`}
             url={url}
             isPrimary={primaryImageUrl === url}
-            onSelectPrimary={() => onSelectPrimary?.(url)}
+            onSelectPrimary={onSelectPrimary ? () => onSelectPrimary(url) : undefined}
+            onPreview={() => setActiveLightboxUrl(url)}
             onRemove={() => onRemoveNew(idx)}
           />
         ))}
 
         {/* 업로드 버튼 */}
         {totalCount < maxCount && (
-          <label className="hover:border-accent dark:hover:border-accent flex h-[75px] w-[100px] cursor-pointer flex-col items-center justify-center rounded border-2 border-dashed border-gray-300 transition-colors hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-800">
+          <label className="hover:border-accent dark:hover:border-accent flex h-[114px] w-[150px] cursor-pointer flex-col items-center justify-center rounded border-2 border-dashed border-gray-300 transition-colors hover:bg-gray-50 dark:border-gray-700 dark:hover:bg-gray-800">
             <svg
               className="h-6 w-6 text-gray-400"
               fill="none"
@@ -99,6 +103,10 @@ export function ImageUpload({
         <p className="mt-2 animate-pulse text-xs text-blue-500">
           이미지를 변환 및 단열/압축 처리 중입니다...
         </p>
+      )}
+
+      {activeLightboxUrl && (
+        <LightboxModal url={activeLightboxUrl} onClose={() => setActiveLightboxUrl(null)} />
       )}
     </div>
   );
