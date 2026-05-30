@@ -2,6 +2,7 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database, Review } from "@/shared/types";
 import type { ReviewRepository } from "../repositories";
 import { logError } from "../logger";
+import { REVIEW_STATUS } from "@/shared/constants";
 
 export class SupabaseReviewRepository implements ReviewRepository {
   constructor(private db: SupabaseClient<Database>) {}
@@ -34,7 +35,7 @@ export class SupabaseReviewRepository implements ReviewRepository {
     const { data, error } = await this.db
       .from("reviews")
       .select("*")
-      .eq("status", "approved")
+      .eq("status", REVIEW_STATUS.APPROVED)
       .order("created_at", { ascending: false });
     if (error) {
       logError("SupabaseReviewRepository.getAllApproved", error);
@@ -47,7 +48,7 @@ export class SupabaseReviewRepository implements ReviewRepository {
     const { data, error } = await this.db
       .from("reviews")
       .select("*")
-      .eq("status", "pending")
+      .eq("status", REVIEW_STATUS.PENDING)
       .order("created_at", { ascending: false });
     if (error) {
       logError("SupabaseReviewRepository.getAllPending", error);
@@ -59,7 +60,7 @@ export class SupabaseReviewRepository implements ReviewRepository {
   async create(data: Omit<Review, "created_at" | "status" | "updated_at">): Promise<Review | null> {
     const { data: row, error } = await this.db
       .from("reviews")
-      .insert({ ...data, status: "pending" })
+      .insert({ ...data, status: REVIEW_STATUS.PENDING })
       .select()
       .single();
     if (error) {

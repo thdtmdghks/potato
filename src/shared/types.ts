@@ -1,3 +1,5 @@
+import type { ReviewStatus } from "./constants";
+
 export type ProjectRow = {
   id: string;
   title: string;
@@ -15,7 +17,7 @@ export type ReviewRow = {
   author_avatar: string;
   content: string;
   images: string[];
-  status: string;
+  status: ReviewStatus;
   created_at: string;
   updated_at: string;
 };
@@ -61,7 +63,7 @@ export type Database = {
           author_avatar: string;
           content: string;
           images?: string[];
-          status?: string;
+          status?: ReviewStatus;
           created_at?: string;
           updated_at?: string;
         };
@@ -72,7 +74,7 @@ export type Database = {
           author_avatar?: string;
           content?: string;
           images?: string[];
-          status?: string;
+          status?: ReviewStatus;
           created_at?: string;
           updated_at?: string;
         };

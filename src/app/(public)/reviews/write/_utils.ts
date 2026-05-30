@@ -1,6 +1,6 @@
 import type { ReviewWriteState, ReviewWriteDeps } from "./_types";
 import { ROUTES } from "@/shared/routes";
-import { REVIEW_INVITE_MAX_AGE_MS } from "@/shared/constants";
+import { REVIEW_INVITE_MAX_AGE_MS, REVIEW_STATUS } from "@/shared/constants";
 import { isUUIDv7Expired } from "@/shared/utils";
 
 const UUID_V7_REGEX = /^[0-9a-f]{8}-[0-9a-f]{4}-7[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
@@ -48,7 +48,10 @@ export const getReviewWriteState = async (
 
   if (existingReview) {
     // 3.1 반려 또는 무효화된 상태인지 확인
-    if (existingReview.status === "rejected" || existingReview.status === "deleted") {
+    if (
+      existingReview.status === REVIEW_STATUS.REJECTED ||
+      existingReview.status === REVIEW_STATUS.DELETED
+    ) {
       return {
         type: "INVALID_LINK",
         title: "사용할 수 없는 링크",
@@ -61,7 +64,7 @@ export const getReviewWriteState = async (
       return { type: "UNAUTHORIZED" };
     }
 
-    if (existingReview.status === "approved") {
+    if (existingReview.status === REVIEW_STATUS.APPROVED) {
       isApproved = true;
       const edit = await deps.reviewEdits.getById(id);
       if (edit) {

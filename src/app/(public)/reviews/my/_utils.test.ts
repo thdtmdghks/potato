@@ -103,4 +103,57 @@ describe("getMyReviewsState", () => {
       ],
     });
   });
+
+  it("작성한 후기 중 status가 deleted 또는 rejected인 항목은 목록에서 필터링하여 제외한다", async () => {
+    const mockReviews: Review[] = [
+      {
+        id: "review-1",
+        kakao_id: "my-user",
+        author_name: "홍길동",
+        author_avatar: "avatar.jpg",
+        content: "정상 후기",
+        images: [],
+        status: "approved",
+        created_at: "2026-05-29T00:00:00Z",
+        updated_at: "2026-05-29T00:00:00Z",
+      },
+      {
+        id: "review-2",
+        kakao_id: "my-user",
+        author_name: "홍길동",
+        author_avatar: "avatar.jpg",
+        content: "삭제된 후기",
+        images: [],
+        status: "deleted",
+        created_at: "2026-05-29T01:00:00Z",
+        updated_at: "2026-05-29T01:00:00Z",
+      },
+      {
+        id: "review-3",
+        kakao_id: "my-user",
+        author_name: "홍길동",
+        author_avatar: "avatar.jpg",
+        content: "반려된 후기",
+        images: [],
+        status: "rejected",
+        created_at: "2026-05-29T02:00:00Z",
+        updated_at: "2026-05-29T02:00:00Z",
+      },
+    ];
+
+    const deps = createMockDeps({
+      reviews: {
+        getByKakaoId: vi.fn().mockResolvedValue(mockReviews),
+      },
+    });
+
+    const session = { kakaoId: "my-user", user: { name: "홍길동", image: "avatar.jpg" } };
+    const state = await getMyReviewsState(session, deps);
+
+    expect(state.type).toBe("READY");
+    if (state.type === "READY") {
+      expect(state.reviews.length).toBe(1);
+      expect(state.reviews[0].id).toBe("review-1");
+    }
+  });
 });

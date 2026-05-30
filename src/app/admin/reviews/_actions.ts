@@ -5,6 +5,7 @@ import { getServerRepositories } from "@/server";
 import { auth } from "@/auth";
 import { logWarn, logError } from "@/server/logger";
 import { ROUTES } from "@/shared/routes";
+import { REVIEW_STATUS } from "@/shared/constants";
 
 async function verifyAdmin() {
   const session = await auth();
@@ -20,7 +21,7 @@ export async function approveReview(id: string) {
   try {
     await verifyAdmin();
     const { reviews } = await getServerRepositories();
-    const result = await reviews.update(id, { status: "approved" });
+    const result = await reviews.update(id, { status: REVIEW_STATUS.APPROVED });
     if (!result) {
       return { success: false as const, error: "승인 처리에 실패했습니다." };
     }
@@ -38,7 +39,7 @@ export async function deleteReview(id: string) {
   try {
     await verifyAdmin();
     const { reviews } = await getServerRepositories();
-    const result = await reviews.delete(id);
+    const result = await reviews.update(id, { status: REVIEW_STATUS.DELETED });
     if (!result) {
       return { success: false as const, error: "삭제 처리에 실패했습니다." };
     }
@@ -65,7 +66,7 @@ export async function approveReviewEdit(reviewId: string) {
     const result = await reviews.update(reviewId, {
       content: edit.content,
       images: edit.images,
-      status: "approved",
+      status: REVIEW_STATUS.APPROVED,
     });
 
     if (!result) {
