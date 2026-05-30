@@ -7,7 +7,11 @@ export function ProjectJsonLd({ project }: { project: Project }) {
     "@type": "Article",
     headline: project.title,
     description: project.description,
-    image: project.images.length > 0 ? project.images : ["/og-image.png"],
+    image: project.primary_image
+      ? [project.primary_image, ...project.images.filter((img) => img !== project.primary_image)]
+      : project.images.length > 0
+        ? project.images
+        : ["/og-image.png"],
     datePublished: new Date(project.created_at).toISOString(),
     author: {
       "@type": "LocalBusiness",

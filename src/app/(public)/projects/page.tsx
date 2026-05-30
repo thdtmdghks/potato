@@ -52,9 +52,9 @@ export default async function Projects({
                 href={ROUTES.projectDetail(item.id)}
                 className="group block overflow-hidden rounded-lg"
               >
-                {item.images.length > 0 ? (
+                {item.primary_image || item.images.length > 0 ? (
                   <Image
-                    src={item.images[0]}
+                    src={item.primary_image ?? item.images[0]}
                     alt={item.title}
                     width={400}
                     height={300}

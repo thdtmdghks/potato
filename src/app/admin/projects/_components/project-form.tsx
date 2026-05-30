@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
@@ -54,6 +54,19 @@ export function ProjectForm({ project }: Props) {
     onError: (msg) => setServerError(msg),
   });
 
+  const [primaryImageUrl, setPrimaryImageUrl] = useState<string | null>(
+    project?.primary_image ?? project?.images[0] ?? null,
+  );
+
+  useEffect(() => {
+    const allImages = [...existingImages, ...previews];
+    if (allImages.length === 0) {
+      setPrimaryImageUrl(null);
+    } else if (!primaryImageUrl || !allImages.includes(primaryImageUrl)) {
+      setPrimaryImageUrl(allImages[0]);
+    }
+  }, [existingImages, previews, primaryImageUrl]);
+
   const onSubmit = async (data: ProjectFormData) => {
     setServerError("");
     const fd = new FormData();
@@ -66,6 +79,17 @@ export function ProjectForm({ project }: Props) {
     }
     for (const url of existingImages) {
       fd.append(FORM_KEYS.existingImages, url);
+    }
+
+    if (primaryImageUrl) {
+      if (existingImages.includes(primaryImageUrl)) {
+        fd.set(FORM_KEYS.primaryImage, primaryImageUrl);
+      } else {
+        const idx = previews.indexOf(primaryImageUrl);
+        if (idx !== -1) {
+          fd.set(FORM_KEYS.primaryImageIndex, String(idx));
+        }
+      }
     }
 
     const result = isEdit ? await updateProject(project.id, fd) : await createProject(fd);
@@ -141,7 +165,7 @@ export function ProjectForm({ project }: Props) {
 
         <ImageUpload
           label="사진"
-          description="WebP로 자동 변환, 최대 200KB"
+          description="WebP로 자동 변환, 최대 200KB. 이미지 클릭 시 대표사진으로 설정됩니다."
           existingImages={existingImages}
           previews={previews}
           compressing={compressing}
@@ -149,6 +173,8 @@ export function ProjectForm({ project }: Props) {
           onFilesChange={handleFiles}
           onRemoveExisting={removeExisting}
           onRemoveNew={removeNew}
+          primaryImageUrl={primaryImageUrl}
+          onSelectPrimary={(url) => setPrimaryImageUrl(url)}
         />
 
         {serverError && <p className="text-sm text-red-500">{serverError}</p>}

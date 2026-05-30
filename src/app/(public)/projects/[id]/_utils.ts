@@ -7,13 +7,24 @@ export async function getProjectDetailMetadata(id: string): Promise<Metadata> {
   const project = await projects.getById(id);
   if (!project) return {};
 
-  const title = `${project.title} — ${BUSINESS.region} 샤시(샷시) | ${BUSINESS.name}`;
+  const title = `${project.title} — ${BUSINESS.region} 샤시 | ${BUSINESS.name}`;
   const description = `${BUSINESS.region} ${project.category} 시공사례 — ${project.description} 샤시(샷시) 전문 ${BUSINESS.name} ${BUSINESS.phone}`;
 
-  const ogImages = project.images.map((img) => ({
-    url: img,
-    alt: project.title,
-  }));
+  const primaryImage = project.primary_image ?? project.images[0];
+  const ogImages = primaryImage
+    ? [
+        {
+          url: primaryImage,
+          alt: project.title,
+        },
+        ...project.images
+          .filter((img) => img !== primaryImage)
+          .map((img) => ({
+            url: img,
+            alt: project.title,
+          })),
+      ]
+    : [];
 
   return {
     title,
@@ -32,7 +43,7 @@ export async function getProjectDetailMetadata(id: string): Promise<Metadata> {
       card: "summary_large_image",
       title,
       description,
-      images: project.images.length > 0 ? [project.images[0]] : undefined,
+      images: primaryImage ? [primaryImage] : undefined,
     },
   };
 }

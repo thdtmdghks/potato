@@ -245,17 +245,17 @@ export async function getServerRepositories() {
 
 ### reviews (고객 시공 후기)
 
-| 컬럼          | 타입        | 설명                                  |
-| ------------- | ----------- | ------------------------------------- |
-| id            | uuid (PK)   | 수동 생성 (요청 UUID)                 |
-| kakao_id      | text        | 작성자 카카오 ID                      |
-| author_name   | text        | 작성자 이름                           |
-| author_avatar | text        | 작성자 아바타 URL                     |
-| content       | text        | 후기 본문                             |
-| images        | text[]      | 시공 완료 사진 URL 배열               |
-| status        | text        | 노출 상태 ('pending' 또는 'approved') |
-| created_at    | timestamptz | 생성일                                |
-| updated_at    | timestamptz | 최종 수정/승인일                      |
+| 컬럼          | 타입        | 설명                          |
+| ------------- | ----------- | ----------------------------- | ---------- | ---------- | ---------- |
+| id            | uuid (PK)   | 수동 생성 (시간 기반 UUID v7) |
+| kakao_id      | text        | 작성자 카카오 ID              |
+| author_name   | text        | 작성자 이름                   |
+| author_avatar | text        | 작성자 아바타 URL             |
+| content       | text        | 후기 본문                     |
+| images        | text[]      | 시공 완료 사진 URL 배열       |
+| status        | text        | 노출 상태 ('pending'          | 'approved' | 'rejected' | 'deleted') |
+| created_at    | timestamptz | 생성일                        |
+| updated_at    | timestamptz | 최종 수정/승인일              |
 
 ### review_edits (시공 후기 수정 요청 대기)
 
@@ -276,8 +276,8 @@ export async function getServerRepositories() {
 
 SQL 마이그레이션:
 
-- 초기화: [supabase/migrations/20260521000001_initial_schema.sql](file:///Users/a-26-001/Workspace/potato/supabase/migrations/20260521000001_initial_schema.sql)
-- 리뷰 시스템 추가: [supabase/migrations/20260527000001_reviews_schema.sql](file:///Users/a-26-001/Workspace/potato/supabase/migrations/20260527000001_reviews_schema.sql)
+- 초기화: supabase/migrations/20260521000001_initial_schema.sql
+- 리뷰 시스템 추가: supabase/migrations/20260527000001_reviews_schema.sql
 
 ---
 
@@ -285,7 +285,7 @@ SQL 마이그레이션:
 
 ### 1. 환경변수 정적 검증 (Env Validation)
 
-애플리케이션 빌드 타임 및 서버 구동 즉시 `zod` 스키마([src/shared/env.ts](file:///Users/a-26-001/Workspace/potato/src/shared/env.ts))를 사용해 환경변수의 무결성을 파싱합니다. 누락되거나 부적절한 값(URL 오류 등)이 감지되면 서버는 즉시 구동을 멈추고 에러를 콘솔에 출력하여 배포 사고를 미연에 차단합니다.
+애플리케이션 빌드 타임 및 서버 구동 즉시 `zod` 스키마(src/shared/env.ts)를 사용해 환경변수의 무결성을 파싱합니다. 누락되거나 부적절한 값(URL 오류 등)이 감지되면 서버는 즉시 구동을 멈추고 에러를 콘솔에 출력하여 배포 사고를 미연에 차단합니다.
 
 ### 2. 이원화 디스코드 웹훅 전송 아키텍처
 
