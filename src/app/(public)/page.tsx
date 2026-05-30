@@ -27,6 +27,24 @@ export default async function Home() {
       "@type": "OpeningHoursSpecification",
       dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
     },
+    ...(approvedReviews.length > 0
+      ? {
+          review: approvedReviews.map((rev) => ({
+            "@type": "Review",
+            author: {
+              "@type": "Person",
+              name: rev.author_name,
+            },
+            datePublished: new Date(rev.created_at).toISOString().split("T")[0],
+            reviewBody: rev.content,
+            reviewRating: {
+              "@type": "Rating",
+              ratingValue: String(rev.rating),
+              bestRating: "5",
+            },
+          })),
+        }
+      : {}),
   };
 
   return (

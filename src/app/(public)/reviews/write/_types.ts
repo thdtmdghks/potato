@@ -5,7 +5,7 @@ export type ReviewWriteState =
   | {
       type: "READY";
       id: string;
-      initialData: { content: string; images: string[] } | null;
+      initialData: { content: string; images: string[]; rating: number } | null;
       isApproved: boolean;
       userProfile: { name?: string | null; image?: string | null };
     };
@@ -18,6 +18,7 @@ export interface ReviewWriteDeps {
       status: string;
       content: string;
       images: string[];
+      rating: number;
     } | null>;
   };
   reviewEdits: {
@@ -25,6 +26,7 @@ export interface ReviewWriteDeps {
       review_id: string;
       content: string;
       images: string[];
+      rating: number;
     } | null>;
   };
 }

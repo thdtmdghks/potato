@@ -11,6 +11,7 @@ export class MockReviewEditRepository implements ReviewEditRepository {
       content:
         "샤시 시공하고 1년 지났는데, 튼튼하고 아주 좋습니다. 추천합니다! (추가: 겨울철 결로 현상도 완전히 없어졌네요. 아주 만족스럽습니다.)",
       images: [IMG("pvc2"), IMG("pvc3")],
+      rating: 5,
       created_at: new Date(Date.now() - 86400000).toISOString(),
     },
   ];

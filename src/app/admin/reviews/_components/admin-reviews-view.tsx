@@ -60,7 +60,7 @@ export function AdminReviewsView({ pendingReviews, editRequests }: Props) {
           <PendingReviewsList
             reviews={pendingReviews}
             loadingId={loadingId}
-            onApprove={(id) => runAction(id, () => approveReview(id))}
+            onApprove={(id, primaryImage) => runAction(id, () => approveReview(id, primaryImage))}
             onDelete={(id) => runAction(id, () => deleteReview(id))}
           />
         </div>

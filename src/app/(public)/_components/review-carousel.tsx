@@ -35,10 +35,10 @@ export function ReviewCarousel({ reviews }: Props) {
             <CarouselItem key={review.id} className="basis-full pl-4 sm:basis-1/2">
               <div className="relative flex h-full flex-col justify-between rounded-2xl border border-gray-100 bg-white p-5 shadow-sm transition-all duration-200 hover:shadow-md dark:border-gray-800 dark:bg-gray-900/60 dark:backdrop-blur-sm">
                 {/* 1. 시공 완료 사진 (카드 상단 배치로 가장 크게 강조) */}
-                {review.images.length > 0 && (
+                {(review.primary_image || review.images.length > 0) && (
                   <div className="relative mb-4 h-48 w-full overflow-hidden rounded-xl border border-gray-50 bg-gray-50 dark:border-gray-800 dark:bg-gray-950">
                     <Image
-                      src={review.images[0]}
+                      src={review.primary_image ?? review.images[0]}
                       alt="경산창호 시공 완료 사진"
                       fill
                       sizes="(max-width: 640px) 100vw, 50vw"
@@ -55,6 +55,21 @@ export function ReviewCarousel({ reviews }: Props) {
 
                 {/* 2. 후기 내용 */}
                 <div className="flex-1 space-y-3">
+                  {/* 만족도 별점 표시 */}
+                  <div className="flex items-center gap-0.5" aria-label={`평점 ${review.rating}점`}>
+                    {[1, 2, 3, 4, 5].map((star) => (
+                      <span
+                        key={star}
+                        className={`text-base ${
+                          star <= review.rating
+                            ? "text-amber-400"
+                            : "text-gray-200 dark:text-gray-700"
+                        }`}
+                      >
+                        ★
+                      </span>
+                    ))}
+                  </div>
                   <p className="line-clamp-4 min-h-[3rem] text-sm leading-relaxed text-gray-600 dark:text-gray-300">
                     {review.content}
                   </p>

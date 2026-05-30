@@ -6,6 +6,7 @@ export type ProjectRow = {
   description: string;
   category: string;
   images: string[];
+  primary_image: string | null;
   created_by: string;
   created_at: string;
 };
@@ -18,6 +19,8 @@ export type ReviewRow = {
   content: string;
   images: string[];
   status: ReviewStatus;
+  primary_image: string | null;
+  rating: number;
   created_at: string;
   updated_at: string;
 };
@@ -26,6 +29,7 @@ export type ReviewEditRow = {
   review_id: string;
   content: string;
   images: string[];
+  rating: number;
   created_at: string;
 };
 
@@ -40,6 +44,7 @@ export type Database = {
           description: string;
           category: string;
           images: string[];
+          primary_image?: string | null;
           created_by: string;
           created_at?: string;
         };
@@ -49,6 +54,7 @@ export type Database = {
           description?: string;
           category?: string;
           images?: string[];
+          primary_image?: string | null;
           created_by?: string;
           created_at?: string;
         };
@@ -64,6 +70,8 @@ export type Database = {
           content: string;
           images?: string[];
           status?: ReviewStatus;
+          primary_image?: string | null;
+          rating?: number;
           created_at?: string;
           updated_at?: string;
         };
@@ -75,6 +83,8 @@ export type Database = {
           content?: string;
           images?: string[];
           status?: ReviewStatus;
+          primary_image?: string | null;
+          rating?: number;
           created_at?: string;
           updated_at?: string;
         };
@@ -86,12 +96,14 @@ export type Database = {
           review_id: string;
           content: string;
           images?: string[];
+          rating?: number;
           created_at?: string;
         };
         Update: {
           review_id?: string;
           content?: string;
           images?: string[];
+          rating?: number;
           created_at?: string;
         };
         Relationships: [

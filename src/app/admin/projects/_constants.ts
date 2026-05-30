@@ -4,4 +4,6 @@ export const FORM_KEYS = {
   category: "category",
   images: "images",
   existingImages: "existingImages",
+  primaryImage: "primaryImage",
+  primaryImageIndex: "primaryImageIndex",
 } as const;

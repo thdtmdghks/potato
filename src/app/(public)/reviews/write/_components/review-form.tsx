@@ -19,6 +19,7 @@ interface ReviewFormProps {
   initialData: {
     content: string;
     images: string[];
+    rating: number;
   } | null;
   isApproved: boolean;
   userProfile: {
@@ -31,6 +32,7 @@ export function ReviewForm({ id, initialData, isApproved, userProfile }: ReviewF
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [serverError, setServerError] = useState<string | null>(null);
+  const [rating, setRating] = useState<number>(initialData?.rating ?? 5);
 
   // 커스텀 훅을 사용하여 이미지 업로드 상태 및 압축 로직을 관리
   const {
@@ -70,6 +72,7 @@ export function ReviewForm({ id, initialData, isApproved, userProfile }: ReviewF
 
     const fd = new FormData();
     fd.set("content", data.content);
+    fd.set("rating", String(rating));
 
     for (const file of compressedFiles) {
       fd.append("images", file);
@@ -104,6 +107,41 @@ export function ReviewForm({ id, initialData, isApproved, userProfile }: ReviewF
       <ReviewAvatar name={userProfile?.name} image={userProfile?.image} />
 
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+        {/* 만족도 별점 선택 */}
+        <div className="space-y-2">
+          <Label className="text-base font-semibold text-gray-700 dark:text-gray-300">
+            만족도 별점 <span className="text-red-500">*</span>
+          </Label>
+          <div className="flex items-center gap-1">
+            {[1, 2, 3, 4, 5].map((star) => (
+              <button
+                key={star}
+                type="button"
+                onClick={() => setRating(star)}
+                className={`text-3xl transition-transform hover:scale-110 focus:outline-none ${
+                  star <= rating ? "text-amber-400" : "text-gray-300 dark:text-gray-600"
+                }`}
+                aria-label={`별점 ${star}점 설정`}
+              >
+                ★
+              </button>
+            ))}
+            <span className="ml-2.5 text-sm font-semibold text-gray-600 dark:text-gray-400">
+              {rating}점 (
+              {rating === 5
+                ? "매우 만족"
+                : rating === 4
+                  ? "만족"
+                  : rating === 3
+                    ? "보통"
+                    : rating === 2
+                      ? "불만족"
+                      : "매우 불만족"}
+              )
+            </span>
+          </div>
+        </div>
+
         {/* 후기 내용 작성 */}
         <div className="space-y-2">
           <div className="flex items-center justify-between">

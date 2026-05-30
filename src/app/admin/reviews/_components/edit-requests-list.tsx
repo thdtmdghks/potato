@@ -75,9 +75,14 @@ export function EditRequestsList({ editRequests, loadingId, onApprove, onReject 
               <div className="grid gap-6 md:grid-cols-2">
                 {/* 기존 원본 */}
                 <div className="rounded-xl border border-gray-100 bg-gray-50/50 p-4 dark:border-gray-800 dark:bg-gray-950/20">
-                  <p className="mb-3 text-xs font-bold tracking-wider text-gray-400 uppercase">
-                    현재 노출 중인 원본
-                  </p>
+                  <div className="mb-3 flex items-center justify-between">
+                    <p className="text-xs font-bold tracking-wider text-gray-400 uppercase">
+                      현재 노출 중인 원본
+                    </p>
+                    <span className="text-xs font-bold text-amber-500">
+                      ★ {req.original.rating}점
+                    </span>
+                  </div>
                   <p className="min-h-[4.5rem] text-sm leading-relaxed whitespace-pre-wrap text-gray-600 dark:text-gray-400">
                     {req.original.content}
                   </p>
@@ -98,9 +103,12 @@ export function EditRequestsList({ editRequests, loadingId, onApprove, onReject 
 
                 {/* 새로운 수정안 */}
                 <div className="rounded-xl border border-indigo-100 bg-indigo-50/20 p-4 dark:border-indigo-950/20 dark:bg-indigo-950/5">
-                  <p className="mb-3 text-xs font-bold tracking-wider text-indigo-500 uppercase">
-                    고객 제출 수정 요청안
-                  </p>
+                  <div className="mb-3 flex items-center justify-between">
+                    <p className="text-xs font-bold tracking-wider text-indigo-500 uppercase">
+                      고객 제출 수정 요청안
+                    </p>
+                    <span className="text-xs font-bold text-amber-500">★ {req.rating}점</span>
+                  </div>
                   <p className="min-h-[4.5rem] text-sm leading-relaxed font-medium whitespace-pre-wrap text-gray-800 dark:text-gray-200">
                     {req.content}
                   </p>

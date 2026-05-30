@@ -43,7 +43,7 @@ export const getReviewWriteState = async (
   // 3. DB 데이터 조회
   const existingReview = await deps.reviews.getById(id);
 
-  let initialData: { content: string; images: string[] } | null = null;
+  let initialData: { content: string; images: string[]; rating: number } | null = null;
   let isApproved = false;
 
   if (existingReview) {
@@ -71,17 +71,20 @@ export const getReviewWriteState = async (
         initialData = {
           content: edit.content,
           images: edit.images,
+          rating: edit.rating,
         };
       } else {
         initialData = {
           content: existingReview.content,
           images: existingReview.images,
+          rating: existingReview.rating,
         };
       }
     } else {
       initialData = {
         content: existingReview.content,
         images: existingReview.images,
+        rating: existingReview.rating,
       };
     }
   }

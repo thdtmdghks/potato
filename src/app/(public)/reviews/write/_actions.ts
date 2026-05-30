@@ -49,6 +49,8 @@ export async function submitReview(id: string, formData: FormData) {
     }
 
     const content = formData.get("content");
+    const ratingStr = formData.get("rating");
+    const rating = ratingStr ? parseInt(String(ratingStr), 10) : 5;
     const parsed = reviewSchema.safeParse({ content });
 
     if (!parsed.success) {
@@ -80,6 +82,8 @@ export async function submitReview(id: string, formData: FormData) {
         author_avatar: session.user?.image ?? "",
         content: parsed.data.content,
         images: finalImageUrls,
+        primary_image: null,
+        rating,
       });
 
       if (!result) {
@@ -107,6 +111,7 @@ export async function submitReview(id: string, formData: FormData) {
         const result = await reviews.update(id, {
           content: parsed.data.content,
           images: finalImageUrls,
+          rating,
         });
 
         if (!result) {
@@ -125,6 +130,7 @@ export async function submitReview(id: string, formData: FormData) {
           review_id: id,
           content: parsed.data.content,
           images: finalImageUrls,
+          rating,
         });
 
         if (!result) {

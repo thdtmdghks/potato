@@ -22,6 +22,7 @@ export function Header() {
       <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4">
         <Link href={ROUTES.home} className="text-xl font-bold">
           {BUSINESS.name}
+          <span className="sr-only"> - {BUSINESS.region} 샤시 샷시 하이샤시 샷시시공 전문</span>
         </Link>
         <nav className="hidden items-center gap-6 md:flex">
           {navItems.map((item) => (

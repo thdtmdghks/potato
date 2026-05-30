@@ -62,9 +62,20 @@ export async function createProject(formData: FormData) {
     const { storage, projects } = await getServerRepositories();
     const imageUrls = await uploadImages(storage, formData.getAll(FORM_KEYS.images) as File[]);
 
+    const primaryImageIndexStr = formData.get(FORM_KEYS.primaryImageIndex);
+    const primaryImageIndex =
+      primaryImageIndexStr !== null ? parseInt(String(primaryImageIndexStr), 10) : null;
+    let primaryImage: string | null = null;
+    if (primaryImageIndex !== null && !isNaN(primaryImageIndex) && imageUrls[primaryImageIndex]) {
+      primaryImage = imageUrls[primaryImageIndex];
+    } else if (imageUrls.length > 0) {
+      primaryImage = imageUrls[0];
+    }
+
     const result = await projects.create({
       ...parsed.data,
       images: imageUrls,
+      primary_image: primaryImage,
       created_by: session.kakaoId,
     });
     if (!result) {
@@ -106,10 +117,34 @@ export async function updateProject(id: string, formData: FormData) {
 
     const existingImages = formData.getAll(FORM_KEYS.existingImages) as string[];
     const newImageUrls = await uploadImages(storage, formData.getAll(FORM_KEYS.images) as File[]);
+    const finalImages = [...existingImages, ...newImageUrls];
+
+    const primaryImageVal = formData.get(FORM_KEYS.primaryImage);
+    const primaryImageIndexStr = formData.get(FORM_KEYS.primaryImageIndex);
+    const primaryImageIndex =
+      primaryImageIndexStr !== null ? parseInt(String(primaryImageIndexStr), 10) : null;
+
+    let primaryImage: string | null = null;
+    if (
+      primaryImageVal &&
+      typeof primaryImageVal === "string" &&
+      finalImages.includes(primaryImageVal)
+    ) {
+      primaryImage = primaryImageVal;
+    } else if (
+      primaryImageIndex !== null &&
+      !isNaN(primaryImageIndex) &&
+      newImageUrls[primaryImageIndex]
+    ) {
+      primaryImage = newImageUrls[primaryImageIndex];
+    } else if (finalImages.length > 0) {
+      primaryImage = finalImages[0];
+    }
 
     const result = await projects.update(id, {
       ...parsed.data,
-      images: [...existingImages, ...newImageUrls],
+      images: finalImages,
+      primary_image: primaryImage,
     });
     if (!result) {
       return { success: false as const, error: "수정에 실패했습니다." };

@@ -15,6 +15,8 @@ interface ImageUploadProps {
   onRemoveExisting: (idx: number) => void;
   onRemoveNew: (idx: number) => void;
   required?: boolean;
+  primaryImageUrl?: string | null;
+  onSelectPrimary?: (url: string) => void;
 }
 
 export function ImageUpload({
@@ -28,6 +30,8 @@ export function ImageUpload({
   onRemoveExisting,
   onRemoveNew,
   required = false,
+  primaryImageUrl,
+  onSelectPrimary,
 }: ImageUploadProps) {
   const totalCount = existingImages.length + previews.length;
 
@@ -46,13 +50,21 @@ export function ImageUpload({
           <ImageThumbnail
             key={`existing-${idx}`}
             url={url}
+            isPrimary={primaryImageUrl === url}
+            onSelectPrimary={() => onSelectPrimary?.(url)}
             onRemove={() => onRemoveExisting(idx)}
           />
         ))}
 
         {/* 새로 올린 사진 */}
         {previews.map((url, idx) => (
-          <ImageThumbnail key={`new-${idx}`} url={url} onRemove={() => onRemoveNew(idx)} />
+          <ImageThumbnail
+            key={`new-${idx}`}
+            url={url}
+            isPrimary={primaryImageUrl === url}
+            onSelectPrimary={() => onSelectPrimary?.(url)}
+            onRemove={() => onRemoveNew(idx)}
+          />
         ))}
 
         {/* 업로드 버튼 */}

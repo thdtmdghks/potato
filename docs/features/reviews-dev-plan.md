@@ -16,6 +16,7 @@
 - [x] **Phase 7**: 관리자 페이지: 후기 승인 및 수정 요청 승인 제어 (Commit 7)
 - [x] **Phase 8**: 메인 랜딩 페이지 연동 및 검증 (Commit 8)
 - [x] **Phase 9**: 아키텍처 문서 현행화 (Commit 9)
+- [x] **Phase 10**: 리뷰 초대 링크 시간 제한(v7) 설정 및 Soft Delete 기반 링크 무효화 보완 (Commit 10-14)
 
 ---
 
@@ -106,6 +107,18 @@
 - **목표**: 새롭게 도입된 리뷰 시스템 설계와 DB 테이블 구조를 프로젝트 전체 아키텍처 문서에 최신화하여 일관성 유지.
 - **작업**:
   - [MODIFY] `docs/ARCHITECTURE.md` 수정 (DB 스키마 설명에 `reviews` 및 `review_edits` 추가, 카카오 로그인 기반 리뷰 인증 흐름도 및 RLS 차단 정책 최신화)
+
+### [Phase 10] 리뷰 초대 링크 시간 제한(v7) 설정 및 Soft Delete 기반 링크 무효화 보완 (Commit 10-14)
+
+- **목표**: 리뷰 요청 링크에 1주일 시간 제한을 두고, 관리자가 반려/삭제한 경우 재작성 우회를 원천 차단.
+- **작업**:
+  - [MODIFY] `src/shared/utils.ts` 및 `constants.ts` 수정 (UUID v7 생성/타임스탬프 추출/만료 검증 함수 구현 및 7일 만료 상수 추가)
+  - [MODIFY] `src/app/admin/reviews/_components/invite-link-section.tsx` 수정 (링크 발급 시 UUID v7 사용)
+  - [MODIFY] `src/app/(public)/reviews/write/_utils.ts` 및 `_actions.ts` 수정 (클라이언트와 서버 양방향에서 UUID v7 만료 검증 및 반려/삭제된 후기 링크 수정 차단)
+  - [MODIFY] `src/app/admin/reviews/_actions.ts` 수정 (리뷰 삭제 시 Hard Delete가 아닌 Soft Delete(`status = 'deleted'`)로 전환)
+  - [MODIFY] `src/app/(public)/reviews/my/_utils.ts` 수정 (마이페이지에 삭제/반려된 리뷰 노출 차단)
+  - [MODIFY] `src/server/mock/review.ts` 수정 (테스트 및 로컬 데이터에 UUID v7 규격 적용)
+  - [MODIFY] `src/__tests__/` 및 `src/app/` 테스트 코드에 관련 검증 테스트 보강
 
 ---
 
