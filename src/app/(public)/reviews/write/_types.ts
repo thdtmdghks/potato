@@ -1,5 +1,5 @@
 export type ReviewWriteState =
-  | { type: "INVALID_LINK" }
+  | { type: "INVALID_LINK"; title?: string; description?: string }
   | { type: "AUTH_REQUIRED"; redirectTo: string }
   | { type: "UNAUTHORIZED" }
   | {

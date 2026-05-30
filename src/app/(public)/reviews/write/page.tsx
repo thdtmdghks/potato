@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { auth } from "@/auth";
 import { getServerRepositories } from "@/server";
-import { getReviewWriteState, isValidUUID } from "./_utils";
+import { getReviewWriteState, isValidUUIDv7 } from "./_utils";
 import { ReviewWriteView } from "./_components/review-write-view";
 import { ROUTES } from "@/shared/routes";
 
@@ -22,7 +22,7 @@ export default async function ReviewWritePage({ searchParams }: PageProps) {
   const resolvedSearchParams = await searchParams;
   const id = typeof resolvedSearchParams.id === "string" ? resolvedSearchParams.id : "";
 
-  if (!isValidUUID(id)) {
+  if (!isValidUUIDv7(id)) {
     return <ReviewWriteView state={{ type: "INVALID_LINK" }} />;
   }
 

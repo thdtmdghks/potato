@@ -12,7 +12,7 @@ interface ReviewWriteViewProps {
 
 export function ReviewWriteView({ state }: ReviewWriteViewProps) {
   if (state.type === "INVALID_LINK") {
-    return <InvalidLinkCard />;
+    return <InvalidLinkCard title={state.title} description={state.description} />;
   }
 
   if (state.type === "AUTH_REQUIRED") {
