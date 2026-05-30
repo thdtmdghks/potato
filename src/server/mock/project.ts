@@ -1,8 +1,5 @@
 import type { Project } from "@/shared/types";
-import type { ProjectRepository, StorageRepository, Repositories } from "./repositories";
-
-// --- Mock 데이터 ---
-// 경산창호 시공사례 데이터
+import type { ProjectRepository } from "../repositories";
 
 const IMG = (seed: string, w = 800, h = 600) => `https://picsum.photos/seed/${seed}/${w}/${h}`;
 
@@ -63,8 +60,6 @@ const mockProjects: Project[] = [
   },
 ];
 
-// --- Mock Repository 구현체 ---
-
 export class MockProjectRepository implements ProjectRepository {
   private data = [...mockProjects];
 
@@ -90,23 +85,4 @@ export class MockProjectRepository implements ProjectRepository {
     this.data = this.data.filter((p) => p.id !== id);
     return this.data.length < len;
   }
-}
-
-export class MockStorageRepository implements StorageRepository {
-  async upload(_bucket: string, path: string) {
-    return `/mock/${path}`;
-  }
-  async delete() {
-    return true;
-  }
-  getPublicUrl(_bucket: string, path: string) {
-    return `/mock/${path}`;
-  }
-}
-
-export function createMockRepositories(): Repositories {
-  return {
-    projects: new MockProjectRepository(),
-    storage: new MockStorageRepository(),
-  };
 }

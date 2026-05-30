@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach } from "vitest";
-import { MockProjectRepository, MockStorageRepository } from "@/server/mock-repositories";
+import { MockProjectRepository, MockStorageRepository } from "@/server/mock";
 
 describe("MockProjectRepository", () => {
   let repo: MockProjectRepository;

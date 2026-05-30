@@ -1,4 +1,5 @@
 export const SITE_URL = "https://potato-swart.vercel.app";
+export const REVIEW_INVITE_MAX_AGE_MS = 7 * 24 * 60 * 60 * 1000; // 7일
 
 export const BUSINESS = {
   name: "경산창호",
@@ -21,3 +22,12 @@ export const LINKS = {
 } as const;
 
 export const CATEGORIES = ["하이샤시", "방충망", "유리", "ABS도어", "방범창", "잡철"] as const;
+
+export const REVIEW_STATUS = {
+  PENDING: "pending",
+  APPROVED: "approved",
+  REJECTED: "rejected",
+  DELETED: "deleted",
+} as const;
+
+export type ReviewStatus = (typeof REVIEW_STATUS)[keyof typeof REVIEW_STATUS];

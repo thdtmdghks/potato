@@ -2,6 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { getServerRepositories } from "@/server";
 import { DeleteButton } from "./_components/delete-button";
+import { ROUTES } from "@/shared/routes";
 
 export default async function AdminProjects() {
   const { projects } = await getServerRepositories();
@@ -12,7 +13,7 @@ export default async function AdminProjects() {
       <header className="flex items-center justify-between">
         <h1 className="text-navy text-2xl font-bold dark:text-white">포트폴리오 관리</h1>
         <Link
-          href="/admin/projects/new"
+          href={ROUTES.admin.projectsNew}
           className="bg-navy hover:bg-navy-light rounded-lg px-4 py-2 text-sm text-white"
         >
           새 프로젝트
@@ -56,7 +57,7 @@ export default async function AdminProjects() {
                 </p>
                 <div className="mt-2 flex gap-2">
                   <Link
-                    href={`/admin/projects/${item.id}/edit`}
+                    href={ROUTES.admin.projectEdit(item.id)}
                     className="text-navy text-sm underline dark:text-blue-400"
                   >
                     수정
@@ -116,7 +117,7 @@ export default async function AdminProjects() {
                     <td className="py-2 pr-4 dark:text-gray-300">{item.category}</td>
                     <td className="py-2">
                       <Link
-                        href={`/admin/projects/${item.id}/edit`}
+                        href={ROUTES.admin.projectEdit(item.id)}
                         className="text-navy mr-3 underline dark:text-blue-400"
                       >
                         수정

@@ -1,6 +1,7 @@
 import { getServerRepositories } from "@/server";
 import Image from "next/image";
 import Link from "next/link";
+import { ROUTES } from "@/shared/routes";
 
 export default async function AdminDashboard() {
   const { projects } = await getServerRepositories();
@@ -85,7 +86,7 @@ export default async function AdminDashboard() {
           <div className="flex items-center justify-between">
             <h2 className="text-navy text-lg font-bold dark:text-white">최근 시공사례</h2>
             <Link
-              href="/admin/projects"
+              href={ROUTES.admin.projects}
               className="text-accent text-sm font-semibold hover:underline"
             >
               전체 보기 →

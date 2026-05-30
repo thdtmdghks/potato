@@ -4,6 +4,7 @@ import { Suspense } from "react";
 import Link from "next/link";
 import { signIn, signOut, useSession } from "next-auth/react";
 import { useSearchParams } from "next/navigation";
+import { ROUTES } from "@/shared/routes";
 
 function LoginContent() {
   const { data: session } = useSession();
@@ -54,7 +55,7 @@ function LoginContent() {
       )}
 
       <p className="text-gray-dark mt-4 text-center text-xs dark:text-gray-400">
-        <Link href="/" className="hover:text-navy underline dark:hover:text-blue-400">
+        <Link href={ROUTES.home} className="hover:text-navy underline dark:hover:text-blue-400">
           홈으로 돌아가기
         </Link>
       </p>

@@ -5,10 +5,11 @@ import { useSession } from "next-auth/react";
 import { ThemeToggle } from "./theme-toggle";
 import { BUSINESS, LINKS } from "@/shared/constants";
 import { useMenuWithHistory } from "@/client/use-menu-with-history";
+import { ROUTES } from "@/shared/routes";
 
 const navItems = [
-  { href: "/#gallery", label: "시공사례" },
-  { href: "/#contact", label: "연락처" },
+  { href: `${ROUTES.home}#gallery`, label: "시공사례" },
+  { href: `${ROUTES.home}#contact`, label: "연락처" },
 ];
 
 export function Header() {
@@ -19,7 +20,7 @@ export function Header() {
   return (
     <header className="bg-navy sticky top-0 z-50 text-white">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4">
-        <Link href="/" className="text-xl font-bold">
+        <Link href={ROUTES.home} className="text-xl font-bold">
           {BUSINESS.name}
         </Link>
         <nav className="hidden items-center gap-6 md:flex">
@@ -32,12 +33,12 @@ export function Header() {
               {item.label}
             </Link>
           ))}
-          <Link href="/projects" className="hover:text-accent-light transition-colors">
+          <Link href={ROUTES.projects} className="hover:text-accent-light transition-colors">
             갤러리
           </Link>
           {isAdmin && (
             <Link
-              href="/admin"
+              href={ROUTES.admin.root}
               className="bg-accent hover:bg-accent-dark rounded px-3 py-1 text-sm font-semibold transition-colors"
             >
               관리자
@@ -71,12 +72,12 @@ export function Header() {
               {item.label}
             </Link>
           ))}
-          <Link href="/projects" onClick={closeMenu} className="block py-3">
+          <Link href={ROUTES.projects} onClick={closeMenu} className="block py-3">
             갤러리
           </Link>
           {isAdmin && (
             <Link
-              href="/admin"
+              href={ROUTES.admin.root}
               onClick={closeMenu}
               className="text-accent-light block py-3 font-semibold"
             >

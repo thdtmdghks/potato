@@ -5,6 +5,8 @@ import { Analytics } from "@vercel/analytics/next";
 import { SITE_URL, BUSINESS } from "@/shared/constants";
 import "./globals.css";
 
+import Script from "next/script";
+
 const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
 const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
 
@@ -55,7 +57,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="ko" data-scroll-behavior="smooth" suppressHydrationWarning>
       <head>
-        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
+        <Script
+          id="theme-loader"
+          strategy="beforeInteractive"
+          dangerouslySetInnerHTML={{ __html: themeScript }}
+        />
         <meta name="naver-site-verification" content="fce7b03343405c89a5cb2636eec3eb59f270f590" />
         <meta
           name="google-site-verification"

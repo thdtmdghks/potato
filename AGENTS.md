@@ -1,18 +1,4 @@
-# AGENTS.md — 경산창호
-
-경산창호 — 창호 시공 전문 업체 홈페이지. Next.js 16 풀스택, Supabase 백엔드, 모바일 최우선 원페이지 랜딩.
-
-## Stack
-
-- Next.js 16.2 (App Router) + TypeScript strict
-- Tailwind CSS 4 + shadcn/ui (Base UI 기반)
-- Supabase (PostgreSQL + Storage) — Repository 패턴 추상화
-- Auth.js v5 (next-auth) — 카카오 로그인, 환경변수 화이트리스트 관리자
-- react-hook-form 7 + zod 4 + @hookform/resolvers 5
-- browser-image-compression (WebP, 최대 200KB)
-- Package Manager: pnpm (npm/yarn 사용 금지)
-- Test: Vitest + @testing-library/react
-- Deploy: Vercel Hobby (무료)
+# AGENTS.md
 
 ## Non-Obvious Patterns
 
@@ -49,7 +35,6 @@ const items = await projects.getAll();
 
 - 카카오 로그인 → `ADMIN_KAKAO_IDS` 환경변수로 관리자 판단 (DB 불필요)
 - `/admin/*` 경로는 `proxy.ts` middleware로 보호
-- 로그인 버튼 네비게이션 미노출 → `/admin` 직접 접근 시 로그인 유도
 
 ## Conventions
 
@@ -60,9 +45,14 @@ const items = await projects.getAll();
 - 라우트별 상수는 `_constants.ts`, 순수 함수는 `_utils.ts` + `_utils.test.ts`에 배치.
 - Server Action은 오케스트레이션만. 데이터 변환/검증은 `_utils.ts`로 분리하여 테스트.
 - Design tokens: `text-navy`, `bg-navy`, `text-accent`, `bg-accent`, `text-gray-dark`, `bg-gray-light`
-- 모든 UI에 `dark:` 변형 필수
-- 모바일 최우선: base → `sm:` → `md:` → `lg:` 순서로 확장
-- 이미지 업로드: 클라이언트에서 `compressImage()` 압축 후 서버로 전송
+- 컴포넌트 및 로직 모듈화:
+  - 단일 책임 분리 (SRP): 한 파일의 라인 수가 비대해지는 것을 지양하며, 레포지토리는 도메인(테이블)별로 즉시 개별 분리합니다.
+  - 서버 컴포넌트(Page) 경량화: page.tsx는 데이터 페칭 조율 및 조건 판단만 담당하고 분기 카드(에러, 로그인 등)는 서브 컴포넌트로 분리합니다.
+  - 세부 컴포넌트 캡슐화: 클라이언트 폼 등에서 독자적인 UI 동작 영역은 하위 컴포넌트로 추출하여 비대해지지 않게 합니다.
+  - 공통 훅 및 컴포넌트 추출: 둘 이상의 파일에서 중복되는 상태 변경 및 이벤트 제어 로직(예: 이미지 업로드 미리보기 및 삭제)은 공통 커스텀 훅(Custom Hook)과 공통 컴포넌트로 승격합니다.
+- 매직 넘버/문자열 금지. 의미 있는 값은 상수로 선언.
+- 코드 수정 전 기존 상수/유틸/타입을 먼저 탐색. 이미 있는 것을 새로 만들지 않는다.
+- 세부 코딩 스타일은 `docs/CODE_STYLE.md` 참조.
 
 ## Git
 
@@ -72,18 +62,12 @@ const items = await projects.getAll();
 
 ## Boundaries
 
-### ✅ 자유롭게 가능
-
-- 파일 읽기, 디렉토리 탐색
-- lint, format, test, build 실행
-
 ### ⚠️ 확인 후 진행
 
-- 코드 작성/수정:
-  1. 작업할 사항 설명 → 사용자 컨펌
-  2. 코딩 → 사용자 리뷰
-  3. 리뷰 반영 후 → 사용자가 커밋 지시
-- 커밋 단위: 하나의 논리적 변경 또는 테스트 가능한 작은 단위
+- 구조적 변경 (새 파일 생성, 아키텍처 변경, 의존성 추가): 사전 설명 → 컨펌 → 코딩
+- 사소한 수정 (오타, import 정리, 기존 패턴 따르는 코드): 바로 진행
+- 커밋은 항상 사용자 지시 후. 단위: 하나의 논리적 변경 또는 테스트 가능한 작은 단위
+- 리뷰 반영 시: 문제 인식은 수용하되 해결 방법은 프로젝트 패턴에 맞게 판단. 제안 코드를 그대로 복사하지 않는다.
 - 새 의존성 추가 (무료 플랜 제약 확인)
 - DB 스키마 변경 (`db/schema.sql`)
 - 환경변수 추가/변경
@@ -95,17 +79,3 @@ const items = await projects.getAll();
 - 외부 유료 서비스 추가
 - `client/`에서 `server/` import
 - Supabase Storage 1GB 초과 (이미지 반드시 압축)
-
-## Key Files
-
-- `src/app/_components/` — shadcn/ui 컴포넌트 (Input, Textarea, Label) + 프로젝트 공용 (ImageThumbnail)
-- `src/app/(public)/page.tsx` — 원페이지 랜딩 (히어로→서비스→시공사례→강점→연락처)
-- `src/app/admin/projects/_actions.ts` — 시공사례 CRUD Server Actions
-- `src/server/repositories.ts` — Repository 인터페이스
-- `src/server/index.ts` — `getServerRepositories()` 팩토리
-- `src/server/logger.ts` — Discord 웹훅 로거 (logError, logWarn)
-- `src/shared/schemas.ts` — Zod 스키마
-- `src/shared/types.ts` — DB 타입 정의
-- `src/shared/env.ts` — 환경변수 빌드타임 검증
-- `src/proxy.ts` — 관리자 인증 middleware
-- `docs/NEXT-TASKS.md` — 다음 작업 가이드

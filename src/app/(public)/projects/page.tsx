@@ -2,6 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { getServerRepositories } from "@/server";
 import { CATEGORIES } from "@/shared/constants";
+import { ROUTES } from "@/shared/routes";
 
 export default async function Projects({
   searchParams,
@@ -20,7 +21,7 @@ export default async function Projects({
 
       <nav className="mt-6 flex gap-2 overflow-x-auto pb-2" aria-label="카테고리 필터">
         <Link
-          href="/projects"
+          href={ROUTES.projects}
           className={`shrink-0 rounded-full px-4 py-2 text-sm font-medium transition-colors ${!category ? "bg-navy text-white" : "bg-gray-light text-gray-dark hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-300"}`}
         >
           전체
@@ -28,7 +29,7 @@ export default async function Projects({
         {categories.map((cat) => (
           <Link
             key={cat}
-            href={`/projects?category=${cat}`}
+            href={`${ROUTES.projects}?category=${cat}`}
             className={`shrink-0 rounded-full px-4 py-2 text-sm font-medium transition-colors ${category === cat ? "bg-navy text-white" : "bg-gray-light text-gray-dark hover:bg-gray-200 dark:bg-gray-800 dark:text-gray-300"}`}
           >
             {cat}
@@ -48,7 +49,7 @@ export default async function Projects({
           {items.map((item) => (
             <li key={item.id}>
               <Link
-                href={`/projects/${item.id}`}
+                href={ROUTES.projectDetail(item.id)}
                 className="group block overflow-hidden rounded-lg"
               >
                 {item.images.length > 0 ? (

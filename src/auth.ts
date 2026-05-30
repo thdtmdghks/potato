@@ -28,11 +28,24 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   },
   callbacks: {
     async jwt({ token, account, profile }) {
+      // console.log("JWT Callback - token:", token);
+      // console.log("JWT Callback - account:", account, "profile:", profile);
       if (account?.provider === "kakao") {
         token.kakaoId = account.providerAccountId;
-        token.name =
-          (profile as { kakao_account?: { profile?: { nickname?: string } } })?.kakao_account
-            ?.profile?.nickname ?? token.name;
+        const kakaoProfile = (
+          profile as {
+            kakao_account?: {
+              profile?: {
+                nickname?: string;
+                thumbnail_image_url?: string;
+              };
+            };
+          }
+        )?.kakao_account?.profile;
+        if (kakaoProfile) {
+          token.name = kakaoProfile.nickname ?? token.name;
+          token.picture = kakaoProfile.thumbnail_image_url ?? token.picture;
+        }
       }
       if (token.kakaoId) {
         token.role = adminIds.includes(token.kakaoId) ? "admin" : "user";
@@ -42,6 +55,10 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     async session({ session, token }) {
       session.role = token.role;
       session.kakaoId = token.kakaoId;
+      if (session.user) {
+        session.user.name = token.name;
+        session.user.image = token.picture;
+      }
       return session;
     },
   },
