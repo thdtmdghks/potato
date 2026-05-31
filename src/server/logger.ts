@@ -25,19 +25,13 @@ async function sendToDiscord(webhookUrl: string, embed: DiscordEmbed) {
 
 /**
  * 스택 트레이스 가독성 정제 헬퍼
- * 첫 5~8줄의 핵심 프로젝트 소스 관련 경로만 파싱하여 디스코드 메시지 한도 초과를 방지합니다.
+ * 에러 발생 지점의 핵심 정보(최대 12줄)를 표시하며, 디스코드 메시지 한도(1024자)를 넘지 않도록 제한합니다.
  */
 function getSanitizedStack(error: unknown): string | undefined {
   if (!(error instanceof Error) || !error.stack) return undefined;
   const lines = error.stack.split("\n");
-  const filteredLines = lines
-    .filter((line) => line.includes("src/") || line.includes("app/") || line.includes("server/"))
-    .slice(0, 8);
-
-  if (filteredLines.length === 0) {
-    return lines.slice(0, 5).join("\n");
-  }
-  return filteredLines.join("\n");
+  const stack = lines.slice(0, 12).join("\n");
+  return stack.length > 800 ? stack.slice(0, 800) + "\n... (아래 스택 생략됨)" : stack;
 }
 
 /**
@@ -61,7 +55,7 @@ export function logError(context: string, error: unknown, payload?: unknown) {
   const coreStack = getSanitizedStack(error);
   const nodeEnv = process.env.NODE_ENV?.toUpperCase() || "LOCAL";
 
-  // 디스코드 카드 빌드
+  // 디스코드 카드 기본 구조 빌드
   const embed: DiscordEmbed = {
     title: `🔴 [${nodeEnv}] 시스템 장애 및 에러 발생`,
     color: 15158332, // Red (#E74C3C)
@@ -72,8 +66,50 @@ export function logError(context: string, error: unknown, payload?: unknown) {
     ],
   };
 
+  // 객체 형태의 에러인 경우 추가 상세 필드 추출 (Supabase PostgrestError 등 대응)
+  if (error && typeof error === "object") {
+    const errObj = error as Record<string, unknown>;
+
+    if (errObj.code) {
+      embed.fields.push({ name: "에러 코드 (DB Code)", value: `\`${errObj.code}\``, inline: true });
+    }
+    if (errObj.status) {
+      embed.fields.push({ name: "HTTP 상태 코드", value: `\`${errObj.status}\``, inline: true });
+    }
+    if (errObj.details && String(errObj.details).trim()) {
+      embed.fields.push({
+        name: "에러 상세 (Details)",
+        value: `\`\`\`\n${errObj.details}\n\`\`\``,
+      });
+    }
+    if (errObj.hint && String(errObj.hint).trim()) {
+      embed.fields.push({ name: "힌트 (Hint)", value: `\`\`\`\n${errObj.hint}\n\`\`\`` });
+    }
+
+    // stack, message, code, status, details, hint를 제외한 나머지 정보가 있다면 포함
+    try {
+      const extra: Record<string, unknown> = {};
+      for (const key of Object.getOwnPropertyNames(error)) {
+        if (!["stack", "message", "code", "status", "details", "hint"].includes(key)) {
+          extra[key] = errObj[key];
+        }
+      }
+      if (Object.keys(extra).length > 0) {
+        embed.fields.push({
+          name: "상세 에러 객체 (Raw Error)",
+          value: `\`\`\`json\n${JSON.stringify(extra, null, 2).slice(0, 800)}\n\`\`\``,
+        });
+      }
+    } catch {
+      // JSON stringify 에러 시 무시
+    }
+  }
+
   if (coreStack) {
-    embed.fields.push({ name: "핵심 스택 트레이스", value: `\`\`\`\n${coreStack}\n\`\`\`` });
+    embed.fields.push({
+      name: "스택 트레이스 (Stack Trace)",
+      value: `\`\`\`\n${coreStack}\n\`\`\``,
+    });
   }
   if (payload) {
     embed.fields.push({
