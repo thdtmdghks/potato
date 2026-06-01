@@ -8,6 +8,7 @@ import { Button } from "@/app/_components/button";
 import { Label } from "@/app/_components/label";
 import { Textarea } from "@/app/_components/textarea";
 import { submitReview } from "../_actions";
+import { FORM_KEYS } from "../_constants";
 import { useRouter } from "next/navigation";
 import { ROUTES } from "@/shared/routes";
 import { ReviewAvatar } from "./review-avatar";
@@ -75,14 +76,14 @@ export function ReviewForm({ id, initialData, isApproved, userProfile }: ReviewF
     }
 
     const fd = new FormData();
-    fd.set("content", data.content);
-    fd.set("rating", String(data.rating));
+    fd.set(FORM_KEYS.content, data.content);
+    fd.set(FORM_KEYS.rating, String(data.rating));
 
     for (const file of compressedFiles) {
-      fd.append("images", file);
+      fd.append(FORM_KEYS.images, file);
     }
     for (const url of existingImages) {
-      fd.append("existingImages", url);
+      fd.append(FORM_KEYS.existingImages, url);
     }
 
     startTransition(async () => {

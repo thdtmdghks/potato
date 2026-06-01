@@ -9,6 +9,7 @@ import { logError } from "@/server/logger";
 import { ROUTES } from "@/shared/routes";
 import { isUUIDv7Expired } from "@/shared/utils";
 import { REVIEW_INVITE_MAX_AGE_MS, REVIEW_STATUS } from "@/shared/constants";
+import { FORM_KEYS } from "./_constants";
 
 const STORAGE_BUCKET = process.env.STORAGE_BUCKET ?? "images";
 const STORAGE_PATH_PREFIX = "reviews";
@@ -20,8 +21,8 @@ export async function submitReview(id: string, formData: FormData) {
       return { success: false as const, error: "인증이 필요합니다." };
     }
 
-    const content = formData.get("content");
-    const ratingRaw = formData.get("rating");
+    const content = formData.get(FORM_KEYS.content);
+    const ratingRaw = formData.get(FORM_KEYS.rating);
     const parsed = reviewSchema.safeParse({
       content,
       rating: ratingRaw ? Number(ratingRaw) : 5,
@@ -36,8 +37,8 @@ export async function submitReview(id: string, formData: FormData) {
     const { reviews, reviewEdits, storage } = await getServerRepositories();
     const existingReview = await reviews.getById(id);
 
-    const newFiles = formData.getAll("images") as File[];
-    const existingImageUrls = formData.getAll("existingImages") as string[];
+    const newFiles = formData.getAll(FORM_KEYS.images) as File[];
+    const existingImageUrls = formData.getAll(FORM_KEYS.existingImages) as string[];
 
     // 신규 이미지 업로드
     const newImageUrls = await uploadImages(storage, newFiles, STORAGE_BUCKET, STORAGE_PATH_PREFIX);
