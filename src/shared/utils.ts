@@ -2,10 +2,6 @@
  * 날짜 데이터를 'YYYY. MM. DD.' 형식의 문자열로 일관되게 포맷팅합니다.
  * 서버와 클라이언트 간의 로케일 차이로 인한 Hydration Mismatch를 방지합니다.
  */
-/**
- * 날짜 데이터를 'YYYY. MM. DD.' 형식의 문자열로 일관되게 포맷팅합니다.
- * 서버와 클라이언트 간의 로케일 차이로 인한 Hydration Mismatch를 방지합니다.
- */
 export const formatDate = (dateInput: string | Date | number): string => {
   if (!dateInput) return "";
   const date = new Date(dateInput);
