@@ -40,6 +40,7 @@ export function Header() {
           {isAdmin && (
             <Link
               href={ROUTES.admin.root}
+              prefetch={false}
               className="bg-accent hover:bg-accent-dark rounded px-3 py-1 text-sm font-semibold transition-colors"
             >
               관리자
@@ -79,6 +80,7 @@ export function Header() {
           {isAdmin && (
             <Link
               href={ROUTES.admin.root}
+              prefetch={false}
               onClick={closeMenu}
               className="text-accent-light block py-3 font-semibold"
             >
