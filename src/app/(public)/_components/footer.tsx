@@ -32,10 +32,6 @@ export function Footer() {
             <Link href={ROUTES.privacy} className="hover:text-gray-400">
               개인정보 처리방침
             </Link>
-            <span>|</span>
-            <Link href={ROUTES.admin.root} prefetch={false} className="hover:text-gray-400">
-              관리자
-            </Link>
           </div>
         </div>
       </div>

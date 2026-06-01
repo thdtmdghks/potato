@@ -1,5 +1,8 @@
 import { env } from "@/shared/env";
 
+const MAX_FIELD_LENGTH = 800;
+const MAX_STACK_LINES = 12;
+
 type DiscordEmbed = {
   title: string;
   color: number;
@@ -8,7 +11,7 @@ type DiscordEmbed = {
 };
 
 // 백그라운드 디스코드 발송 (Non-blocking)
-async function sendToDiscord(webhookUrl: string, embed: DiscordEmbed) {
+const sendToDiscord = async (webhookUrl: string, embed: DiscordEmbed) => {
   try {
     const response = await fetch(webhookUrl, {
       method: "POST",
@@ -21,18 +24,20 @@ async function sendToDiscord(webhookUrl: string, embed: DiscordEmbed) {
   } catch (err) {
     console.warn("[DISCORD LOGGING SYSTEM ERROR]", err);
   }
-}
+};
 
 /**
  * 스택 트레이스 가독성 정제 헬퍼
  * 에러 발생 지점의 핵심 정보(최대 12줄)를 표시하며, 디스코드 메시지 한도(1024자)를 넘지 않도록 제한합니다.
  */
-function getSanitizedStack(error: unknown): string | undefined {
+const getSanitizedStack = (error: unknown): string | undefined => {
   if (!(error instanceof Error) || !error.stack) return undefined;
   const lines = error.stack.split("\n");
-  const stack = lines.slice(0, 12).join("\n");
-  return stack.length > 800 ? stack.slice(0, 800) + "\n... (아래 스택 생략됨)" : stack;
-}
+  const stack = lines.slice(0, MAX_STACK_LINES).join("\n");
+  return stack.length > MAX_FIELD_LENGTH
+    ? stack.slice(0, MAX_FIELD_LENGTH) + "\n... (아래 스택 생략됨)"
+    : stack;
+};
 
 /**
  * 🔴 1. ERROR 레벨 로깅 (치명적인 서버/DB 장애용)
@@ -97,7 +102,7 @@ export function logError(context: string, error: unknown, payload?: unknown) {
       if (Object.keys(extra).length > 0) {
         embed.fields.push({
           name: "상세 에러 객체 (Raw Error)",
-          value: `\`\`\`json\n${JSON.stringify(extra, null, 2).slice(0, 800)}\n\`\`\``,
+          value: `\`\`\`json\n${JSON.stringify(extra, null, 2).slice(0, MAX_FIELD_LENGTH)}\n\`\`\``,
         });
       }
     } catch {
@@ -114,7 +119,7 @@ export function logError(context: string, error: unknown, payload?: unknown) {
   if (payload) {
     embed.fields.push({
       name: "시도 데이터 (Payload)",
-      value: `\`\`\`json\n${JSON.stringify(payload, null, 2).slice(0, 800)}\n\`\`\``,
+      value: `\`\`\`json\n${JSON.stringify(payload, null, 2).slice(0, MAX_FIELD_LENGTH)}\n\`\`\``,
     });
   }
 
@@ -149,7 +154,7 @@ export function logWarn(context: string, message: string, payload?: unknown) {
   if (payload) {
     embed.fields.push({
       name: "관련 데이터 (Payload)",
-      value: `\`\`\`json\n${JSON.stringify(payload, null, 2).slice(0, 800)}\n\`\`\``,
+      value: `\`\`\`json\n${JSON.stringify(payload, null, 2).slice(0, MAX_FIELD_LENGTH)}\n\`\`\``,
     });
   }
 

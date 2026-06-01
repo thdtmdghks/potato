@@ -7,7 +7,7 @@ import { logWarn, logError } from "@/server/logger";
 import { ROUTES } from "@/shared/routes";
 import { REVIEW_STATUS } from "@/shared/constants";
 
-async function verifyAdmin() {
+const verifyAdmin = async () => {
   const session = await auth();
   if (session?.role !== "admin") {
     logWarn("admin.reviews.actions", "관리자 권한 없는 사용자의 승인/삭제 시도", {
@@ -15,7 +15,7 @@ async function verifyAdmin() {
     });
     throw new Error("관리자 권한이 필요합니다.");
   }
-}
+};
 
 export async function approveReview(id: string, primaryImage: string | null) {
   try {

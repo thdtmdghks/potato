@@ -39,7 +39,7 @@ function LoginContent() {
           </p>
           <button
             onClick={() =>
-              signIn("kakao", { callbackUrl: searchParams.get("callbackUrl") || "/admin" })
+              signIn("kakao", { callbackUrl: searchParams.get("callbackUrl") || ROUTES.home })
             }
             className="mt-6 flex w-full items-center justify-center gap-2 rounded-lg bg-[#FEE500] px-4 py-3 text-sm font-semibold text-[#3C1E1E] transition-opacity hover:opacity-90"
           >

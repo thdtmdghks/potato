@@ -70,7 +70,8 @@ describe("getReviewWriteState", () => {
   it("UUID v7 형식이지만 만료 기간(1주일)을 넘기면 만료 사유와 함께 INVALID_LINK를 반환한다", async () => {
     const deps = createMockDeps();
     const expiredId = generateExpiredUUIDv7();
-    const state = await getReviewWriteState(expiredId, null, deps);
+    const session = { kakaoId: "my-user", user: { name: "홍길동", image: "avatar.jpg" } };
+    const state = await getReviewWriteState(expiredId, session, deps);
     expect(state).toEqual({
       type: "INVALID_LINK",
       title: "만료된 링크",

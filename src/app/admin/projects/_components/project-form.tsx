@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useMemo } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
@@ -54,18 +54,16 @@ export function ProjectForm({ project }: Props) {
     onError: (msg) => setServerError(msg),
   });
 
-  const [primaryImageUrl, setPrimaryImageUrl] = useState<string | null>(
+  const [selectedPrimary, setSelectedPrimary] = useState<string | null>(
     project?.primary_image ?? project?.images[0] ?? null,
   );
 
-  useEffect(() => {
+  const primaryImageUrl = useMemo(() => {
     const allImages = [...existingImages, ...previews];
-    if (allImages.length === 0) {
-      setPrimaryImageUrl(null);
-    } else if (!primaryImageUrl || !allImages.includes(primaryImageUrl)) {
-      setPrimaryImageUrl(allImages[0]);
-    }
-  }, [existingImages, previews, primaryImageUrl]);
+    if (allImages.length === 0) return null;
+    if (selectedPrimary && allImages.includes(selectedPrimary)) return selectedPrimary;
+    return allImages[0];
+  }, [existingImages, previews, selectedPrimary]);
 
   const onSubmit = async (data: ProjectFormData) => {
     setServerError("");
@@ -174,7 +172,7 @@ export function ProjectForm({ project }: Props) {
           onRemoveExisting={removeExisting}
           onRemoveNew={removeNew}
           primaryImageUrl={primaryImageUrl}
-          onSelectPrimary={(url) => setPrimaryImageUrl(url)}
+          onSelectPrimary={(url) => setSelectedPrimary(url)}
         />
 
         {serverError && <p className="text-sm text-red-500">{serverError}</p>}

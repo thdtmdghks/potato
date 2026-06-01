@@ -2,21 +2,28 @@ import { createClient } from "@supabase/supabase-js";
 import type { Database } from "@/shared/types";
 import { logWarn, logError } from "./logger";
 
+const HTTP_STATUS_BAD_REQUEST = 400;
+const HTTP_STATUS_UNAUTHORIZED = 401;
+const RETRY_MAX_ATTEMPTS = 3;
+const RETRY_DELAY_MS = 300;
+
 const customFetch = async (input: RequestInfo | URL, init?: RequestInit): Promise<Response> => {
   let attempts = 0;
-  const maxAttempts = 3;
   const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
-  let lastErrorBody: any = null;
+  let lastErrorBody: Record<string, unknown> | null = null;
   let encounteredClockSkew = false;
   let lastResponse: Response | null = null;
 
-  while (attempts < maxAttempts) {
+  while (attempts < RETRY_MAX_ATTEMPTS) {
     attempts++;
     try {
       const response = await fetch(input, init);
       lastResponse = response;
 
-      if (response.status === 401 || response.status === 400) {
+      if (
+        response.status === HTTP_STATUS_UNAUTHORIZED ||
+        response.status === HTTP_STATUS_BAD_REQUEST
+      ) {
         const clonedResponse = response.clone();
         try {
           const body = await clonedResponse.json();
@@ -26,9 +33,9 @@ const customFetch = async (input: RequestInfo | URL, init?: RequestInit): Promis
               encounteredClockSkew = true;
               lastErrorBody = body;
               console.warn(
-                `[SUPABASE FETCH RETRY] Clock skew detected (${body.message || body.error_description}). Retrying attempt ${attempts}/${maxAttempts}...`,
+                `[SUPABASE FETCH RETRY] Clock skew detected (${body.message || body.error_description}). Retrying attempt ${attempts}/${RETRY_MAX_ATTEMPTS}...`,
               );
-              await delay(attempts * 200); // Wait 200ms, 400ms...
+              await delay(attempts * RETRY_DELAY_MS);
               continue;
             }
           }
@@ -41,7 +48,7 @@ const customFetch = async (input: RequestInfo | URL, init?: RequestInit): Promis
       if (encounteredClockSkew) {
         logWarn(
           "SupabaseClient.customFetch",
-          `Clock skew error (JWT issued at future) resolved on retry attempt ${attempts}/${maxAttempts}`,
+          `Clock skew error (JWT issued at future) resolved on retry attempt ${attempts}/${RETRY_MAX_ATTEMPTS}`,
           {
             url: input.toString(),
             attemptsRequired: attempts,
@@ -52,23 +59,23 @@ const customFetch = async (input: RequestInfo | URL, init?: RequestInit): Promis
 
       return response;
     } catch (err) {
-      if (attempts >= maxAttempts) {
+      if (attempts >= RETRY_MAX_ATTEMPTS) {
         if (encounteredClockSkew) {
           logError(
             "SupabaseClient.customFetch",
             new Error(
-              `Clock skew retry exhausted after ${maxAttempts} attempts: ${err instanceof Error ? err.message : String(err)}`,
+              `Clock skew retry exhausted after ${RETRY_MAX_ATTEMPTS} attempts: ${err instanceof Error ? err.message : String(err)}`,
             ),
             {
               url: input.toString(),
-              totalAttempts: maxAttempts,
+              totalAttempts: RETRY_MAX_ATTEMPTS,
               lastError: err,
             },
           );
         }
         throw err;
       }
-      await delay(attempts * 200);
+      await delay(attempts * RETRY_DELAY_MS);
     }
   }
 
@@ -77,11 +84,11 @@ const customFetch = async (input: RequestInfo | URL, init?: RequestInit): Promis
     logError(
       "SupabaseClient.customFetch",
       new Error(
-        `Clock skew retry exhausted after ${maxAttempts} attempts. Last response status: ${lastResponse.status}`,
+        `Clock skew retry exhausted after ${RETRY_MAX_ATTEMPTS} attempts. Last response status: ${lastResponse.status}`,
       ),
       {
         url: input.toString(),
-        totalAttempts: maxAttempts,
+        totalAttempts: RETRY_MAX_ATTEMPTS,
         lastError: lastErrorBody,
       },
     );

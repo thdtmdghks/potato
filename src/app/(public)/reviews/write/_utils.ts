@@ -26,15 +26,6 @@ export const getReviewWriteState = async (
     return { type: "INVALID_LINK" };
   }
 
-  // 1.1 시간 초과(만료) 검증 (1주일)
-  if (isUUIDv7Expired(id, REVIEW_INVITE_MAX_AGE_MS)) {
-    return {
-      type: "INVALID_LINK",
-      title: "만료된 링크",
-      description: "해당 리뷰 작성 링크의 유효 기간(1주일)이 만료되었습니다.",
-    };
-  }
-
   // 2. 로그인 확인
   if (!session?.kakaoId) {
     return { type: "AUTH_REQUIRED", redirectTo: ROUTES.writeReview(id) };
@@ -47,7 +38,12 @@ export const getReviewWriteState = async (
   let isApproved = false;
 
   if (existingReview) {
-    // 3.1 반려 또는 무효화된 상태인지 확인
+    // 3.1 본인 확인 (상태 정보 노출 방지를 위해 먼저 검증)
+    if (existingReview.kakao_id !== session.kakaoId) {
+      return { type: "UNAUTHORIZED" };
+    }
+
+    // 3.2 반려 또는 무효화된 상태인지 확인
     if (
       existingReview.status === REVIEW_STATUS.REJECTED ||
       existingReview.status === REVIEW_STATUS.DELETED
@@ -57,11 +53,6 @@ export const getReviewWriteState = async (
         title: "사용할 수 없는 링크",
         description: "관리자에 의해 반려되었거나 이미 무효화된 후기 링크입니다.",
       };
-    }
-
-    // 본인 확인
-    if (existingReview.kakao_id !== session.kakaoId) {
-      return { type: "UNAUTHORIZED" };
     }
 
     if (existingReview.status === REVIEW_STATUS.APPROVED) {
@@ -85,6 +76,15 @@ export const getReviewWriteState = async (
         content: existingReview.content,
         images: existingReview.images,
         rating: existingReview.rating,
+      };
+    }
+  } else {
+    // 4. 신규 작성: 링크 만료 검증 (기존 리뷰가 있는 수정 케이스에는 적용하지 않음)
+    if (isUUIDv7Expired(id, REVIEW_INVITE_MAX_AGE_MS)) {
+      return {
+        type: "INVALID_LINK",
+        title: "만료된 링크",
+        description: "해당 리뷰 작성 링크의 유효 기간(1주일)이 만료되었습니다.",
       };
     }
   }

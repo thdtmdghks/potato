@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { SessionProvider } from "next-auth/react";
 import { Analytics } from "@vercel/analytics/next";
+import { NavigationProgress } from "@/app/_components/navigation-progress";
 import { SITE_URL, BUSINESS } from "@/shared/constants";
 import "./globals.css";
 
@@ -69,6 +70,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
       </head>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+        <NavigationProgress />
         <SessionProvider>{children}</SessionProvider>
         <Analytics />
       </body>
