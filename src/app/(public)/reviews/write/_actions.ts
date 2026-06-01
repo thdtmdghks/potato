@@ -26,13 +26,17 @@ export async function submitReview(id: string, formData: FormData) {
     }
 
     const content = formData.get("content");
-    const ratingStr = formData.get("rating");
-    const rating = ratingStr ? parseInt(String(ratingStr), 10) : 5;
-    const parsed = reviewSchema.safeParse({ content });
+    const ratingRaw = formData.get("rating");
+    const parsed = reviewSchema.safeParse({
+      content,
+      rating: ratingRaw ? Number(ratingRaw) : 5,
+    });
 
     if (!parsed.success) {
       return { success: false as const, error: parsed.error.issues[0].message };
     }
+
+    const { content: validContent, rating } = parsed.data;
 
     const { reviews, reviewEdits, storage } = await getServerRepositories();
     const existingReview = await reviews.getById(id);
@@ -57,7 +61,7 @@ export async function submitReview(id: string, formData: FormData) {
         kakao_id: session.kakaoId,
         author_name: session.user?.name ?? "고객",
         author_avatar: session.user?.image ?? "",
-        content: parsed.data.content,
+        content: validContent,
         images: finalImageUrls,
         primary_image: null,
         rating,
@@ -86,7 +90,7 @@ export async function submitReview(id: string, formData: FormData) {
       if (existingReview.status === REVIEW_STATUS.PENDING) {
         // 2. 대기 상태 직접 수정 (reviews 테이블 바로 업데이트)
         const result = await reviews.update(id, {
-          content: parsed.data.content,
+          content: validContent,
           images: finalImageUrls,
           rating,
         });
@@ -105,7 +109,7 @@ export async function submitReview(id: string, formData: FormData) {
         // 3. 승인 상태 수정 요청 (review_edits 테이블에 upsert)
         const result = await reviewEdits.upsert({
           review_id: id,
-          content: parsed.data.content,
+          content: validContent,
           images: finalImageUrls,
           rating,
         });

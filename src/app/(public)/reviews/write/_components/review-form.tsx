@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { reviewSchema, type ReviewFormData } from "@/shared/schemas";
 import { Button } from "@/app/_components/button";
@@ -32,7 +32,6 @@ export function ReviewForm({ id, initialData, isApproved, userProfile }: ReviewF
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [serverError, setServerError] = useState<string | null>(null);
-  const [rating, setRating] = useState<number>(initialData?.rating ?? 5);
 
   // 커스텀 훅을 사용하여 이미지 업로드 상태 및 압축 로직을 관리
   const {
@@ -53,13 +52,18 @@ export function ReviewForm({ id, initialData, isApproved, userProfile }: ReviewF
   const {
     register,
     handleSubmit,
+    setValue,
+    control,
     formState: { errors },
   } = useForm<ReviewFormData>({
     resolver: zodResolver(reviewSchema),
     defaultValues: {
       content: initialData?.content ?? "",
+      rating: initialData?.rating ?? 5,
     },
   });
+
+  const rating = useWatch({ control, name: "rating" });
 
   const onSubmit = async (data: ReviewFormData) => {
     setServerError(null);
@@ -72,7 +76,7 @@ export function ReviewForm({ id, initialData, isApproved, userProfile }: ReviewF
 
     const fd = new FormData();
     fd.set("content", data.content);
-    fd.set("rating", String(rating));
+    fd.set("rating", String(data.rating));
 
     for (const file of compressedFiles) {
       fd.append("images", file);
@@ -117,7 +121,7 @@ export function ReviewForm({ id, initialData, isApproved, userProfile }: ReviewF
               <button
                 key={star}
                 type="button"
-                onClick={() => setRating(star)}
+                onClick={() => setValue("rating", star)}
                 className={`text-3xl transition-transform hover:scale-110 focus:outline-none ${
                   star <= rating ? "text-amber-400" : "text-gray-300 dark:text-gray-600"
                 }`}

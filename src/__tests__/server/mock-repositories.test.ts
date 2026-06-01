@@ -34,6 +34,7 @@ describe("MockProjectRepository", () => {
       description: "설명",
       category: "웹",
       images: [],
+      primary_image: null,
       created_by: "system",
     });
     expect(created).not.toBeNull();
