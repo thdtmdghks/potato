@@ -48,15 +48,24 @@ export function Header() {
           )}
         </nav>
         <div className="flex items-center gap-3">
-          <a
-            href={LINKS.tel}
-            className="bg-accent hover:bg-accent-dark hidden rounded px-3 py-1.5 text-sm font-semibold text-white transition-colors sm:inline-block"
-          >
-            📞 {BUSINESS.phone}
-          </a>
+          {session ? (
+            <Link
+              href={ROUTES.myReviews}
+              className="hidden text-sm font-medium text-white/80 hover:text-white md:inline-block"
+            >
+              내 후기
+            </Link>
+          ) : (
+            <Link
+              href={ROUTES.login}
+              className="hidden text-sm font-medium text-white/80 hover:text-white md:inline-block"
+            >
+              로그인
+            </Link>
+          )}
           <ThemeToggle />
           <button
-            className="min-h-11 min-w-11 md:hidden"
+            className="-my-2 flex h-14 w-14 items-center justify-center text-3xl md:hidden"
             onClick={toggle}
             aria-label={open ? "메뉴 닫기" : "메뉴 열기"}
           >
@@ -77,6 +86,16 @@ export function Header() {
           <Link href={ROUTES.projects} onClick={closeMenu} className="block py-3">
             갤러리
           </Link>
+          <div className="my-2 border-t border-white/20" />
+          {session ? (
+            <Link href={ROUTES.myReviews} onClick={closeMenu} className="block py-3">
+              내 후기
+            </Link>
+          ) : (
+            <Link href={ROUTES.login} onClick={closeMenu} className="block py-3">
+              로그인
+            </Link>
+          )}
           {isAdmin && (
             <Link
               href={ROUTES.admin.root}
