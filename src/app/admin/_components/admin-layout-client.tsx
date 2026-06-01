@@ -11,7 +11,7 @@ const adminNav = [
   { href: ROUTES.admin.reviews, label: "리뷰 관리" },
 ];
 
-export default function AdminLayoutClient({ children }: { children: React.ReactNode }) {
+export function AdminLayoutClient({ children }: { children: React.ReactNode }) {
   const { open, toggle, closeMenu } = useMenuWithHistory();
   const { data: session } = useSession();
   const kakaoId = session?.kakaoId;

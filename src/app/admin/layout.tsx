@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import AdminLayoutClient from "./_components/admin-layout-client";
+import { AdminLayoutClient } from "./_components/admin-layout-client";
 
 export const metadata: Metadata = {
   robots: "noindex, nofollow",
