@@ -6,7 +6,7 @@ const customFetch = async (input: RequestInfo | URL, init?: RequestInit): Promis
   let attempts = 0;
   const maxAttempts = 3;
   const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
-  let lastErrorBody: any = null;
+  let lastErrorBody: Record<string, unknown> | null = null;
   let encounteredClockSkew = false;
   let lastResponse: Response | null = null;
 
