@@ -20,11 +20,6 @@ export async function submitReview(id: string, formData: FormData) {
       return { success: false as const, error: "인증이 필요합니다." };
     }
 
-    // 0. UUID v7 시간 초과 검증 (1주일)
-    if (isUUIDv7Expired(id, REVIEW_INVITE_MAX_AGE_MS)) {
-      return { success: false as const, error: "만료된 리뷰 작성 링크입니다." };
-    }
-
     const content = formData.get("content");
     const ratingRaw = formData.get("rating");
     const parsed = reviewSchema.safeParse({
@@ -55,7 +50,12 @@ export async function submitReview(id: string, formData: FormData) {
     }
 
     if (!existingReview) {
-      // 1. 신규 등록
+      // 1. 신규 등록: 링크 만료 검증
+      if (isUUIDv7Expired(id, REVIEW_INVITE_MAX_AGE_MS)) {
+        deleteImages(storage, STORAGE_BUCKET, newImageUrls);
+        return { success: false as const, error: "만료된 리뷰 작성 링크입니다." };
+      }
+
       const result = await reviews.create({
         id,
         kakao_id: session.kakaoId,
@@ -72,19 +72,19 @@ export async function submitReview(id: string, formData: FormData) {
         return { success: false as const, error: "후기 등록에 실패했습니다." };
       }
     } else {
-      // 0.1 반려 또는 무효화된 상태인지 확인
+      // 권한 검증: 로그인 유저가 작성한 글인지 체크 (상태 정보 노출 방지를 위해 먼저 검증)
+      if (existingReview.kakao_id !== session.kakaoId) {
+        deleteImages(storage, STORAGE_BUCKET, newImageUrls);
+        return { success: false as const, error: "수정 권한이 없습니다." };
+      }
+
+      // 반려 또는 무효화된 상태인지 확인
       if (
         existingReview.status === REVIEW_STATUS.REJECTED ||
         existingReview.status === REVIEW_STATUS.DELETED
       ) {
         deleteImages(storage, STORAGE_BUCKET, newImageUrls);
         return { success: false as const, error: "이미 무효화되거나 반려된 리뷰 링크입니다." };
-      }
-
-      // 권한 검증: 로그인 유저가 작성한 글인지 체크
-      if (existingReview.kakao_id !== session.kakaoId) {
-        deleteImages(storage, STORAGE_BUCKET, newImageUrls);
-        return { success: false as const, error: "수정 권한이 없습니다." };
       }
 
       if (existingReview.status === REVIEW_STATUS.PENDING) {
