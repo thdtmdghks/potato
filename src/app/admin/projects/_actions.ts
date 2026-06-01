@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache";
 import { getServerRepositories } from "@/server";
 import { auth } from "@/auth";
 import { projectSchema } from "@/shared/schemas";
-import type { StorageRepository } from "@/server/repositories";
+import { uploadImages, deleteImages } from "@/server/storage-utils";
 import { FORM_KEYS } from "./_constants";
 import { logError, logWarn } from "@/server/logger";
 import { ROUTES } from "@/shared/routes";
@@ -16,29 +16,6 @@ const revalidateProjects = () => {
   revalidatePath(ROUTES.home);
   revalidatePath(ROUTES.projects);
   revalidatePath(ROUTES.admin.projects);
-};
-
-const uploadImages = async (storage: StorageRepository, files: File[]) => {
-  const urls: string[] = [];
-  for (const file of files) {
-    if (file.size === 0) continue;
-    const path = `${STORAGE_PATH_PREFIX}/${crypto.randomUUID()}.webp`;
-    const url = await storage.upload(STORAGE_BUCKET, path, file);
-    if (url) urls.push(url);
-  }
-  return urls;
-};
-
-const extractStoragePath = (url: string): string | null => {
-  const match = url.match(/\/storage\/v1\/object\/public\/[^/]+\/(.+)$/);
-  return match?.[1] ?? null;
-};
-
-const deleteImages = (storage: StorageRepository, urls: string[]) => {
-  for (const url of urls) {
-    const path = extractStoragePath(url);
-    if (path) storage.delete(STORAGE_BUCKET, path);
-  }
 };
 
 export async function createProject(formData: FormData) {
@@ -60,7 +37,12 @@ export async function createProject(formData: FormData) {
     }
 
     const { storage, projects } = await getServerRepositories();
-    const imageUrls = await uploadImages(storage, formData.getAll(FORM_KEYS.images) as File[]);
+    const imageUrls = await uploadImages(
+      storage,
+      formData.getAll(FORM_KEYS.images) as File[],
+      STORAGE_BUCKET,
+      STORAGE_PATH_PREFIX,
+    );
 
     const primaryImageIndexStr = formData.get(FORM_KEYS.primaryImageIndex);
     const primaryImageIndex =
@@ -116,7 +98,12 @@ export async function updateProject(id: string, formData: FormData) {
     if (!project) return { success: false as const, error: "프로젝트를 찾을 수 없습니다." };
 
     const existingImages = formData.getAll(FORM_KEYS.existingImages) as string[];
-    const newImageUrls = await uploadImages(storage, formData.getAll(FORM_KEYS.images) as File[]);
+    const newImageUrls = await uploadImages(
+      storage,
+      formData.getAll(FORM_KEYS.images) as File[],
+      STORAGE_BUCKET,
+      STORAGE_PATH_PREFIX,
+    );
     const finalImages = [...existingImages, ...newImageUrls];
 
     const primaryImageVal = formData.get(FORM_KEYS.primaryImage);
@@ -151,7 +138,7 @@ export async function updateProject(id: string, formData: FormData) {
     }
 
     const removedImages = project.images.filter((url) => !existingImages.includes(url));
-    deleteImages(storage, removedImages);
+    deleteImages(storage, STORAGE_BUCKET, removedImages);
 
     revalidateProjects();
     return { success: true as const };
@@ -181,7 +168,7 @@ export async function deleteProject(id: string) {
       return { success: false as const, error: "삭제에 실패했습니다." };
     }
 
-    if (project) deleteImages(storage, project.images);
+    if (project) deleteImages(storage, STORAGE_BUCKET, project.images);
 
     revalidateProjects();
     return { success: true as const };
