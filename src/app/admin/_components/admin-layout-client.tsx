@@ -20,7 +20,11 @@ export function AdminLayoutClient({ children }: { children: React.ReactNode }) {
     <div className="min-h-screen md:flex">
       <div className="bg-navy-dark sticky top-0 z-50 flex items-center justify-between p-4 text-white md:hidden">
         <span className="font-bold">관리자</span>
-        <button onClick={toggle} aria-label={open ? "메뉴 닫기" : "메뉴 열기"}>
+        <button
+          className="-my-2 flex h-14 w-14 items-center justify-center text-3xl"
+          onClick={toggle}
+          aria-label={open ? "메뉴 닫기" : "메뉴 열기"}
+        >
           {open ? "✕" : "☰"}
         </button>
       </div>
