@@ -69,7 +69,7 @@ Server Action의 모든 분기를 Mock Repository 기반으로 검증. next/cach
 
 ---
 
-## Phase 2: 컴포넌트 테스트
+## Phase 2: 컴포넌트 테스트 ✅
 
 ### 목표
 
