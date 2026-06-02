@@ -52,6 +52,12 @@ const items = await projects.getAll();
   - 공통 훅 및 컴포넌트 추출: 둘 이상의 파일에서 중복되는 상태 변경 및 이벤트 제어 로직(예: 이미지 업로드 미리보기 및 삭제)은 공통 커스텀 훅(Custom Hook)과 공통 컴포넌트로 승격합니다.
 - 매직 넘버/문자열 금지. 의미 있는 값은 상수로 선언.
 - 코드 수정 전 기존 상수/유틸/타입을 먼저 탐색. 이미 있는 것을 새로 만들지 않는다.
+- 테스트:
+  - 순수 함수 (`_utils.ts`): 모든 분기 단위 테스트 작성.
+  - Server Action (`_actions.ts`): 모든 분기 통합 테스트 작성.
+  - Zod 스키마 추가/수정 시: `schemas.test.ts`에 유효/무효 케이스 추가.
+  - 테스트 파일 위치: 소스 옆 colocation.
+  - 공용 mock 헬퍼: `src/test-helpers/` 사용.
 - 세부 코딩 스타일은 `docs/CODE_STYLE.md` 참조.
 
 ## Git

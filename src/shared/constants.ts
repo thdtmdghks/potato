@@ -31,3 +31,10 @@ export const REVIEW_STATUS = {
 } as const;
 
 export type ReviewStatus = (typeof REVIEW_STATUS)[keyof typeof REVIEW_STATUS];
+
+export const USER_ROLE = {
+  ADMIN: "admin",
+  USER: "user",
+} as const;
+
+export type UserRole = (typeof USER_ROLE)[keyof typeof USER_ROLE];

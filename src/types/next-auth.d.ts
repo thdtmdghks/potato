@@ -1,16 +1,17 @@
 import "next-auth";
 import "next-auth/jwt";
+import type { UserRole } from "@/shared/constants";
 
 declare module "next-auth" {
   interface Session {
-    role?: string;
+    role?: UserRole;
     kakaoId?: string;
   }
 }
 
 declare module "next-auth/jwt" {
   interface JWT {
-    role?: string;
+    role?: UserRole;
     kakaoId?: string;
   }
 }

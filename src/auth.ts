@@ -1,9 +1,14 @@
 import NextAuth from "next-auth";
 import Kakao from "next-auth/providers/kakao";
+import { USER_ROLE } from "@/shared/constants";
 
-const providers = [];
-if (process.env.AUTH_KAKAO_ID && process.env.AUTH_KAKAO_SECRET) {
-  providers.push(Kakao);
+interface KakaoProfile {
+  kakao_account?: {
+    profile?: {
+      nickname?: string;
+      thumbnail_image_url?: string;
+    };
+  };
 }
 
 const entries = (process.env.ADMIN_KAKAO_IDS ?? "")
@@ -22,7 +27,7 @@ export const ADMIN_NAMES: Record<string, string> = Object.fromEntries(
 );
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
-  providers,
+  providers: [Kakao],
   pages: {
     signIn: "/login",
   },
@@ -30,23 +35,14 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     async jwt({ token, account, profile }) {
       if (account?.provider === "kakao") {
         token.kakaoId = account.providerAccountId;
-        const kakaoProfile = (
-          profile as {
-            kakao_account?: {
-              profile?: {
-                nickname?: string;
-                thumbnail_image_url?: string;
-              };
-            };
-          }
-        )?.kakao_account?.profile;
+        const kakaoProfile = (profile as KakaoProfile)?.kakao_account?.profile;
         if (kakaoProfile) {
           token.name = kakaoProfile.nickname ?? token.name;
           token.picture = kakaoProfile.thumbnail_image_url ?? token.picture;
         }
       }
       if (token.kakaoId) {
-        token.role = adminIds.includes(token.kakaoId) ? "admin" : "user";
+        token.role = adminIds.includes(token.kakaoId) ? USER_ROLE.ADMIN : USER_ROLE.USER;
       }
       return token;
     },

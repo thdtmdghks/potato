@@ -1,5 +1,9 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 import { extractStoragePath } from "./storage-utils";
+
+vi.mock("./logger", () => ({
+  logError: vi.fn(),
+}));
 
 describe("extractStoragePath", () => {
   it("정상 Supabase Storage URL에서 버킷 이후 경로를 추출한다", () => {

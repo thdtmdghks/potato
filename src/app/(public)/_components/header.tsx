@@ -6,6 +6,7 @@ import { ThemeToggle } from "./theme-toggle";
 import { BUSINESS, LINKS } from "@/shared/constants";
 import { useMenuWithHistory } from "@/client/use-menu-with-history";
 import { ROUTES } from "@/shared/routes";
+import { USER_ROLE } from "@/shared/constants";
 
 const navItems = [
   { href: `${ROUTES.home}#gallery`, label: "시공사례" },
@@ -15,7 +16,7 @@ const navItems = [
 export function Header() {
   const { open, toggle, closeMenu } = useMenuWithHistory();
   const { data: session } = useSession();
-  const isAdmin = session?.role === "admin";
+  const isAdmin = session?.role === USER_ROLE.ADMIN;
 
   return (
     <header className="bg-navy sticky top-0 z-50 text-white">
