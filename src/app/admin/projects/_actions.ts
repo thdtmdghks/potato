@@ -6,6 +6,7 @@ import { auth } from "@/auth";
 import { projectSchema } from "@/shared/schemas";
 import { uploadImages, deleteImages } from "@/server/storage-utils";
 import { FORM_KEYS } from "./_constants";
+import { resolvePrimaryImage } from "./_utils";
 import { logError, logWarn } from "@/server/logger";
 import { ROUTES } from "@/shared/routes";
 
@@ -47,12 +48,11 @@ export async function createProject(formData: FormData) {
     const primaryImageIndexStr = formData.get(FORM_KEYS.primaryImageIndex);
     const primaryImageIndex =
       primaryImageIndexStr !== null ? parseInt(String(primaryImageIndexStr), 10) : null;
-    let primaryImage: string | null = null;
-    if (primaryImageIndex !== null && !isNaN(primaryImageIndex) && imageUrls[primaryImageIndex]) {
-      primaryImage = imageUrls[primaryImageIndex];
-    } else if (imageUrls.length > 0) {
-      primaryImage = imageUrls[0];
-    }
+    const primaryImage = resolvePrimaryImage({
+      primaryImageIndex,
+      existingImages: [],
+      newImageUrls: imageUrls,
+    });
 
     const result = await projects.create({
       ...parsed.data,
@@ -111,22 +111,12 @@ export async function updateProject(id: string, formData: FormData) {
     const primaryImageIndex =
       primaryImageIndexStr !== null ? parseInt(String(primaryImageIndexStr), 10) : null;
 
-    let primaryImage: string | null = null;
-    if (
-      primaryImageVal &&
-      typeof primaryImageVal === "string" &&
-      finalImages.includes(primaryImageVal)
-    ) {
-      primaryImage = primaryImageVal;
-    } else if (
-      primaryImageIndex !== null &&
-      !isNaN(primaryImageIndex) &&
-      newImageUrls[primaryImageIndex]
-    ) {
-      primaryImage = newImageUrls[primaryImageIndex];
-    } else if (finalImages.length > 0) {
-      primaryImage = finalImages[0];
-    }
+    const primaryImage = resolvePrimaryImage({
+      primaryImageUrl: typeof primaryImageVal === "string" ? primaryImageVal : null,
+      primaryImageIndex,
+      existingImages,
+      newImageUrls,
+    });
 
     const result = await projects.update(id, {
       ...parsed.data,
