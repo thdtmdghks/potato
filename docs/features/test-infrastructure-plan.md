@@ -89,7 +89,7 @@ Server Action의 모든 분기를 Mock Repository 기반으로 검증. next/cach
 
 ---
 
-## Phase 3: E2E 테스트 (Playwright)
+## Phase 3: E2E 테스트 (Playwright) ✅
 
 ### 인프라 세팅
 
@@ -121,7 +121,7 @@ Server Action의 모든 분기를 Mock Repository 기반으로 검증. next/cach
 
 ---
 
-## Phase 4: 테스트 규칙 문서화
+## Phase 4: 테스트 규칙 문서화 ✅
 
 ### AGENTS.md Conventions에 추가
 
