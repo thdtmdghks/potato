@@ -5,11 +5,11 @@ import { getServerRepositories } from "@/server";
 import { auth } from "@/auth";
 import { logWarn, logError } from "@/server/logger";
 import { ROUTES } from "@/shared/routes";
-import { REVIEW_STATUS } from "@/shared/constants";
+import { REVIEW_STATUS, USER_ROLE } from "@/shared/constants";
 
 const verifyAdmin = async () => {
   const session = await auth();
-  if (session?.role !== "admin") {
+  if (session?.role !== USER_ROLE.ADMIN) {
     logWarn("admin.reviews.actions", "관리자 권한 없는 사용자의 승인/삭제 시도", {
       kakaoId: session?.kakaoId,
     });
