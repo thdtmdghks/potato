@@ -5,7 +5,7 @@ import { formatSize } from "@/shared/utils";
 
 interface ImageThumbnailProps {
   url: string;
-  onRemove: () => void;
+  onRemove?: () => void;
   isPrimary?: boolean;
   onSelectPrimary?: () => void;
   onPreview?: () => void;
@@ -68,17 +68,19 @@ export function ImageThumbnail({
         </span>
       )}
 
-      <button
-        type="button"
-        onClick={(e) => {
-          e.stopPropagation();
-          onRemove();
-        }}
-        className="absolute -top-1.5 -right-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-xs text-white shadow hover:bg-red-600"
-        aria-label="이미지 삭제"
-      >
-        ×
-      </button>
+      {onRemove && (
+        <button
+          type="button"
+          onClick={(e) => {
+            e.stopPropagation();
+            onRemove();
+          }}
+          className="absolute -top-1.5 -right-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-xs text-white shadow hover:bg-red-600"
+          aria-label="이미지 삭제"
+        >
+          ×
+        </button>
+      )}
     </div>
   );
 }

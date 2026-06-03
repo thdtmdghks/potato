@@ -1,7 +1,10 @@
 "use client";
 
+import { useState } from "react";
 import Image from "next/image";
 import type { Review, ReviewEdit } from "@/shared/types";
+import { LightboxModal } from "@/app/_components/lightbox-modal";
+import { ImageThumbnail } from "@/app/_components/image-thumbnail";
 
 interface Props {
   editRequests: (ReviewEdit & { original: Review })[];
@@ -11,6 +14,8 @@ interface Props {
 }
 
 export function EditRequestsList({ editRequests, loadingId, onApprove, onReject }: Props) {
+  const [activeImages, setActiveImages] = useState<{ urls: string[]; index: number } | null>(null);
+
   return (
     <section className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm dark:border-gray-800 dark:bg-gray-900">
       <h2 className="text-navy flex items-center gap-2 text-lg font-bold dark:text-white">
@@ -21,7 +26,7 @@ export function EditRequestsList({ editRequests, loadingId, onApprove, onReject 
       </h2>
       <p className="mt-1 text-xs leading-relaxed text-gray-500 dark:text-gray-400">
         승인되어 노출 중인 원본 내용과 새로 접수된 고객의 수정안을 비교합니다. 승인 시 원본이
-        수정안으로 즉시 교체되며 노출됩니다.
+        수정안으로 즉시 교체되며 노출됩니다. (이미지를 클릭하면 크게 볼 수 있습니다.)
       </p>
 
       {editRequests.length === 0 ? (
@@ -89,13 +94,14 @@ export function EditRequestsList({ editRequests, loadingId, onApprove, onReject 
 
                   {req.original.images.length > 0 && (
                     <div className="mt-4 flex gap-1.5 overflow-x-auto py-1">
-                      {req.original.images.map((url) => (
-                        <div
+                      {req.original.images.map((url, idx) => (
+                        <ImageThumbnail
                           key={url}
-                          className="relative h-14 w-20 shrink-0 overflow-hidden rounded border border-gray-200 bg-gray-100 dark:border-gray-800"
-                        >
-                          <Image src={url} alt="" fill sizes="80px" className="object-cover" />
-                        </div>
+                          url={url}
+                          onPreview={() =>
+                            setActiveImages({ urls: req.original.images, index: idx })
+                          }
+                        />
                       ))}
                     </div>
                   )}
@@ -115,13 +121,12 @@ export function EditRequestsList({ editRequests, loadingId, onApprove, onReject 
 
                   {req.images.length > 0 && (
                     <div className="mt-4 flex gap-1.5 overflow-x-auto py-1">
-                      {req.images.map((url) => (
-                        <div
+                      {req.images.map((url, idx) => (
+                        <ImageThumbnail
                           key={url}
-                          className="relative h-14 w-20 shrink-0 overflow-hidden rounded border border-indigo-200 bg-gray-100 dark:border-indigo-900/50"
-                        >
-                          <Image src={url} alt="" fill sizes="80px" className="object-cover" />
-                        </div>
+                          url={url}
+                          onPreview={() => setActiveImages({ urls: req.images, index: idx })}
+                        />
                       ))}
                     </div>
                   )}
@@ -130,6 +135,13 @@ export function EditRequestsList({ editRequests, loadingId, onApprove, onReject 
             </div>
           ))}
         </div>
+      )}
+      {activeImages && (
+        <LightboxModal
+          urls={activeImages.urls}
+          initialIndex={activeImages.index}
+          onClose={() => setActiveImages(null)}
+        />
       )}
     </section>
   );
