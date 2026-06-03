@@ -12,13 +12,28 @@ import {
 
 import AutoScroll from "embla-carousel-auto-scroll";
 import { formatDate } from "@/shared/utils";
+import { useState } from "react";
+import { LightboxModal } from "@/app/_components/lightbox-modal";
 
 interface Props {
   reviews: Review[];
 }
 
 export function ReviewCarousel({ reviews }: Props) {
+  const [lightboxState, setLightboxState] = useState<{ images: string[]; index: number } | null>(
+    null,
+  );
+
   if (reviews.length === 0) return null;
+
+  const handleImageClick = (review: Review) => {
+    if (review.images.length === 0) return;
+    const initialIndex = review.primary_image ? review.images.indexOf(review.primary_image) : 0;
+    setLightboxState({
+      images: review.images,
+      index: initialIndex >= 0 ? initialIndex : 0,
+    });
+  };
 
   // TODO: (추후 작업) 리뷰 텍스트가 길어질 경우를 대비해, 카드 클릭 시
   // 전체 후기 본문과 등록된 모든 고해상도 이미지를 크게 볼 수 있는
@@ -36,13 +51,16 @@ export function ReviewCarousel({ reviews }: Props) {
               <div className="relative flex h-full flex-col justify-between rounded-2xl border border-gray-100 bg-white p-5 shadow-sm transition-all duration-200 hover:shadow-md dark:border-gray-800 dark:bg-gray-900/60 dark:backdrop-blur-sm">
                 {/* 1. 시공 완료 사진 (카드 상단 배치로 가장 크게 강조) */}
                 {(review.primary_image || review.images.length > 0) && (
-                  <div className="relative mb-4 h-48 w-full overflow-hidden rounded-xl border border-gray-50 bg-gray-50 dark:border-gray-800 dark:bg-gray-950">
+                  <div
+                    onClick={() => handleImageClick(review)}
+                    className="group relative mb-4 h-48 w-full cursor-pointer overflow-hidden rounded-xl border border-gray-50 bg-gray-50 dark:border-gray-800 dark:bg-gray-950"
+                  >
                     <Image
                       src={review.primary_image ?? review.images[0]}
                       alt="경산창호 시공 완료 사진"
                       fill
                       sizes="(max-width: 640px) 100vw, 50vw"
-                      className="object-cover transition-transform duration-500 hover:scale-105"
+                      className="object-cover transition-transform duration-500 group-hover:scale-105"
                       priority
                     />
                     {review.images.length > 1 && (
@@ -106,6 +124,13 @@ export function ReviewCarousel({ reviews }: Props) {
         <CarouselPrevious className="hidden md:inline-flex" />
         <CarouselNext className="hidden md:inline-flex" />
       </Carousel>
+      {lightboxState && (
+        <LightboxModal
+          urls={lightboxState.images}
+          initialIndex={lightboxState.index}
+          onClose={() => setLightboxState(null)}
+        />
+      )}
     </div>
   );
 }

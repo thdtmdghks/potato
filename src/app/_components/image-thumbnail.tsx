@@ -1,13 +1,15 @@
 "use client";
 
 import Image from "next/image";
+import { formatSize } from "@/shared/utils";
 
 interface ImageThumbnailProps {
   url: string;
-  onRemove: () => void;
+  onRemove?: () => void;
   isPrimary?: boolean;
   onSelectPrimary?: () => void;
   onPreview?: () => void;
+  fileSize?: number;
 }
 
 export function ImageThumbnail({
@@ -16,6 +18,7 @@ export function ImageThumbnail({
   isPrimary = false,
   onSelectPrimary,
   onPreview,
+  fileSize,
 }: ImageThumbnailProps) {
   return (
     <div
@@ -59,17 +62,25 @@ export function ImageThumbnail({
         </span>
       )}
 
-      <button
-        type="button"
-        onClick={(e) => {
-          e.stopPropagation();
-          onRemove();
-        }}
-        className="absolute -top-1.5 -right-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-xs text-white shadow hover:bg-red-600"
-        aria-label="이미지 삭제"
-      >
-        ×
-      </button>
+      {fileSize !== undefined && (
+        <span className="absolute bottom-1 left-1 rounded bg-black/60 px-1 py-0.5 text-[8px] font-medium text-white shadow-sm backdrop-blur-[1px]">
+          {formatSize(fileSize)}
+        </span>
+      )}
+
+      {onRemove && (
+        <button
+          type="button"
+          onClick={(e) => {
+            e.stopPropagation();
+            onRemove();
+          }}
+          className="absolute -top-1.5 -right-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-xs text-white shadow hover:bg-red-600"
+          aria-label="이미지 삭제"
+        >
+          ×
+        </button>
+      )}
     </div>
   );
 }

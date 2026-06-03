@@ -173,6 +173,7 @@ export function ProjectForm({ project }: Props) {
           onRemoveNew={removeNew}
           primaryImageUrl={primaryImageUrl}
           onSelectPrimary={(url) => setSelectedPrimary(url)}
+          compressedFiles={compressedFiles}
         />
 
         {serverError && <p className="text-sm text-red-500">{serverError}</p>}

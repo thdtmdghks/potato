@@ -4,6 +4,7 @@ import {
   generateUUIDv7,
   getTimestampFromUUIDv7,
   isUUIDv7Expired,
+  formatSize,
 } from "@/shared/utils";
 
 describe("formatDate", () => {
@@ -49,5 +50,23 @@ describe("UUID v7 Utils", () => {
 
     // 올바르지 않은 UUID 포맷
     expect(isUUIDv7Expired("invalid-uuid", 5000)).toBe(true);
+  });
+});
+
+describe("formatSize", () => {
+  it("1024 B 미만일 때 B 단위로 올바르게 변형한다", () => {
+    expect(formatSize(500)).toBe("500 B");
+    expect(formatSize(0)).toBe("0 B");
+  });
+
+  it("1 MB 미만일 때 KB 단위로 올바르게 변형한다", () => {
+    expect(formatSize(1024)).toBe("1.0 KB");
+    expect(formatSize(1536)).toBe("1.5 KB");
+    expect(formatSize(102400)).toBe("100.0 KB");
+  });
+
+  it("1 MB 이상일 때 MB 단위로 올바르게 변형한다", () => {
+    expect(formatSize(1024 * 1024)).toBe("1.0 MB");
+    expect(formatSize(2.5 * 1024 * 1024)).toBe("2.5 MB");
   });
 });

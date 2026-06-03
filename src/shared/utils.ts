@@ -63,3 +63,12 @@ export const isUUIDv7Expired = (uuid: string, maxAgeMs: number): boolean => {
   if (ts === null) return true; // 올바르지 않은 v7이면 만료(무효)로 처리
   return Date.now() - ts > maxAgeMs;
 };
+
+/**
+ * 바이트 단위를 가독성이 좋은 파일 크기 문자열로 포맷팅합니다.
+ */
+export const formatSize = (bytes: number): string => {
+  if (bytes < 1024) return `${bytes} B`;
+  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+  return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+};

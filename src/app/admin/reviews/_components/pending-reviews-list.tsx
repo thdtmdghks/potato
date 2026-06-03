@@ -4,6 +4,8 @@ import { useState } from "react";
 import Image from "next/image";
 import type { Review } from "@/shared/types";
 import { formatDate } from "@/shared/utils";
+import { LightboxModal } from "@/app/_components/lightbox-modal";
+import { ImageThumbnail } from "@/app/_components/image-thumbnail";
 
 interface Props {
   reviews: Review[];
@@ -14,6 +16,7 @@ interface Props {
 
 export function PendingReviewsList({ reviews, loadingId, onApprove, onDelete }: Props) {
   const [selectedPrimaries, setSelectedPrimaries] = useState<Record<string, string | null>>({});
+  const [activeImages, setActiveImages] = useState<{ urls: string[]; index: number } | null>(null);
   return (
     <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm dark:border-gray-800 dark:bg-gray-900">
       <h2 className="text-navy flex items-center gap-2 text-lg font-bold dark:text-white">
@@ -76,41 +79,23 @@ export function PendingReviewsList({ reviews, loadingId, onApprove, onDelete }: 
                     {review.images.length > 0 && (
                       <div className="space-y-1.5">
                         <span className="text-[11px] font-medium text-gray-500 dark:text-gray-400">
-                          대표 이미지 설정 (클릭하여 선택)
+                          대표 이미지 설정 (별표 클릭 시 대표 설정 / 이미지 클릭 시 크게 보기)
                         </span>
                         <div className="flex gap-2 overflow-x-auto py-1">
-                          {review.images.map((url) => {
-                            const isPrimary = currentPrimary === url;
-                            return (
-                              <div
-                                key={url}
-                                onClick={() => {
-                                  setSelectedPrimaries((prev) => ({
-                                    ...prev,
-                                    [review.id]: url,
-                                  }));
-                                }}
-                                className={`relative h-16 w-24 shrink-0 cursor-pointer overflow-hidden rounded border transition-all ${
-                                  isPrimary
-                                    ? "border-amber-500 ring-2 ring-amber-500/50"
-                                    : "border-gray-200 dark:border-gray-800"
-                                }`}
-                              >
-                                <Image
-                                  src={url}
-                                  alt=""
-                                  fill
-                                  sizes="96px"
-                                  className="object-cover"
-                                />
-                                {isPrimary && (
-                                  <span className="absolute top-1 left-1 rounded bg-amber-500 px-1 py-0.5 text-[8px] font-bold text-white shadow-sm">
-                                    ★ 대표
-                                  </span>
-                                )}
-                              </div>
-                            );
-                          })}
+                          {review.images.map((url, idx) => (
+                            <ImageThumbnail
+                              key={url}
+                              url={url}
+                              isPrimary={currentPrimary === url}
+                              onSelectPrimary={() => {
+                                setSelectedPrimaries((prev) => ({
+                                  ...prev,
+                                  [review.id]: url,
+                                }));
+                              }}
+                              onPreview={() => setActiveImages({ urls: review.images, index: idx })}
+                            />
+                          ))}
                         </div>
                       </div>
                     )}
@@ -138,6 +123,13 @@ export function PendingReviewsList({ reviews, loadingId, onApprove, onDelete }: 
             );
           })}
         </ul>
+      )}
+      {activeImages && (
+        <LightboxModal
+          urls={activeImages.urls}
+          initialIndex={activeImages.index}
+          onClose={() => setActiveImages(null)}
+        />
       )}
     </div>
   );
