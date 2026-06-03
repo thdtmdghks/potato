@@ -1,15 +1,21 @@
+"use client";
+
 import type { Review } from "@/shared/types";
 import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@/app/_components/button";
 import { ROUTES } from "@/shared/routes";
 import { REVIEW_STATUS } from "@/shared/constants";
+import { useState } from "react";
+import { LightboxModal } from "@/app/_components/lightbox-modal";
 
 interface ReviewCardProps {
   review: Review & { hasPendingEdit: boolean };
 }
 
 export function ReviewCard({ review }: ReviewCardProps) {
+  const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
+
   const dateStr = new Date(review.created_at).toLocaleDateString("ko-KR", {
     year: "numeric",
     month: "long",
@@ -45,12 +51,19 @@ export function ReviewCard({ review }: ReviewCardProps) {
         {/* 시공 사진 */}
         {review.images.length > 0 && (
           <div className="scrollbar-thin scrollbar-thumb-gray-200 dark:scrollbar-thumb-gray-800 flex gap-2 overflow-x-auto pb-1">
-            {review.images.map((url) => (
+            {review.images.map((url, index) => (
               <div
                 key={url}
-                className="relative h-20 w-28 shrink-0 overflow-hidden rounded bg-gray-100"
+                onClick={() => setLightboxIndex(index)}
+                className="group relative h-20 w-28 shrink-0 cursor-pointer overflow-hidden rounded bg-gray-100"
               >
-                <Image src={url} alt="" fill sizes="112px" className="object-cover" />
+                <Image
+                  src={url}
+                  alt="후기 첨부 사진"
+                  fill
+                  sizes="112px"
+                  className="object-cover transition-transform duration-500 group-hover:scale-105"
+                />
               </div>
             ))}
           </div>
@@ -70,6 +83,15 @@ export function ReviewCard({ review }: ReviewCardProps) {
           </Button>
         </Link>
       </div>
+
+      {/* 라이트박스 모달 */}
+      {lightboxIndex !== null && (
+        <LightboxModal
+          urls={review.images}
+          initialIndex={lightboxIndex}
+          onClose={() => setLightboxIndex(null)}
+        />
+      )}
     </div>
   );
 }
