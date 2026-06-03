@@ -2,7 +2,7 @@ import type { NextConfig } from "next";
 import "./src/shared/env";
 
 const nextConfig: NextConfig = {
-  allowedDevOrigins: ["172.30.1.50"],
+  allowedDevOrigins: ["192.168.0.8"],
   images: {
     remotePatterns: [
       { protocol: "https", hostname: "picsum.photos" },
