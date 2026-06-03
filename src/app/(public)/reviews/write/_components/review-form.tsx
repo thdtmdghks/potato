@@ -184,6 +184,7 @@ export function ReviewForm({ id, initialData, isApproved, userProfile }: ReviewF
           onFilesChange={handleFiles}
           onRemoveExisting={removeExisting}
           onRemoveNew={removeNew}
+          compressedFiles={compressedFiles}
         />
 
         {serverError && (

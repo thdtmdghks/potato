@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { formatSize } from "@/shared/utils";
 
 interface ImageThumbnailProps {
   url: string;
@@ -8,6 +9,7 @@ interface ImageThumbnailProps {
   isPrimary?: boolean;
   onSelectPrimary?: () => void;
   onPreview?: () => void;
+  fileSize?: number;
 }
 
 export function ImageThumbnail({
@@ -16,6 +18,7 @@ export function ImageThumbnail({
   isPrimary = false,
   onSelectPrimary,
   onPreview,
+  fileSize,
 }: ImageThumbnailProps) {
   return (
     <div
@@ -56,6 +59,12 @@ export function ImageThumbnail({
       {isPrimary && (
         <span className="absolute right-1 bottom-1 rounded bg-amber-500 px-1 py-0.5 text-[8px] font-bold text-white shadow-sm">
           대표
+        </span>
+      )}
+
+      {fileSize !== undefined && (
+        <span className="absolute bottom-1 left-1 rounded bg-black/60 px-1 py-0.5 text-[8px] font-medium text-white shadow-sm backdrop-blur-[1px]">
+          {formatSize(fileSize)}
         </span>
       )}
 

@@ -4,6 +4,7 @@ import { useState, type ChangeEvent } from "react";
 import { Label } from "./label";
 import { ImageThumbnail } from "./image-thumbnail";
 import { LightboxModal } from "./lightbox-modal";
+import { formatSize } from "@/shared/utils";
 
 interface ImageUploadProps {
   label?: string;
@@ -18,6 +19,7 @@ interface ImageUploadProps {
   required?: boolean;
   primaryImageUrl?: string | null;
   onSelectPrimary?: (url: string) => void;
+  compressedFiles?: File[];
 }
 
 export function ImageUpload({
@@ -33,8 +35,10 @@ export function ImageUpload({
   required = false,
   primaryImageUrl,
   onSelectPrimary,
+  compressedFiles = [],
 }: ImageUploadProps) {
   const totalCount = existingImages.length + previews.length;
+  const totalSize = compressedFiles.reduce((sum, f) => sum + f.size, 0);
   const [activeLightboxUrl, setActiveLightboxUrl] = useState<string | null>(null);
 
   return (
@@ -64,6 +68,7 @@ export function ImageUpload({
           <ImageThumbnail
             key={`new-${idx}`}
             url={url}
+            fileSize={compressedFiles?.[idx]?.size}
             isPrimary={primaryImageUrl === url}
             onSelectPrimary={onSelectPrimary ? () => onSelectPrimary(url) : undefined}
             onPreview={() => setActiveLightboxUrl(url)}
@@ -92,13 +97,28 @@ export function ImageUpload({
               type="file"
               multiple
               accept="image/*"
-              className="hidden"
+              className="sr-only"
               onChange={onFilesChange}
               disabled={compressing}
             />
           </label>
         )}
       </div>
+
+      {compressedFiles.length > 0 && (
+        <div className="flex items-center justify-between pt-1 text-xs text-gray-500 dark:text-gray-400">
+          <span>
+            새로 선택됨:{" "}
+            <strong className="text-gray-700 dark:text-gray-300">{compressedFiles.length}장</strong>
+          </span>
+          <span>
+            총 용량:{" "}
+            <strong className="text-gray-700 dark:text-gray-300">{formatSize(totalSize)}</strong> /
+            8.0 MB
+          </span>
+        </div>
+      )}
+
       {compressing && (
         <p className="mt-2 animate-pulse text-xs text-blue-500">
           이미지를 변환 및 단열/압축 처리 중입니다...
