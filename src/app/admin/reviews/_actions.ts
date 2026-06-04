@@ -65,7 +65,6 @@ export async function approveReviewEdit(reviewId: string) {
       return { success: false as const, error: "수정 대기 항목을 찾을 수 없습니다." };
     }
 
-    const review = await reviews.getById(reviewId);
     const newPrimary = edit.primary_image ?? edit.images[0] ?? null;
 
     // 원본 리뷰 업데이트
