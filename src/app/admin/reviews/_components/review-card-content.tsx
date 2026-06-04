@@ -6,9 +6,8 @@ import { formatDate } from "@/shared/utils";
 
 const VARIANT_STYLES = {
   default: "",
-  original:
-    "rounded-xl border-2 border-red-200 bg-red-50/30 p-4 dark:border-red-900/40 dark:bg-red-950/10",
-  edit: "rounded-xl border-2 border-emerald-200 bg-emerald-50/30 p-4 dark:border-emerald-900/40 dark:bg-emerald-950/10",
+  original: "rounded-xl bg-red-50/50 dark:bg-red-950/15",
+  edit: "rounded-xl bg-emerald-50/50 dark:bg-emerald-950/15",
 } as const;
 
 interface ReviewCardContentProps {
