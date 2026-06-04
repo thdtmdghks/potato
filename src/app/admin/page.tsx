@@ -1,172 +1,88 @@
-import { getServerRepositories } from "@/server";
-import Image from "next/image";
 import Link from "next/link";
+import { getServerRepositories } from "@/server";
 import { ROUTES } from "@/shared/routes";
+import { InviteLinkSection } from "./reviews/_components/invite-link-section";
 
 export default async function AdminDashboard() {
-  const { projects } = await getServerRepositories();
-  const allProjects = await projects.getAll();
+  const { projects, reviews, reviewEdits } = await getServerRepositories();
 
-  const totalCount = allProjects.length;
+  const [allProjects, pendingReviews, editRequests, approvedReviews] = await Promise.all([
+    projects.getAll(),
+    reviews.getAllPending(),
+    reviewEdits.getAll(),
+    reviews.getAllApproved(),
+  ]);
 
-  // 카테고리별 시공사례 수 계산
-  const categoryMap = allProjects.reduce(
-    (acc, p) => {
-      acc[p.category] = (acc[p.category] || 0) + 1;
-      return acc;
+  const stats = [
+    {
+      label: "신규 등록 대기",
+      count: pendingReviews.length,
+      href: ROUTES.admin.reviews,
+      color: "text-amber-600 dark:text-amber-400",
+      bg: "bg-amber-50 dark:bg-amber-950/20",
     },
-    {} as Record<string, number>,
-  );
-
-  const categoryStats = Object.entries(categoryMap).map(([category, count]) => ({
-    category,
-    count,
-  }));
-
-  const recentProjects = allProjects.slice(0, 5);
-
-  // 최근 30일 이내 등록된 시공사례 수 계산
-  const thirtyDaysAgo = new Date();
-  thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-  const recent30DaysCount = allProjects.filter(
-    (p) => new Date(p.created_at) >= thirtyDaysAgo,
-  ).length;
+    {
+      label: "수정 요청 대기",
+      count: editRequests.length,
+      href: ROUTES.admin.reviews,
+      color: "text-indigo-600 dark:text-indigo-400",
+      bg: "bg-indigo-50 dark:bg-indigo-950/20",
+    },
+    {
+      label: "시공사례",
+      count: allProjects.length,
+      href: ROUTES.admin.projects,
+      color: "text-navy dark:text-blue-300",
+      bg: "bg-blue-50 dark:bg-blue-950/20",
+    },
+    {
+      label: "노출 중인 리뷰",
+      count: approvedReviews.length,
+      href: ROUTES.admin.reviews,
+      color: "text-emerald-600 dark:text-emerald-400",
+      bg: "bg-emerald-50 dark:bg-emerald-950/20",
+    },
+  ];
 
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-navy text-3xl font-extrabold tracking-tight dark:text-white">
-          대시보드
-        </h1>
-        <p className="text-gray-dark mt-2 text-sm dark:text-gray-400">
-          경산창호 시공사례 현황을 한눈에 관리합니다.
+        <h1 className="text-navy text-2xl font-bold dark:text-white">대시보드</h1>
+        <p className="text-gray-dark mt-1 text-sm dark:text-gray-400">
+          빠른 액션과 현황을 확인합니다.
         </p>
       </div>
 
-      {/* 메트릭 카드 */}
-      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm dark:border-gray-800 dark:bg-gray-900">
-          <p className="text-gray-dark text-xs font-semibold tracking-wider uppercase dark:text-gray-400">
-            전체 시공사례
-          </p>
-          <div className="mt-4 flex items-baseline gap-2">
-            <span className="text-navy text-4xl font-extrabold dark:text-white">{totalCount}</span>
-            <span className="text-gray-dark text-sm dark:text-gray-400">건</span>
-          </div>
-        </div>
+      {/* 빠른 액션 */}
+      <section className="grid gap-4 sm:grid-cols-2">
+        <InviteLinkSection />
+        <Link
+          href={ROUTES.admin.projectsNew}
+          className="flex items-center justify-center gap-2 rounded-2xl border border-gray-100 bg-white p-6 text-sm font-semibold shadow-sm transition-colors hover:bg-gray-50 dark:border-gray-800 dark:bg-gray-900 dark:hover:bg-gray-800"
+        >
+          <span className="text-xl">➕</span>
+          <span className="text-navy dark:text-white">새 프로젝트 등록</span>
+        </Link>
+      </section>
 
-        <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm dark:border-gray-800 dark:bg-gray-900">
-          <p className="text-gray-dark text-xs font-semibold tracking-wider uppercase dark:text-gray-400">
-            등록된 카테고리
-          </p>
-          <div className="mt-4 flex items-baseline gap-2">
-            <span className="text-navy text-4xl font-extrabold dark:text-white">
-              {categoryStats.length}
-            </span>
-            <span className="text-gray-dark text-sm dark:text-gray-400">개</span>
-          </div>
-        </div>
-
-        <div className="col-span-full rounded-2xl border border-gray-100 bg-white p-6 shadow-sm sm:col-span-1 lg:col-span-1 dark:border-gray-800 dark:bg-gray-900">
-          <p className="text-gray-dark text-xs font-semibold tracking-wider uppercase dark:text-gray-400">
-            최근 30일 등록
-          </p>
-          <div className="mt-4 flex items-baseline gap-2">
-            <span className="text-navy text-4xl font-extrabold dark:text-white">
-              {recent30DaysCount}
-            </span>
-            <span className="text-gray-dark text-sm dark:text-gray-400">건</span>
-          </div>
-        </div>
-      </div>
-
-      <div className="grid gap-8 lg:grid-cols-3">
-        {/* 최근 등록된 시공사례 */}
-        <section className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm lg:col-span-2 dark:border-gray-800 dark:bg-gray-900">
-          <div className="flex items-center justify-between">
-            <h2 className="text-navy text-lg font-bold dark:text-white">최근 시공사례</h2>
+      {/* 현황 카드 */}
+      <section>
+        <h2 className="text-navy mb-4 text-lg font-bold dark:text-white">현황</h2>
+        <div className="grid gap-3 sm:grid-cols-2">
+          {stats.map((item) => (
             <Link
-              href={ROUTES.admin.projects}
-              className="text-accent text-sm font-semibold hover:underline"
+              key={item.label}
+              href={item.href}
+              className={`flex items-center justify-between rounded-xl ${item.bg} p-4 transition-opacity hover:opacity-80`}
             >
-              전체 보기 →
+              <span className={`text-sm font-semibold ${item.color}`}>{item.label}</span>
+              <span className={`text-lg font-bold ${item.color}`}>
+                {typeof item.count === "number" ? `${item.count}건` : item.count}
+              </span>
             </Link>
-          </div>
-
-          {recentProjects.length === 0 ? (
-            <p className="text-gray-dark mt-6 py-10 text-center dark:text-gray-400">
-              등록된 시공사례가 없습니다.
-            </p>
-          ) : (
-            <div className="mt-6 flow-root">
-              <ul className="-my-5 divide-y divide-gray-100 dark:divide-gray-800">
-                {recentProjects.map((project) => (
-                  <li key={project.id} className="py-5">
-                    <div className="flex items-center gap-4">
-                      <div className="relative h-12 w-16 overflow-hidden rounded-md border border-gray-100 bg-gray-50 dark:border-gray-800">
-                        {project.images && project.images.length > 0 ? (
-                          <Image
-                            src={project.images[0]}
-                            alt={project.title}
-                            fill
-                            className="object-cover"
-                            sizes="64px"
-                          />
-                        ) : (
-                          <div className="flex h-full w-full items-center justify-center text-xs text-gray-400">
-                            이미지 없음
-                          </div>
-                        )}
-                      </div>
-                      <div className="min-w-0 flex-1">
-                        <p className="text-navy truncate text-sm font-bold dark:text-white">
-                          {project.title}
-                        </p>
-                        <p className="text-gray-dark truncate text-xs dark:text-gray-400">
-                          {project.category} · {project.description}
-                        </p>
-                      </div>
-                      <div className="flex flex-col items-end gap-1">
-                        <span className="text-gray-dark text-xs dark:text-gray-400">
-                          {new Date(project.created_at).toLocaleDateString("ko-KR")}
-                        </span>
-                      </div>
-                    </div>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
-        </section>
-
-        {/* 카테고리 분포 */}
-        <section className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm dark:border-gray-800 dark:bg-gray-900">
-          <h2 className="text-navy text-lg font-bold dark:text-white">카테고리 현황</h2>
-          {categoryStats.length === 0 ? (
-            <p className="text-gray-dark mt-6 py-10 text-center dark:text-gray-400">
-              데이터가 없습니다.
-            </p>
-          ) : (
-            <ul className="mt-6 space-y-4">
-              {categoryStats.map(({ category, count }) => (
-                <li key={category} className="flex items-center justify-between">
-                  <span className="text-navy text-sm font-semibold dark:text-gray-300">
-                    {category}
-                  </span>
-                  <div className="flex items-center gap-3">
-                    <span className="text-navy text-sm font-extrabold dark:text-white">
-                      {count}건
-                    </span>
-                    <span className="text-gray-dark text-xs dark:text-gray-400">
-                      ({Math.round((count / totalCount) * 100)}%)
-                    </span>
-                  </div>
-                </li>
-              ))}
-            </ul>
-          )}
-        </section>
-      </div>
+          ))}
+        </div>
+      </section>
     </div>
   );
 }

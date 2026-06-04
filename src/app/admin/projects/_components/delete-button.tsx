@@ -1,6 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
+import { Button } from "@/app/_components/button";
 import { deleteProject } from "../_actions";
 
 export function DeleteButton({ id }: { id: string }) {
@@ -17,8 +18,12 @@ export function DeleteButton({ id }: { id: string }) {
   };
 
   return (
-    <button onClick={handleDelete} className="text-sm text-red-500 hover:text-red-700">
+    <Button
+      onClick={handleDelete}
+      variant="ghost"
+      className="text-sm text-red-500 hover:text-red-700"
+    >
       삭제
-    </button>
+    </Button>
   );
 }

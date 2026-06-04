@@ -6,13 +6,34 @@ const IMG = (seed: string, w = 800, h = 600) => `https://picsum.photos/seed/${se
 
 export class MockReviewEditRepository implements ReviewEditRepository {
   private editsData: ReviewEdit[] = [
+    // 1) #8 세종대왕 — content + images 둘 다 변경
     {
-      review_id: "99999999-9999-9999-9999-999999999999",
+      review_id: "018fc723-b780-7000-8000-000000000008",
       content:
-        "샤시 시공하고 1년 지났는데, 튼튼하고 아주 좋습니다. 추천합니다! (추가: 겨울철 결로 현상도 완전히 없어졌네요. 아주 만족스럽습니다.)",
-      images: [IMG("pvc2"), IMG("pvc3")],
+        "잡철 시공 깔끔합니다. 난간 용접 부위 마감이 특히 좋았어요. 추가로 6개월 지나서 확인해보니 녹도 안 슬고 튼튼합니다!",
+      images: [IMG("rev8a"), IMG("rev8b"), IMG("rev8c")],
+      primary_image: IMG("rev8c"),
       rating: 5,
-      created_at: new Date(Date.now() - 86400000).toISOString(),
+      created_at: new Date(Date.now() - 86400000 * 2).toISOString(),
+    },
+    // 2) #3 임꺽정 — content만 변경 (images 동일)
+    {
+      review_id: "018fc723-b780-7000-8000-000000000003",
+      content: "보통이에요. 마감이 아쉬웠는데 사후 서비스로 보완해주셔서 수정합니다. 감사합니다.",
+      images: [IMG("rev3a"), IMG("rev3b"), IMG("rev3c")],
+      primary_image: IMG("rev3b"),
+      rating: 3,
+      created_at: new Date(Date.now() - 86400000 * 5).toISOString(),
+    },
+    // 3) #2 이순신 — rating 변경 + images 추가
+    {
+      review_id: "018fc723-b780-7000-8000-000000000002",
+      content:
+        "방충망 교체를 맡겼는데 미세먼지 차단망으로 업그레이드해 주셨어요. 시공도 빠르고 마감도 깔끔합니다. 가격도 합리적이라 만족합니다.",
+      images: [IMG("mesh1"), IMG("mesh2")],
+      primary_image: IMG("mesh2"),
+      rating: 5,
+      created_at: new Date(Date.now() - 86400000 * 4).toISOString(),
     },
   ];
 

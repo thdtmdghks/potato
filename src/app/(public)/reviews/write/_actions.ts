@@ -39,6 +39,7 @@ export async function submitReview(id: string, formData: FormData) {
 
     const newFiles = formData.getAll(FORM_KEYS.images) as File[];
     const existingImageUrls = formData.getAll(FORM_KEYS.existingImages) as string[];
+    const primaryImageRaw = formData.get(FORM_KEYS.primaryImage) as string | null;
 
     // 신규 이미지 업로드
     const newImageUrls = await uploadImages(storage, newFiles, STORAGE_BUCKET, STORAGE_PATH_PREFIX);
@@ -64,7 +65,7 @@ export async function submitReview(id: string, formData: FormData) {
         author_avatar: session.user?.image ?? "",
         content: validContent,
         images: finalImageUrls,
-        primary_image: null,
+        primary_image: primaryImageRaw ?? finalImageUrls[0] ?? null,
         rating,
       });
 
@@ -93,6 +94,7 @@ export async function submitReview(id: string, formData: FormData) {
         const result = await reviews.update(id, {
           content: validContent,
           images: finalImageUrls,
+          primary_image: primaryImageRaw ?? finalImageUrls[0] ?? null,
           rating,
         });
 
@@ -112,6 +114,7 @@ export async function submitReview(id: string, formData: FormData) {
           review_id: id,
           content: validContent,
           images: finalImageUrls,
+          primary_image: primaryImageRaw ?? finalImageUrls[0] ?? null,
           rating,
         });
 

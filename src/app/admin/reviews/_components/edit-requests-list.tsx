@@ -1,10 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import Image from "next/image";
 import type { Review, ReviewEdit } from "@/shared/types";
+import { Button } from "@/app/_components/button";
 import { LightboxModal } from "@/app/_components/lightbox-modal";
-import { ImageThumbnail } from "@/app/_components/image-thumbnail";
+import { ReviewCardContent } from "./review-card-content";
 
 interface Props {
   editRequests: (ReviewEdit & { original: Review })[];
@@ -25,8 +25,7 @@ export function EditRequestsList({ editRequests, loadingId, onApprove, onReject 
         </span>
       </h2>
       <p className="mt-1 text-xs leading-relaxed text-gray-500 dark:text-gray-400">
-        승인되어 노출 중인 원본 내용과 새로 접수된 고객의 수정안을 비교합니다. 승인 시 원본이
-        수정안으로 즉시 교체되며 노출됩니다. (이미지를 클릭하면 크게 볼 수 있습니다.)
+        승인 시 원본이 수정안으로 즉시 교체되며 노출됩니다.
       </p>
 
       {editRequests.length === 0 ? (
@@ -37,100 +36,52 @@ export function EditRequestsList({ editRequests, loadingId, onApprove, onReject 
         <div className="mt-8 space-y-8 divide-y divide-gray-100 dark:divide-gray-800">
           {editRequests.map((req) => (
             <div key={req.review_id} className="space-y-4 pt-8 first:pt-0">
-              {/* 작성자 공통 정보 및 동작 제어 */}
-              <div className="flex items-center justify-between border-b border-gray-50 pb-3 dark:border-gray-800/50">
-                <div className="flex items-center gap-2">
-                  {req.original.author_avatar ? (
-                    <Image
-                      src={req.original.author_avatar}
-                      alt=""
-                      width={28}
-                      height={28}
-                      className="rounded-full object-cover"
-                    />
-                  ) : (
-                    <div className="flex h-7 w-7 items-center justify-center rounded-full bg-gray-100 dark:bg-gray-800">
-                      <span className="text-xs text-gray-400">👤</span>
-                    </div>
-                  )}
-                  <span className="text-sm font-bold text-gray-800 dark:text-gray-200">
-                    {req.original.author_name}
-                  </span>
-                </div>
-
-                <div className="flex gap-2">
-                  <button
-                    onClick={() => onApprove(req.review_id)}
-                    disabled={loadingId !== null}
-                    className="rounded-lg bg-indigo-600 px-4 py-1.5 text-xs font-semibold text-white shadow-sm transition-colors hover:bg-indigo-700 disabled:opacity-50"
-                  >
-                    {loadingId === req.review_id ? "처리 중..." : "수정 승인"}
-                  </button>
-                  <button
-                    onClick={() => onReject(req.review_id)}
-                    disabled={loadingId !== null}
-                    className="rounded-lg border border-gray-200 px-4 py-1.5 text-xs font-semibold text-gray-600 transition-colors hover:bg-gray-50 disabled:opacity-50 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-800"
-                  >
-                    수정 반려
-                  </button>
-                </div>
+              {/* 버튼 */}
+              <div className="flex justify-end gap-2">
+                <Button
+                  onClick={() => onApprove(req.review_id)}
+                  loading={loadingId === req.review_id}
+                  disabled={loadingId !== null}
+                  className="border-none bg-indigo-600 px-4 py-1.5 text-xs font-semibold text-white shadow-sm hover:bg-indigo-700"
+                >
+                  수정 승인
+                </Button>
+                <Button
+                  onClick={() => onReject(req.review_id)}
+                  disabled={loadingId !== null}
+                  variant="outline"
+                  className="px-4 py-1.5 text-xs font-semibold"
+                >
+                  수정 반려
+                </Button>
               </div>
 
-              {/* 구/신 비교 영역 */}
-              <div className="grid gap-6 md:grid-cols-2">
-                {/* 기존 원본 */}
-                <div className="rounded-xl border border-gray-100 bg-gray-50/50 p-4 dark:border-gray-800 dark:bg-gray-950/20">
-                  <div className="mb-3 flex items-center justify-between">
-                    <p className="text-xs font-bold tracking-wider text-gray-400 uppercase">
-                      현재 노출 중인 원본
-                    </p>
-                    <span className="text-xs font-bold text-amber-500">
-                      ★ {req.original.rating}점
-                    </span>
-                  </div>
-                  <p className="min-h-[4.5rem] text-sm leading-relaxed whitespace-pre-wrap text-gray-600 dark:text-gray-400">
-                    {req.original.content}
-                  </p>
-
-                  {req.original.images.length > 0 && (
-                    <div className="mt-4 flex gap-1.5 overflow-x-auto py-1">
-                      {req.original.images.map((url, idx) => (
-                        <ImageThumbnail
-                          key={url}
-                          url={url}
-                          onPreview={() =>
-                            setActiveImages({ urls: req.original.images, index: idx })
-                          }
-                        />
-                      ))}
-                    </div>
-                  )}
-                </div>
-
-                {/* 새로운 수정안 */}
-                <div className="rounded-xl border border-indigo-100 bg-indigo-50/20 p-4 dark:border-indigo-950/20 dark:bg-indigo-950/5">
-                  <div className="mb-3 flex items-center justify-between">
-                    <p className="text-xs font-bold tracking-wider text-indigo-500 uppercase">
-                      고객 제출 수정 요청안
-                    </p>
-                    <span className="text-xs font-bold text-amber-500">★ {req.rating}점</span>
-                  </div>
-                  <p className="min-h-[4.5rem] text-sm leading-relaxed font-medium whitespace-pre-wrap text-gray-800 dark:text-gray-200">
-                    {req.content}
-                  </p>
-
-                  {req.images.length > 0 && (
-                    <div className="mt-4 flex gap-1.5 overflow-x-auto py-1">
-                      {req.images.map((url, idx) => (
-                        <ImageThumbnail
-                          key={url}
-                          url={url}
-                          onPreview={() => setActiveImages({ urls: req.images, index: idx })}
-                        />
-                      ))}
-                    </div>
-                  )}
-                </div>
+              {/* 원본 / 수정안 대조 */}
+              <div className="grid gap-4 md:grid-cols-2">
+                <ReviewCardContent
+                  authorName={req.original.author_name}
+                  authorAvatar={req.original.author_avatar}
+                  createdAt={req.original.created_at}
+                  rating={req.original.rating}
+                  content={req.original.content}
+                  images={req.original.images}
+                  primaryImage={req.original.primary_image}
+                  variant="original"
+                  label="🔴 현재 노출 중인 원본"
+                  onPreviewImage={(urls, index) => setActiveImages({ urls, index })}
+                />
+                <ReviewCardContent
+                  authorName={req.original.author_name}
+                  authorAvatar={req.original.author_avatar}
+                  createdAt={req.created_at}
+                  rating={req.rating}
+                  content={req.content}
+                  images={req.images}
+                  primaryImage={req.primary_image}
+                  variant="edit"
+                  label="🟢 고객 제출 수정 요청안"
+                  onPreviewImage={(urls, index) => setActiveImages({ urls, index })}
+                />
               </div>
             </div>
           ))}

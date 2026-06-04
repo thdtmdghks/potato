@@ -1,11 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import Image from "next/image";
 import type { Review } from "@/shared/types";
-import { formatDate } from "@/shared/utils";
+import { Button } from "@/app/_components/button";
 import { LightboxModal } from "@/app/_components/lightbox-modal";
-import { ImageThumbnail } from "@/app/_components/image-thumbnail";
+import { ReviewCardContent } from "./review-card-content";
 
 interface Props {
   reviews: Review[];
@@ -41,82 +40,39 @@ export function PendingReviewsList({ reviews, loadingId, onApprove, onDelete }: 
             return (
               <li key={review.id} className="py-5 first:pt-0 last:pb-0">
                 <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-                  {/* 작성자 정보 및 내용 */}
-                  <div className="flex-1 space-y-3">
-                    <div className="flex items-center gap-2.5">
-                      {review.author_avatar ? (
-                        <Image
-                          src={review.author_avatar}
-                          alt=""
-                          width={32}
-                          height={32}
-                          className="rounded-full object-cover"
-                        />
-                      ) : (
-                        <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gray-100 dark:bg-gray-800">
-                          <span className="text-xs text-gray-400">👤</span>
-                        </div>
-                      )}
-                      <div>
-                        <span className="text-sm font-semibold text-gray-800 dark:text-gray-200">
-                          {review.author_name}
-                        </span>
-                        <span className="mx-1.5 text-gray-300 dark:text-gray-700">|</span>
-                        <span className="text-xs text-gray-400">
-                          {formatDate(review.created_at)}
-                        </span>
-                        <span className="mx-1.5 text-gray-300 dark:text-gray-700">|</span>
-                        <span className="text-xs font-semibold text-amber-500">
-                          ★ {review.rating}점
-                        </span>
-                      </div>
-                    </div>
-
-                    <p className="text-sm leading-relaxed whitespace-pre-wrap text-gray-600 dark:text-gray-300">
-                      {review.content}
-                    </p>
-
-                    {review.images.length > 0 && (
-                      <div className="space-y-1.5">
-                        <span className="text-[11px] font-medium text-gray-500 dark:text-gray-400">
-                          대표 이미지 설정 (별표 클릭 시 대표 설정 / 이미지 클릭 시 크게 보기)
-                        </span>
-                        <div className="flex gap-2 overflow-x-auto py-1">
-                          {review.images.map((url, idx) => (
-                            <ImageThumbnail
-                              key={url}
-                              url={url}
-                              isPrimary={currentPrimary === url}
-                              onSelectPrimary={() => {
-                                setSelectedPrimaries((prev) => ({
-                                  ...prev,
-                                  [review.id]: url,
-                                }));
-                              }}
-                              onPreview={() => setActiveImages({ urls: review.images, index: idx })}
-                            />
-                          ))}
-                        </div>
-                      </div>
-                    )}
+                  <div className="flex-1">
+                    <ReviewCardContent
+                      authorName={review.author_name}
+                      authorAvatar={review.author_avatar}
+                      createdAt={review.created_at}
+                      rating={review.rating}
+                      content={review.content}
+                      images={review.images}
+                      primaryImage={currentPrimary}
+                      onSelectPrimary={(url) =>
+                        setSelectedPrimaries((prev) => ({ ...prev, [review.id]: url }))
+                      }
+                      onPreviewImage={(urls, index) => setActiveImages({ urls, index })}
+                    />
                   </div>
 
-                  {/* 버튼 제어 */}
                   <div className="flex shrink-0 gap-2 sm:w-28 sm:flex-col">
-                    <button
+                    <Button
                       onClick={() => onApprove(review.id, currentPrimary)}
+                      loading={loadingId === review.id}
                       disabled={loadingId !== null}
-                      className="bg-navy hover:bg-navy-light flex-1 rounded-lg py-2 text-xs font-semibold text-white shadow-sm transition-colors disabled:opacity-50"
+                      className="bg-navy hover:bg-navy-light flex-1 border-none py-2 text-xs font-semibold text-white shadow-sm"
                     >
-                      {loadingId === review.id ? "처리 중..." : "노출 승인"}
-                    </button>
-                    <button
+                      노출 승인
+                    </Button>
+                    <Button
                       onClick={() => onDelete(review.id)}
                       disabled={loadingId !== null}
-                      className="flex-1 rounded-lg border border-gray-200 py-2 text-xs font-semibold text-gray-600 transition-colors hover:bg-gray-50 disabled:opacity-50 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-800"
+                      variant="outline"
+                      className="flex-1 py-2 text-xs font-semibold"
                     >
                       삭제
-                    </button>
+                    </Button>
                   </div>
                 </div>
               </li>

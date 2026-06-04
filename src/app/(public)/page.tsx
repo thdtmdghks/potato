@@ -78,7 +78,7 @@ export default async function Home() {
             </span>
           </div>
           <a
-            href={LINKS.tel}
+            href="#contact"
             className="bg-accent hover:bg-accent-dark mt-8 inline-block rounded-lg px-8 py-3 text-lg font-bold text-white transition-colors"
           >
             📞 상담·견적 문의하기
@@ -117,6 +117,14 @@ export default async function Home() {
             </p>
           </div>
           <ReviewCarousel reviews={approvedReviews} />
+          <div className="mt-8 text-center">
+            <Link
+              href={ROUTES.reviews}
+              className="text-accent text-sm font-semibold hover:underline"
+            >
+              전체 후기 보기 →
+            </Link>
+          </div>
         </section>
       )}
 

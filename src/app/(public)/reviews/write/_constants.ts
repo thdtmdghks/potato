@@ -3,4 +3,5 @@ export const FORM_KEYS = {
   rating: "rating",
   images: "images",
   existingImages: "existingImages",
+  primaryImage: "primaryImage",
 } as const;

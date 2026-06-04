@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import Link from "next/link";
+import { Button } from "@/app/_components/button";
 import { reportUnexpectedError } from "@/app/_actions";
 import { ROUTES } from "@/shared/routes";
 
@@ -49,12 +50,12 @@ export default function RootError({ error, reset }: ErrorProps) {
         </p>
 
         <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:justify-center">
-          <button
+          <Button
             onClick={() => reset()}
-            className="bg-navy hover:bg-navy/90 rounded-lg px-6 py-2.5 text-sm font-semibold text-white shadow transition-colors"
+            className="bg-navy hover:bg-navy/90 border-none px-6 py-2.5 text-sm font-semibold text-white shadow"
           >
             다시 시도
-          </button>
+          </Button>
           <Link
             href={ROUTES.home}
             className="hover:bg-gray-light rounded-lg border border-gray-200 px-6 py-2.5 text-sm font-semibold text-gray-700 transition-colors dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-800"

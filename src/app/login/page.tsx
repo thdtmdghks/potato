@@ -1,9 +1,10 @@
 "use client";
 
-import { Suspense } from "react";
+import { Suspense, useState } from "react";
 import Link from "next/link";
 import { signIn, signOut, useSession } from "next-auth/react";
 import { useSearchParams } from "next/navigation";
+import { Button } from "@/app/_components/button";
 import { ROUTES } from "@/shared/routes";
 
 function LoginContent() {
@@ -11,6 +12,7 @@ function LoginContent() {
   const searchParams = useSearchParams();
   const isNotAdmin = searchParams.get("error") === "not-admin";
   const kakaoId = session?.kakaoId;
+  const [isPending, setIsPending] = useState(false);
 
   return (
     <section className="w-full max-w-sm rounded-lg bg-white p-8 shadow dark:bg-gray-800">
@@ -25,23 +27,26 @@ function LoginContent() {
           <p className="bg-gray-light mt-2 rounded p-3 text-center font-mono text-lg dark:bg-gray-700 dark:text-white">
             {kakaoId}
           </p>
-          <button
+          <Button
             onClick={() => signOut({ callbackUrl: "/login" })}
-            className="hover:bg-gray-light mt-4 w-full rounded-lg border border-gray-200 px-4 py-2 text-sm dark:border-gray-600 dark:hover:bg-gray-700"
+            variant="outline"
+            className="mt-4 w-full"
           >
             로그아웃
-          </button>
+          </Button>
         </>
       ) : (
         <>
           <p className="text-gray-dark mt-2 text-center text-sm dark:text-gray-300">
             관리자 페이지에 접근하려면 로그인이 필요합니다.
           </p>
-          <button
-            onClick={() =>
-              signIn("kakao", { callbackUrl: searchParams.get("callbackUrl") || ROUTES.home })
-            }
-            className="mt-6 flex w-full items-center justify-center gap-2 rounded-lg bg-[#FEE500] px-4 py-3 text-sm font-semibold text-[#3C1E1E] transition-opacity hover:opacity-90"
+          <Button
+            loading={isPending}
+            onClick={() => {
+              setIsPending(true);
+              signIn("kakao", { callbackUrl: searchParams.get("callbackUrl") || ROUTES.home });
+            }}
+            className="mt-6 h-11 w-full gap-2 border-none bg-[#FEE500] text-sm font-semibold text-[#3C1E1E] hover:bg-[#FEE500]/90"
           >
             <svg className="h-5 w-5" viewBox="0 0 24 24" aria-hidden="true">
               <path
@@ -49,8 +54,8 @@ function LoginContent() {
                 fill="currentColor"
               />
             </svg>
-            카카오로 로그인
-          </button>
+            {isPending ? "로그인 중..." : "카카오로 로그인"}
+          </Button>
         </>
       )}
 

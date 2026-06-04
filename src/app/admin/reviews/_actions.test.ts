@@ -94,6 +94,7 @@ describe("approveReviewEdit", () => {
       review_id: approved.id,
       content: "수정된 내용",
       images: ["new-img.webp"],
+      primary_image: "new-img.webp",
       rating: 4,
     });
 
@@ -129,6 +130,7 @@ describe("rejectReviewEdit", () => {
       review_id: approved.id,
       content: "수정 제안",
       images: [],
+      primary_image: null,
       rating: 3,
     });
 
