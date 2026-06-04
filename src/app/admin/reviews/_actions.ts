@@ -66,13 +66,7 @@ export async function approveReviewEdit(reviewId: string) {
     }
 
     const review = await reviews.getById(reviewId);
-    const originalPrimary = review?.primary_image ?? null;
-    let newPrimary = originalPrimary;
-    if (!edit.images || edit.images.length === 0) {
-      newPrimary = null;
-    } else if (!originalPrimary || !edit.images.includes(originalPrimary)) {
-      newPrimary = edit.images[0];
-    }
+    const newPrimary = edit.primary_image ?? edit.images[0] ?? null;
 
     // 원본 리뷰 업데이트
     const result = await reviews.update(reviewId, {

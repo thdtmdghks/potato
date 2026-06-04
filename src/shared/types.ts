@@ -29,6 +29,7 @@ export type ReviewEditRow = {
   review_id: string;
   content: string;
   images: string[];
+  primary_image: string | null;
   rating: number;
   created_at: string;
 };
@@ -96,6 +97,7 @@ export type Database = {
           review_id: string;
           content: string;
           images?: string[];
+          primary_image?: string | null;
           rating?: number;
           created_at?: string;
         };
@@ -103,6 +105,7 @@ export type Database = {
           review_id?: string;
           content?: string;
           images?: string[];
+          primary_image?: string | null;
           rating?: number;
           created_at?: string;
         };

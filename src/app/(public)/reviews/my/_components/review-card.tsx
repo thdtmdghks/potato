@@ -55,7 +55,9 @@ export function ReviewCard({ review }: ReviewCardProps) {
               <div
                 key={url}
                 onClick={() => setLightboxIndex(index)}
-                className="group relative h-20 w-28 shrink-0 cursor-pointer overflow-hidden rounded bg-gray-100"
+                className={`group relative h-20 w-28 shrink-0 cursor-pointer overflow-hidden rounded bg-gray-100 ring-2 ${
+                  review.primary_image === url ? "ring-amber-500" : "ring-transparent"
+                }`}
               >
                 <Image
                   src={url}
@@ -64,6 +66,11 @@ export function ReviewCard({ review }: ReviewCardProps) {
                   sizes="112px"
                   className="object-cover transition-transform duration-500 group-hover:scale-105"
                 />
+                {review.primary_image === url && (
+                  <span className="absolute right-1 bottom-1 rounded bg-amber-500 px-1 py-0.5 text-[8px] font-bold text-white">
+                    대표
+                  </span>
+                )}
               </div>
             ))}
           </div>

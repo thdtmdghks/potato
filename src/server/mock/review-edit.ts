@@ -12,6 +12,7 @@ export class MockReviewEditRepository implements ReviewEditRepository {
       content:
         "잡철 시공 깔끔합니다. 난간 용접 부위 마감이 특히 좋았어요. 추가로 6개월 지나서 확인해보니 녹도 안 슬고 튼튼합니다!",
       images: [IMG("rev8a"), IMG("rev8b"), IMG("rev8c")],
+      primary_image: IMG("rev8c"),
       rating: 5,
       created_at: new Date(Date.now() - 86400000 * 2).toISOString(),
     },
@@ -20,6 +21,7 @@ export class MockReviewEditRepository implements ReviewEditRepository {
       review_id: "018fc723-b780-7000-8000-000000000003",
       content: "보통이에요. 마감이 아쉬웠는데 사후 서비스로 보완해주셔서 수정합니다. 감사합니다.",
       images: [IMG("rev3a"), IMG("rev3b"), IMG("rev3c")],
+      primary_image: IMG("rev3b"),
       rating: 3,
       created_at: new Date(Date.now() - 86400000 * 5).toISOString(),
     },
@@ -29,6 +31,7 @@ export class MockReviewEditRepository implements ReviewEditRepository {
       content:
         "방충망 교체를 맡겼는데 미세먼지 차단망으로 업그레이드해 주셨어요. 시공도 빠르고 마감도 깔끔합니다. 가격도 합리적이라 만족합니다.",
       images: [IMG("mesh1"), IMG("mesh2")],
+      primary_image: IMG("mesh2"),
       rating: 5,
       created_at: new Date(Date.now() - 86400000 * 4).toISOString(),
     },

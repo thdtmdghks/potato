@@ -49,6 +49,8 @@ export function ReviewForm({ id, initialData, isApproved, userProfile }: ReviewF
     onError: (msg) => setServerError(msg),
   });
 
+  const [primaryImage, setPrimaryImage] = useState<string | null>(initialData?.images[0] ?? null);
+
   // react-hook-form 세팅
   const {
     register,
@@ -78,6 +80,9 @@ export function ReviewForm({ id, initialData, isApproved, userProfile }: ReviewF
     const fd = new FormData();
     fd.set(FORM_KEYS.content, data.content);
     fd.set(FORM_KEYS.rating, String(data.rating));
+    if (primaryImage) {
+      fd.set(FORM_KEYS.primaryImage, primaryImage);
+    }
 
     for (const file of compressedFiles) {
       fd.append(FORM_KEYS.images, file);
@@ -176,7 +181,7 @@ export function ReviewForm({ id, initialData, isApproved, userProfile }: ReviewF
         <ImageUpload
           required
           label="시공 전/후 사진 첨부"
-          description="실제 시공 사진을 최소 1장 이상 최대 5장까지 올려주세요. 업로드 시 자동으로 변환/압축됩니다."
+          description="실제 시공 사진을 최소 1장 이상 최대 5장까지 올려주세요. ★을 눌러 대표사진을 설정하세요."
           existingImages={existingImages}
           previews={previews}
           compressing={compressing}
@@ -185,6 +190,8 @@ export function ReviewForm({ id, initialData, isApproved, userProfile }: ReviewF
           onRemoveExisting={removeExisting}
           onRemoveNew={removeNew}
           compressedFiles={compressedFiles}
+          primaryImageUrl={primaryImage}
+          onSelectPrimary={setPrimaryImage}
         />
 
         {serverError && (
