@@ -78,7 +78,7 @@ export default async function Home() {
             </span>
           </div>
           <a
-            href={LINKS.tel}
+            href="#contact"
             className="bg-accent hover:bg-accent-dark mt-8 inline-block rounded-lg px-8 py-3 text-lg font-bold text-white transition-colors"
           >
             📞 상담·견적 문의하기

@@ -3,13 +3,14 @@
 import Link from "next/link";
 import { useSession } from "next-auth/react";
 import { ThemeToggle } from "./theme-toggle";
-import { BUSINESS, LINKS } from "@/shared/constants";
+import { BUSINESS } from "@/shared/constants";
 import { useMenuWithHistory } from "@/client/use-menu-with-history";
 import { ROUTES } from "@/shared/routes";
 import { USER_ROLE } from "@/shared/constants";
 
 const navItems = [
-  { href: `${ROUTES.home}#gallery`, label: "시공사례" },
+  { href: ROUTES.projects, label: "시공사례" },
+  { href: ROUTES.reviews, label: "고객 후기" },
   { href: `${ROUTES.home}#contact`, label: "연락처" },
 ];
 
@@ -26,18 +27,25 @@ export function Header() {
           <span className="sr-only"> - {BUSINESS.region} 샤시 샷시 하이샤시 샷시시공 전문</span>
         </Link>
         <nav className="hidden items-center gap-6 md:flex">
-          {navItems.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className="hover:text-accent-light transition-colors"
-            >
-              {item.label}
-            </Link>
-          ))}
-          <Link href={ROUTES.projects} className="hover:text-accent-light transition-colors">
-            갤러리
-          </Link>
+          {navItems.map((item) =>
+            item.href.includes("#") ? (
+              <a
+                key={item.href}
+                href={item.href}
+                className="hover:text-accent-light transition-colors"
+              >
+                {item.label}
+              </a>
+            ) : (
+              <Link
+                key={item.href}
+                href={item.href}
+                className="hover:text-accent-light transition-colors"
+              >
+                {item.label}
+              </Link>
+            ),
+          )}
           {isAdmin && (
             <Link
               href={ROUTES.admin.root}
@@ -79,14 +87,17 @@ export function Header() {
         className={`bg-navy fixed inset-y-0 right-0 z-50 w-64 transform px-4 py-6 transition-transform md:hidden ${open ? "translate-x-0" : "translate-x-full"}`}
       >
         <div className="flex flex-col gap-2">
-          {navItems.map((item) => (
-            <Link key={item.href} href={item.href} onClick={closeMenu} className="block py-3">
-              {item.label}
-            </Link>
-          ))}
-          <Link href={ROUTES.projects} onClick={closeMenu} className="block py-3">
-            갤러리
-          </Link>
+          {navItems.map((item) =>
+            item.href.includes("#") ? (
+              <a key={item.href} href={item.href} onClick={closeMenu} className="block py-3">
+                {item.label}
+              </a>
+            ) : (
+              <Link key={item.href} href={item.href} onClick={closeMenu} className="block py-3">
+                {item.label}
+              </Link>
+            ),
+          )}
           <div className="my-2 border-t border-white/20" />
           {session ? (
             <Link href={ROUTES.myReviews} onClick={closeMenu} className="block py-3">
@@ -107,9 +118,6 @@ export function Header() {
               관리자
             </Link>
           )}
-          <a href={LINKS.tel} className="text-accent-light block py-3 font-semibold">
-            📞 전화 상담
-          </a>
         </div>
       </nav>
     </header>
