@@ -22,7 +22,7 @@ export function ImageThumbnail({
 }: ImageThumbnailProps) {
   return (
     <div
-      className={`relative cursor-pointer overflow-hidden rounded border-2 transition-all ${
+      className={`relative shrink-0 cursor-pointer overflow-hidden rounded border-2 transition-all ${
         isPrimary
           ? "border-amber-500 bg-amber-500/5 dark:border-amber-500"
           : "border-transparent hover:border-gray-300 dark:hover:border-gray-700"
