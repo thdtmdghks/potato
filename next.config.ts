@@ -1,8 +1,10 @@
 import type { NextConfig } from "next";
 import "./src/shared/env";
 
+const authHost = process.env.AUTH_URL ? [new URL(process.env.AUTH_URL).hostname] : [];
+
 const nextConfig: NextConfig = {
-  allowedDevOrigins: ["192.168.0.8"],
+  allowedDevOrigins: authHost,
   images: {
     remotePatterns: [
       { protocol: "https", hostname: "picsum.photos" },
