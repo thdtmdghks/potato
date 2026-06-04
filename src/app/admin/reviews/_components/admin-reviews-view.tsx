@@ -35,7 +35,7 @@ export function AdminReviewsView({ pendingReviews, editRequests }: Props) {
   };
 
   return (
-    <div className="max-w-6xl space-y-10">
+    <div className="space-y-10">
       <div>
         <h1 className="text-navy text-3xl font-bold dark:text-white">리뷰(후기) 관리</h1>
         <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
@@ -49,22 +49,14 @@ export function AdminReviewsView({ pendingReviews, editRequests }: Props) {
         </div>
       )}
 
-      <div className="grid gap-8 lg:grid-cols-3">
-        {/* 링크 생성기 */}
-        <div className="lg:col-span-1">
-          <InviteLinkSection />
-        </div>
+      <InviteLinkSection />
 
-        {/* 신규 등록 대기 리뷰 */}
-        <div className="lg:col-span-2">
-          <PendingReviewsList
-            reviews={pendingReviews}
-            loadingId={loadingId}
-            onApprove={(id, primaryImage) => runAction(id, () => approveReview(id, primaryImage))}
-            onDelete={(id) => runAction(id, () => deleteReview(id))}
-          />
-        </div>
-      </div>
+      <PendingReviewsList
+        reviews={pendingReviews}
+        loadingId={loadingId}
+        onApprove={(id, primaryImage) => runAction(id, () => approveReview(id, primaryImage))}
+        onDelete={(id) => runAction(id, () => deleteReview(id))}
+      />
 
       {/* 수정 요청 후기 비교 관리 */}
       <EditRequestsList

@@ -54,7 +54,7 @@ export function InviteLinkSection() {
   };
 
   return (
-    <section className="h-fit rounded-2xl border border-gray-100 bg-white p-6 shadow-sm dark:border-gray-800 dark:bg-gray-900">
+    <section className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm dark:border-gray-800 dark:bg-gray-900">
       <h2 className="text-navy text-lg font-bold dark:text-white">리뷰 초대 링크 발송</h2>
       <p className="mt-1.5 text-xs leading-relaxed text-gray-500 dark:text-gray-400">
         고객 전용 고유 리뷰 링크를 발급합니다. 모바일에서는 클릭 시 바로 카카오톡이나 문자 공유 창이
