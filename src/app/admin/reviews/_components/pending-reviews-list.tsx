@@ -4,6 +4,7 @@ import { useState } from "react";
 import Image from "next/image";
 import type { Review } from "@/shared/types";
 import { formatDate } from "@/shared/utils";
+import { Button } from "@/app/_components/button";
 import { LightboxModal } from "@/app/_components/lightbox-modal";
 import { ImageThumbnail } from "@/app/_components/image-thumbnail";
 
@@ -103,20 +104,22 @@ export function PendingReviewsList({ reviews, loadingId, onApprove, onDelete }: 
 
                   {/* 버튼 제어 */}
                   <div className="flex shrink-0 gap-2 sm:w-28 sm:flex-col">
-                    <button
+                    <Button
                       onClick={() => onApprove(review.id, currentPrimary)}
+                      loading={loadingId === review.id}
                       disabled={loadingId !== null}
-                      className="bg-navy hover:bg-navy-light flex-1 rounded-lg py-2 text-xs font-semibold text-white shadow-sm transition-colors disabled:opacity-50"
+                      className="bg-navy hover:bg-navy-light flex-1 border-none py-2 text-xs font-semibold text-white shadow-sm"
                     >
-                      {loadingId === review.id ? "처리 중..." : "노출 승인"}
-                    </button>
-                    <button
+                      노출 승인
+                    </Button>
+                    <Button
                       onClick={() => onDelete(review.id)}
                       disabled={loadingId !== null}
-                      className="flex-1 rounded-lg border border-gray-200 py-2 text-xs font-semibold text-gray-600 transition-colors hover:bg-gray-50 disabled:opacity-50 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-800"
+                      variant="outline"
+                      className="flex-1 py-2 text-xs font-semibold"
                     >
                       삭제
-                    </button>
+                    </Button>
                   </div>
                 </div>
               </li>

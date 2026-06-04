@@ -3,6 +3,7 @@
 import { useState } from "react";
 import Image from "next/image";
 import type { Review, ReviewEdit } from "@/shared/types";
+import { Button } from "@/app/_components/button";
 import { LightboxModal } from "@/app/_components/lightbox-modal";
 import { ImageThumbnail } from "@/app/_components/image-thumbnail";
 
@@ -59,20 +60,22 @@ export function EditRequestsList({ editRequests, loadingId, onApprove, onReject 
                 </div>
 
                 <div className="flex gap-2">
-                  <button
+                  <Button
                     onClick={() => onApprove(req.review_id)}
+                    loading={loadingId === req.review_id}
                     disabled={loadingId !== null}
-                    className="rounded-lg bg-indigo-600 px-4 py-1.5 text-xs font-semibold text-white shadow-sm transition-colors hover:bg-indigo-700 disabled:opacity-50"
+                    className="border-none bg-indigo-600 px-4 py-1.5 text-xs font-semibold text-white shadow-sm hover:bg-indigo-700"
                   >
-                    {loadingId === req.review_id ? "처리 중..." : "수정 승인"}
-                  </button>
-                  <button
+                    수정 승인
+                  </Button>
+                  <Button
                     onClick={() => onReject(req.review_id)}
                     disabled={loadingId !== null}
-                    className="rounded-lg border border-gray-200 px-4 py-1.5 text-xs font-semibold text-gray-600 transition-colors hover:bg-gray-50 disabled:opacity-50 dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-800"
+                    variant="outline"
+                    className="px-4 py-1.5 text-xs font-semibold"
                   >
                     수정 반려
-                  </button>
+                  </Button>
                 </div>
               </div>
 
