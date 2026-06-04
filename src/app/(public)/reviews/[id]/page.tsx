@@ -99,9 +99,7 @@ export default async function ReviewDetailPage({ params }: Props) {
         </p>
 
         {/* 이미지 */}
-        {review.images.length > 0 && (
-          <ReviewDetailImages images={review.images} primaryImage={review.primary_image} />
-        )}
+        {review.images.length > 0 && <ReviewDetailImages images={review.images} />}
       </article>
     </main>
   );
