@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import type { Review } from "@/shared/types";
 import {
   Carousel,
@@ -12,6 +13,7 @@ import {
 
 import AutoScroll from "embla-carousel-auto-scroll";
 import { formatDate } from "@/shared/utils";
+import { ROUTES } from "@/shared/routes";
 import { useState } from "react";
 import { LightboxModal } from "@/app/_components/lightbox-modal";
 
@@ -35,9 +37,6 @@ export function ReviewCarousel({ reviews }: Props) {
     });
   };
 
-  // TODO: (추후 작업) 리뷰 텍스트가 길어질 경우를 대비해, 카드 클릭 시
-  // 전체 후기 본문과 등록된 모든 고해상도 이미지를 크게 볼 수 있는
-  // 반투명 유리 배경의 상세 보기 모달(Modal) 팝업 기능 추가 예정 (안 1)
   return (
     <div className="relative mx-auto max-w-5xl px-8">
       <Carousel
@@ -88,9 +87,14 @@ export function ReviewCarousel({ reviews }: Props) {
                       </span>
                     ))}
                   </div>
-                  <p className="line-clamp-4 min-h-[3rem] text-sm leading-relaxed text-gray-600 dark:text-gray-300">
-                    {review.content}
-                  </p>
+                  <Link
+                    href={ROUTES.reviewDetail(review.id)}
+                    className="block transition-opacity hover:opacity-80"
+                  >
+                    <p className="line-clamp-4 min-h-[3rem] text-sm leading-relaxed text-gray-600 dark:text-gray-300">
+                      {review.content}
+                    </p>
+                  </Link>
                 </div>
 
                 {/* 3. 작성자 정보 및 날짜 */}

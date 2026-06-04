@@ -5,6 +5,8 @@ export const ROUTES = {
   login: "/login",
   privacy: "/privacy",
   myReviews: "/reviews/my",
+  reviews: "/reviews",
+  reviewDetail: (id: string) => `/reviews/${id}`,
   writeReview: (id: string) => `/reviews/write?id=${id}`,
   admin: {
     root: "/admin",

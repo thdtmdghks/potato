@@ -117,6 +117,14 @@ export default async function Home() {
             </p>
           </div>
           <ReviewCarousel reviews={approvedReviews} />
+          <div className="mt-8 text-center">
+            <Link
+              href={ROUTES.reviews}
+              className="text-accent text-sm font-semibold hover:underline"
+            >
+              전체 후기 보기 →
+            </Link>
+          </div>
         </section>
       )}
 
