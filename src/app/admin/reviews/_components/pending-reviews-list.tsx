@@ -3,6 +3,7 @@
 import { useState } from "react";
 import type { Review } from "@/shared/types";
 import { Button } from "@/app/_components/button";
+import { StatusBadge } from "@/app/_components/status-badge";
 import { LightboxModal } from "@/app/_components/lightbox-modal";
 import { ReviewCardContent } from "./review-card-content";
 
@@ -20,9 +21,9 @@ export function PendingReviewsList({ reviews, loadingId, onApprove, onDelete }: 
     <div className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm dark:border-gray-800 dark:bg-gray-900">
       <h2 className="text-navy flex items-center gap-2 text-lg font-bold dark:text-white">
         <span>신규 등록 대기 후기</span>
-        <span className="rounded-full bg-amber-100 px-2 py-0.5 text-xs font-semibold text-amber-800 dark:bg-amber-950/40 dark:text-amber-400">
+        <StatusBadge color="amber" size="sm">
           {reviews.length}
-        </span>
+        </StatusBadge>
       </h2>
 
       {reviews.length === 0 ? (
