@@ -4,6 +4,7 @@ import Link from "next/link";
 import { getServerRepositories } from "@/server";
 import { ROUTES } from "@/shared/routes";
 import { formatDate } from "@/shared/utils";
+import { Avatar } from "@/app/_components/avatar";
 
 export const metadata: Metadata = {
   title: "고객 시공 후기 | 경산창호",
@@ -71,19 +72,7 @@ export default async function ReviewsPage() {
                 {/* 작성자 */}
                 <div className="flex items-center justify-between pt-2">
                   <div className="flex items-center gap-2">
-                    {review.author_avatar ? (
-                      <Image
-                        src={review.author_avatar}
-                        alt=""
-                        width={24}
-                        height={24}
-                        className="rounded-full object-cover"
-                      />
-                    ) : (
-                      <div className="flex h-6 w-6 items-center justify-center rounded-full bg-gray-100 dark:bg-gray-800">
-                        <span className="text-[9px] text-gray-400">👤</span>
-                      </div>
-                    )}
+                    <Avatar src={review.author_avatar} size={24} />
                     <span className="text-xs font-semibold text-gray-700 dark:text-gray-300">
                       {review.author_name}
                     </span>
