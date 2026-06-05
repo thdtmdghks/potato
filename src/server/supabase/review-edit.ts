@@ -1,7 +1,6 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database, Review, ReviewEdit } from "@/shared/types";
 import type { ReviewEditRepository } from "../repositories";
-import { logError } from "../logger";
 
 export class SupabaseReviewEditRepository implements ReviewEditRepository {
   constructor(private db: SupabaseClient<Database>) {}
@@ -13,10 +12,8 @@ export class SupabaseReviewEditRepository implements ReviewEditRepository {
       .eq("review_id", reviewId)
       .single();
     if (error) {
-      if (error.code !== "PGRST116") {
-        logError("SupabaseReviewEditRepository.getById", error, { reviewId });
-      }
-      return null;
+      if (error.code === "PGRST116") return null;
+      throw error;
     }
     return data;
   }
@@ -26,10 +23,7 @@ export class SupabaseReviewEditRepository implements ReviewEditRepository {
       .from("review_edits")
       .select("*")
       .order("created_at", { ascending: false });
-    if (error) {
-      logError("SupabaseReviewEditRepository.getAll", error);
-      return [];
-    }
+    if (error) throw error;
     return data ?? [];
   }
 
@@ -38,10 +32,7 @@ export class SupabaseReviewEditRepository implements ReviewEditRepository {
       .from("review_edits")
       .select("*, reviews(*)")
       .order("created_at", { ascending: false });
-    if (error) {
-      logError("SupabaseReviewEditRepository.getAllWithOriginal", error);
-      return [];
-    }
+    if (error) throw error;
 
     type RowWithOriginal = Database["public"]["Tables"]["review_edits"]["Row"] & {
       reviews: Database["public"]["Tables"]["reviews"]["Row"] | null;
@@ -60,19 +51,13 @@ export class SupabaseReviewEditRepository implements ReviewEditRepository {
 
   async upsert(data: Omit<ReviewEdit, "created_at">): Promise<ReviewEdit | null> {
     const { data: row, error } = await this.db.from("review_edits").upsert(data).select().single();
-    if (error) {
-      logError("SupabaseReviewEditRepository.upsert", error, data);
-      return null;
-    }
+    if (error) throw error;
     return row;
   }
 
   async delete(reviewId: string): Promise<boolean> {
     const { error } = await this.db.from("review_edits").delete().eq("review_id", reviewId);
-    if (error) {
-      logError("SupabaseReviewEditRepository.delete", error, { reviewId });
-      return false;
-    }
+    if (error) throw error;
     return true;
   }
 }

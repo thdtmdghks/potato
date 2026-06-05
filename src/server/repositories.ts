@@ -9,7 +9,7 @@ export interface ProjectRepository {
 }
 
 export interface StorageRepository {
-  upload(bucket: string, path: string, file: File | Blob): Promise<string | null>;
+  upload(bucket: string, path: string, file: File | Blob): Promise<string>;
   delete(bucket: string, path: string): Promise<boolean>;
   getPublicUrl(bucket: string, path: string): string;
 }

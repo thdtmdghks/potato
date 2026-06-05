@@ -1,26 +1,19 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@/shared/types";
 import type { StorageRepository } from "../repositories";
-import { logError } from "../logger";
 
 export class SupabaseStorageRepository implements StorageRepository {
   constructor(private db: SupabaseClient<Database>) {}
 
-  async upload(bucket: string, path: string, file: File | Blob): Promise<string | null> {
+  async upload(bucket: string, path: string, file: File | Blob): Promise<string> {
     const { error } = await this.db.storage.from(bucket).upload(path, file);
-    if (error) {
-      logError("SupabaseStorageRepository.upload", error, { bucket, path });
-      return null;
-    }
+    if (error) throw error;
     return this.getPublicUrl(bucket, path);
   }
 
   async delete(bucket: string, path: string): Promise<boolean> {
     const { error } = await this.db.storage.from(bucket).remove([path]);
-    if (error) {
-      logError("SupabaseStorageRepository.delete", error, { bucket, path });
-      return false;
-    }
+    if (error) throw error;
     return true;
   }
 
