@@ -2,7 +2,7 @@ import type { MetadataRoute } from "next";
 import { getServerRepositories } from "@/server";
 import { SITE_URL } from "@/shared/constants";
 
-export const dynamic = "force-dynamic";
+export const revalidate = 3600;
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const { projects, reviews } = await getServerRepositories();
