@@ -401,16 +401,16 @@ export async function createProject(formData: FormData) {
 async getById(id: string) {
   const { data, error } = await supabase.from("projects").select("*").eq("id", id).single();
   if (error) {
-    logError("ProjectRepository.getById", error, { id });
-    return null;
+    if (error.code === "PGRST116") return null; // row not found는 정상
+    throw error; // 그 외 DB 에러는 상위로 전파
   }
   return data;
 }
 ```
 
-- Repository는 에러를 throw하지 않고 `null` 반환
-- 로깅은 Repository 레벨에서 수행
-- 호출자(Server Action)는 null 체크만 하면 됨
+- Repository는 DB 에러를 throw하여 Server Action catch로 전파
+- `PGRST116` (row not found)만 null 반환 (정상적인 "없음" 케이스)
+- Repository에서 logError 직접 호출 금지 — Server Action이 맥락과 함께 로깅
 
 ---
 
