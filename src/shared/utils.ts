@@ -72,3 +72,10 @@ export const formatSize = (bytes: number): string => {
   if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
   return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
 };
+
+/** 이름 마스킹: 홍길동 → 홍*동, 이순신 → 이*신, 김이 → 김* */
+export const maskName = (name: string): string => {
+  if (name.length <= 1) return name;
+  if (name.length === 2) return name[0] + "*";
+  return name[0] + "*".repeat(name.length - 2) + name[name.length - 1];
+};
