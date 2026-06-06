@@ -6,6 +6,7 @@ import { ROUTES } from "@/shared/routes";
 import { formatDate } from "@/shared/utils";
 import { Avatar } from "@/app/_components/avatar";
 import { ReviewDetailImages } from "./_components/review-detail-images";
+import { SITE_URL } from "@/shared/constants";
 
 interface Props {
   params: Promise<{ id: string }>;
@@ -26,6 +27,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: `${review.author_name}님의 시공 후기 | 경산창호`,
     description,
+    alternates: {
+      canonical: `${SITE_URL}/reviews/${id}`,
+    },
     openGraph: {
       title: `${review.author_name}님의 시공 후기 | 경산창호`,
       description,
