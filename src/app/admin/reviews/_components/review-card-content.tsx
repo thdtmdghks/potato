@@ -1,6 +1,6 @@
 "use client";
 
-import Image from "next/image";
+import { Avatar } from "@/app/_components/avatar";
 import { ImageThumbnail } from "@/app/_components/image-thumbnail";
 import { formatDate } from "@/shared/utils";
 
@@ -55,19 +55,7 @@ export function ReviewCardContent({
 
       <div className="space-y-3">
         <div className="flex items-center gap-2.5">
-          {authorAvatar ? (
-            <Image
-              src={authorAvatar}
-              alt=""
-              width={32}
-              height={32}
-              className="rounded-full object-cover"
-            />
-          ) : (
-            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gray-100 dark:bg-gray-800">
-              <span className="text-xs text-gray-400">👤</span>
-            </div>
-          )}
+          <Avatar src={authorAvatar} size={32} />
           <div>
             <span className="text-sm font-semibold text-gray-800 dark:text-gray-200">
               {authorName}

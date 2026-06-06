@@ -1,8 +1,18 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
 import { getServerRepositories } from "@/server";
-import { CATEGORIES } from "@/shared/constants";
+import { CATEGORIES, SITE_URL } from "@/shared/constants";
 import { ROUTES } from "@/shared/routes";
+
+export const metadata: Metadata = {
+  title: "시공사례 갤러리 | 경산창호",
+  description:
+    "경산 대구 지역의 하이샤시(샷시), 이중유리, 방충망, ABS도어 시공 갤러리. 경산창호가 당일 직접 시공한 현장 포트폴리오를 확인하세요.",
+  alternates: {
+    canonical: `${SITE_URL}/projects`,
+  },
+};
 
 export default async function Projects({
   searchParams,

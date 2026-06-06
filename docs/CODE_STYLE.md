@@ -344,6 +344,76 @@ if (!result) return { success: false as const, error: "생성에 실패했습니
 
 ---
 
+## 로깅
+
+### 레벨 구분
+
+| 함수       | 레벨     | Discord 채널        | 용도                              |
+| ---------- | -------- | ------------------- | --------------------------------- |
+| `logError` | 🔴 ERROR | 에러 채널 (알림 켬) | 시스템/DB 장애, 예상치 못한 예외  |
+| `logWarn`  | 🟡 WARN  | 경고 채널 (알림 끔) | 비정상 접근, 권한 위반, 검증 실패 |
+
+### 언제 무엇을 쓰는가
+
+```ts
+// 🔴 logError — 시스템이 정상 동작하지 않는 상황
+logError("projects.create", error, { title, category });
+// DB 쿼리 실패, Storage 업로드 실패, 외부 API 장애
+
+// 🟡 logWarn — 시스템은 정상이나 비정상적인 요청
+logWarn("admin.verifyAdmin", "관리자 권한 없는 접근 시도", { kakaoId });
+// 미인증 접근, 다른 유저의 리소스 접근 시도, 만료된 토큰 사용
+```
+
+### context 네이밍 규칙
+
+`도메인.함수명` 형식으로 발생 위치를 특정할 수 있게 작성.
+
+```ts
+logError("projects.create", error); // ✅
+logError("reviews.submitReview", error); // ✅
+logWarn("admin.verifyAdmin", "..."); // ✅
+
+logError("error", error); // ❌ 위치 불명확
+logError("failed", error); // ❌
+```
+
+### Server Action에서의 패턴
+
+```ts
+export async function createProject(formData: FormData) {
+  try {
+    // ... 비즈니스 로직
+  } catch (error) {
+    logError("projects.create", error, { title });
+    return { success: false as const, error: "서버 오류가 발생했습니다." };
+  }
+}
+```
+
+- `catch` 블록에서 `logError` 호출 후 사용자 친화적 메시지 반환
+- 에러 객체 + payload(디버깅용 컨텍스트)를 함께 전달
+- 사용자에게는 기술적 상세를 노출하지 않음
+
+### Repository에서의 패턴
+
+```ts
+async getById(id: string) {
+  const { data, error } = await supabase.from("projects").select("*").eq("id", id).single();
+  if (error) {
+    if (error.code === "PGRST116") return null; // row not found는 정상
+    throw error; // 그 외 DB 에러는 상위로 전파
+  }
+  return data;
+}
+```
+
+- Repository는 DB 에러를 throw하여 Server Action catch로 전파
+- `PGRST116` (row not found)만 null 반환 (정상적인 "없음" 케이스)
+- Repository에서 logError 직접 호출 금지 — Server Action이 맥락과 함께 로깅
+
+---
+
 ## 환경변수 관리
 
 | 구분                 | 환경변수로                | 상수로                            |

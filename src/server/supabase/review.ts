@@ -1,7 +1,6 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database, Review } from "@/shared/types";
 import type { ReviewRepository } from "../repositories";
-import { logError } from "../logger";
 import { REVIEW_STATUS } from "@/shared/constants";
 
 export class SupabaseReviewRepository implements ReviewRepository {
@@ -10,10 +9,8 @@ export class SupabaseReviewRepository implements ReviewRepository {
   async getById(id: string): Promise<Review | null> {
     const { data, error } = await this.db.from("reviews").select("*").eq("id", id).single();
     if (error) {
-      if (error.code !== "PGRST116") {
-        logError("SupabaseReviewRepository.getById", error, { id });
-      }
-      return null;
+      if (error.code === "PGRST116") return null;
+      throw error;
     }
     return data;
   }
@@ -24,10 +21,7 @@ export class SupabaseReviewRepository implements ReviewRepository {
       .select("*")
       .eq("kakao_id", kakaoId)
       .order("created_at", { ascending: false });
-    if (error) {
-      logError("SupabaseReviewRepository.getByKakaoId", error, { kakaoId });
-      return [];
-    }
+    if (error) throw error;
     return data ?? [];
   }
 
@@ -37,10 +31,7 @@ export class SupabaseReviewRepository implements ReviewRepository {
       .select("*")
       .eq("status", REVIEW_STATUS.APPROVED)
       .order("created_at", { ascending: false });
-    if (error) {
-      logError("SupabaseReviewRepository.getAllApproved", error);
-      return [];
-    }
+    if (error) throw error;
     return data ?? [];
   }
 
@@ -50,10 +41,7 @@ export class SupabaseReviewRepository implements ReviewRepository {
       .select("*")
       .eq("status", REVIEW_STATUS.PENDING)
       .order("created_at", { ascending: false });
-    if (error) {
-      logError("SupabaseReviewRepository.getAllPending", error);
-      return [];
-    }
+    if (error) throw error;
     return data ?? [];
   }
 
@@ -63,10 +51,7 @@ export class SupabaseReviewRepository implements ReviewRepository {
       .insert({ ...data, status: REVIEW_STATUS.PENDING })
       .select()
       .single();
-    if (error) {
-      logError("SupabaseReviewRepository.create", error, data);
-      return null;
-    }
+    if (error) throw error;
     return row;
   }
 
@@ -77,19 +62,13 @@ export class SupabaseReviewRepository implements ReviewRepository {
       .eq("id", id)
       .select()
       .single();
-    if (error) {
-      logError("SupabaseReviewRepository.update", error, { id, data });
-      return null;
-    }
+    if (error) throw error;
     return row;
   }
 
   async delete(id: string): Promise<boolean> {
     const { error } = await this.db.from("reviews").delete().eq("id", id);
-    if (error) {
-      logError("SupabaseReviewRepository.delete", error, { id });
-      return false;
-    }
+    if (error) throw error;
     return true;
   }
 }

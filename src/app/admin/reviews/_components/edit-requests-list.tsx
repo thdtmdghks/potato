@@ -3,6 +3,7 @@
 import { useState } from "react";
 import type { Review, ReviewEdit } from "@/shared/types";
 import { Button } from "@/app/_components/button";
+import { StatusBadge } from "@/app/_components/status-badge";
 import { LightboxModal } from "@/app/_components/lightbox-modal";
 import { ReviewCardContent } from "./review-card-content";
 
@@ -20,9 +21,9 @@ export function EditRequestsList({ editRequests, loadingId, onApprove, onReject 
     <section className="rounded-2xl border border-gray-100 bg-white p-6 shadow-sm dark:border-gray-800 dark:bg-gray-900">
       <h2 className="text-navy flex items-center gap-2 text-lg font-bold dark:text-white">
         <span>리뷰 수정 요청 및 원본 대조</span>
-        <span className="rounded-full bg-indigo-100 px-2 py-0.5 text-xs font-semibold text-indigo-800 dark:bg-indigo-950/40 dark:text-indigo-400">
+        <StatusBadge color="indigo" size="sm">
           {editRequests.length}
-        </span>
+        </StatusBadge>
       </h2>
       <p className="mt-1 text-xs leading-relaxed text-gray-500 dark:text-gray-400">
         승인 시 원본이 수정안으로 즉시 교체되며 노출됩니다.

@@ -23,7 +23,7 @@ export const uploadImages = async (
     if (file.size === 0) continue;
     const path = `${pathPrefix}/${crypto.randomUUID()}.webp`;
     const url = await storage.upload(bucket, path, file);
-    if (url) urls.push(url);
+    urls.push(url);
   }
   return urls;
 };

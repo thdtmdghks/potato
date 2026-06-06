@@ -5,6 +5,7 @@ import {
   getTimestampFromUUIDv7,
   isUUIDv7Expired,
   formatSize,
+  maskName,
 } from "@/shared/utils";
 
 describe("formatDate", () => {
@@ -68,5 +69,25 @@ describe("formatSize", () => {
   it("1 MB 이상일 때 MB 단위로 올바르게 변형한다", () => {
     expect(formatSize(1024 * 1024)).toBe("1.0 MB");
     expect(formatSize(2.5 * 1024 * 1024)).toBe("2.5 MB");
+  });
+});
+
+describe("maskName", () => {
+  it("3글자 이름은 가운데를 마스킹한다", () => {
+    expect(maskName("홍길동")).toBe("홍*동");
+    expect(maskName("이순신")).toBe("이*신");
+  });
+
+  it("2글자 이름은 뒷글자를 마스킹한다", () => {
+    expect(maskName("김이")).toBe("김*");
+  });
+
+  it("1글자 이름은 마스킹하지 않는다", () => {
+    expect(maskName("김")).toBe("김");
+  });
+
+  it("4글자 이상 이름은 첫/끝만 남기고 마스킹한다", () => {
+    expect(maskName("남궁민수")).toBe("남**수");
+    expect(maskName("독고진우현")).toBe("독***현");
   });
 });

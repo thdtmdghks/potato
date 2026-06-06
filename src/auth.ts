@@ -1,9 +1,11 @@
 import NextAuth from "next-auth";
 import Kakao from "next-auth/providers/kakao";
 import { USER_ROLE } from "@/shared/constants";
+import { maskName } from "@/shared/utils";
 
 interface KakaoProfile {
   kakao_account?: {
+    name?: string;
     profile?: {
       nickname?: string;
       thumbnail_image_url?: string;
@@ -35,10 +37,11 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     async jwt({ token, account, profile }) {
       if (account?.provider === "kakao") {
         token.kakaoId = account.providerAccountId;
-        const kakaoProfile = (profile as KakaoProfile)?.kakao_account?.profile;
-        if (kakaoProfile) {
-          token.name = kakaoProfile.nickname ?? token.name;
-          token.picture = kakaoProfile.thumbnail_image_url ?? token.picture;
+        const kakaoAccount = (profile as KakaoProfile)?.kakao_account;
+        if (kakaoAccount) {
+          const rawName = kakaoAccount.name ?? kakaoAccount.profile?.nickname ?? "고객";
+          token.name = maskName(rawName);
+          token.picture = kakaoAccount.profile?.thumbnail_image_url ?? token.picture;
         }
       }
       if (token.kakaoId) {

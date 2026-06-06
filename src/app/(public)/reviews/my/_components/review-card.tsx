@@ -4,6 +4,7 @@ import type { Review } from "@/shared/types";
 import Link from "next/link";
 import Image from "next/image";
 import { Button } from "@/app/_components/button";
+import { StatusBadge } from "@/app/_components/status-badge";
 import { ROUTES } from "@/shared/routes";
 import { REVIEW_STATUS } from "@/shared/constants";
 import { useState } from "react";
@@ -32,17 +33,11 @@ export function ReviewCard({ review }: ReviewCardProps) {
 
         {/* 상태 배지 분기 */}
         {review.status === REVIEW_STATUS.PENDING ? (
-          <span className="rounded-full border border-amber-100 bg-amber-50 px-2.5 py-1 text-xs font-semibold text-amber-700 dark:border-amber-900/50 dark:bg-amber-950/30 dark:text-amber-400">
-            ⌛ 검토 대기 중
-          </span>
+          <StatusBadge color="amber">⌛ 검토 대기 중</StatusBadge>
         ) : review.hasPendingEdit ? (
-          <span className="rounded-full border border-sky-100 bg-sky-50 px-2.5 py-1 text-xs font-semibold text-sky-700 dark:border-sky-900/50 dark:bg-sky-950/30 dark:text-sky-400">
-            🔄 수정 승인 대기 중
-          </span>
+          <StatusBadge color="sky">🔄 수정 승인 대기 중</StatusBadge>
         ) : (
-          <span className="rounded-full border border-emerald-100 bg-emerald-50 px-2.5 py-1 text-xs font-semibold text-emerald-700 dark:border-emerald-900/50 dark:bg-emerald-950/30 dark:text-emerald-400">
-            ✅ 홈페이지 공개 중
-          </span>
+          <StatusBadge color="emerald">✅ 홈페이지 공개 중</StatusBadge>
         )}
       </div>
 

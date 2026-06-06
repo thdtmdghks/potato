@@ -1,14 +1,14 @@
 import type { Metadata } from "next";
 import { getServerRepositories } from "@/server";
-import { BUSINESS } from "@/shared/constants";
+import { BUSINESS, SITE_URL } from "@/shared/constants";
 
 export async function getProjectDetailMetadata(id: string): Promise<Metadata> {
   const { projects } = await getServerRepositories();
   const project = await projects.getById(id);
   if (!project) return {};
 
-  const title = `${project.title} — ${BUSINESS.region} 샤시 | ${BUSINESS.name}`;
-  const description = `${BUSINESS.region} ${project.category} 시공사례 — ${project.description} 샤시(샷시) 전문 ${BUSINESS.name} ${BUSINESS.phone}`;
+  const title = `${project.title} — 경산 대구 샤시 샷시 시공 | ${BUSINESS.name}`;
+  const description = `경산 대구 ${project.category} 시공사례 — ${project.description} 샤시(샷시) 전문 ${BUSINESS.name} ${BUSINESS.phone}`;
 
   const primaryImage = project.primary_image ?? project.images[0];
   const ogImages = primaryImage
@@ -30,7 +30,7 @@ export async function getProjectDetailMetadata(id: string): Promise<Metadata> {
     title,
     description,
     alternates: {
-      canonical: `/projects/${id}`,
+      canonical: `${SITE_URL}/projects/${id}`,
     },
     openGraph: {
       title,

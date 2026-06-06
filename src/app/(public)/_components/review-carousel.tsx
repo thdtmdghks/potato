@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import type { Review } from "@/shared/types";
+import { Avatar } from "@/app/_components/avatar";
 import {
   Carousel,
   CarouselContent,
@@ -100,19 +101,7 @@ export function ReviewCarousel({ reviews }: Props) {
                 {/* 3. 작성자 정보 및 날짜 */}
                 <div className="mt-5 flex items-center justify-between border-t border-gray-50 pt-4 dark:border-gray-800/50">
                   <div className="flex items-center gap-2.5">
-                    {review.author_avatar ? (
-                      <Image
-                        src={review.author_avatar}
-                        alt=""
-                        width={30}
-                        height={30}
-                        className="rounded-full object-cover"
-                      />
-                    ) : (
-                      <div className="flex h-7 w-7 items-center justify-center rounded-full bg-gray-100 dark:bg-gray-800">
-                        <span className="text-[10px] text-gray-400">👤</span>
-                      </div>
-                    )}
+                    <Avatar src={review.author_avatar} size={30} />
                     <span className="text-xs font-semibold text-gray-800 dark:text-gray-200">
                       {review.author_name}
                     </span>

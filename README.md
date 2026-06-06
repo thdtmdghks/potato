@@ -37,13 +37,12 @@
 ```
 src/
 ├── app/
-│   ├── (public)/        # 공개 페이지 (랜딩, 시공사례 갤러리)
+│   ├── (public)/        # 공개 페이지 (랜딩, 시공사례, 고객 후기)
 │   ├── admin/           # 관리자 CRUD (카카오 로그인 보호)
 │   └── _components/     # 공용 UI 컴포넌트
 ├── server/              # Repository (Supabase ↔ Mock 자동 전환), Logger
 ├── client/              # 브라우저 유틸 (이미지 압축, 테마)
-├── shared/              # 타입, Zod 스키마, 환경변수 검증 (양쪽 공용)
-└── __tests__/           # 단위 테스트
+└── shared/              # 타입, Zod 스키마, 환경변수 검증 (양쪽 공용)
 ```
 
 ## 기술적 도전

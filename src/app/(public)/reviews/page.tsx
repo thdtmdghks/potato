@@ -4,11 +4,18 @@ import Link from "next/link";
 import { getServerRepositories } from "@/server";
 import { ROUTES } from "@/shared/routes";
 import { formatDate } from "@/shared/utils";
+import { Avatar } from "@/app/_components/avatar";
+import { SITE_URL } from "@/shared/constants";
+
+export const revalidate = 60;
 
 export const metadata: Metadata = {
   title: "고객 시공 후기 | 경산창호",
   description:
-    "경산창호에서 실제 시공을 받으신 고객님들의 생생한 후기를 확인하세요. 하이샤시, 방충망, 복층유리, ABS도어, 방범창 시공 후기.",
+    "경산 대구 샤시 샷시 시공을 진행한 고객님들의 솔직한 후기. 경산창호의 꼼꼼한 당일 시공 만족도를 직접 확인하세요.",
+  alternates: {
+    canonical: `${SITE_URL}/reviews`,
+  },
 };
 
 export default async function ReviewsPage() {
@@ -71,19 +78,7 @@ export default async function ReviewsPage() {
                 {/* 작성자 */}
                 <div className="flex items-center justify-between pt-2">
                   <div className="flex items-center gap-2">
-                    {review.author_avatar ? (
-                      <Image
-                        src={review.author_avatar}
-                        alt=""
-                        width={24}
-                        height={24}
-                        className="rounded-full object-cover"
-                      />
-                    ) : (
-                      <div className="flex h-6 w-6 items-center justify-center rounded-full bg-gray-100 dark:bg-gray-800">
-                        <span className="text-[9px] text-gray-400">👤</span>
-                      </div>
-                    )}
+                    <Avatar src={review.author_avatar} size={24} />
                     <span className="text-xs font-semibold text-gray-700 dark:text-gray-300">
                       {review.author_name}
                     </span>

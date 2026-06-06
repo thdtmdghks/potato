@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
-import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getServerRepositories } from "@/server";
 import { ROUTES } from "@/shared/routes";
 import { formatDate } from "@/shared/utils";
+import { Avatar } from "@/app/_components/avatar";
 import { ReviewDetailImages } from "./_components/review-detail-images";
+import { SITE_URL } from "@/shared/constants";
 
 interface Props {
   params: Promise<{ id: string }>;
@@ -26,6 +27,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: `${review.author_name}님의 시공 후기 | 경산창호`,
     description,
+    alternates: {
+      canonical: `${SITE_URL}/reviews/${id}`,
+    },
     openGraph: {
       title: `${review.author_name}님의 시공 후기 | 경산창호`,
       description,
@@ -55,19 +59,7 @@ export default async function ReviewDetailPage({ params }: Props) {
       <article className="space-y-6">
         {/* 작성자 정보 */}
         <header className="flex items-center gap-3">
-          {review.author_avatar ? (
-            <Image
-              src={review.author_avatar}
-              alt=""
-              width={48}
-              height={48}
-              className="rounded-full object-cover"
-            />
-          ) : (
-            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gray-100 dark:bg-gray-800">
-              <span className="text-lg text-gray-400">👤</span>
-            </div>
-          )}
+          <Avatar src={review.author_avatar} size={48} />
           <div>
             <p className="text-navy text-lg font-bold dark:text-white">{review.author_name}</p>
             <p className="text-xs text-gray-500 dark:text-gray-400">
