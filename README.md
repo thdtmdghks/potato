@@ -6,6 +6,20 @@
 
 🔗 [Live Demo](https://potato-swart.vercel.app)
 
+## 스크린샷
+
+|              공개 홈페이지               |                      고객 후기 작성                      |
+| :--------------------------------------: | :------------------------------------------------------: |
+| ![홈](docs/screenshots/public-home.webp) | ![후기 작성](docs/screenshots/public-review-create.webp) |
+
+|                  고객 후기 목록                   |                  관리자 대시보드                   |
+| :-----------------------------------------------: | :------------------------------------------------: |
+| ![후기 목록](docs/screenshots/public-review.webp) | ![대시보드](docs/screenshots/admin-dashboard.webp) |
+
+|                 관리자 리뷰 관리                 |                        시공사례 등록                         |
+| :----------------------------------------------: | :----------------------------------------------------------: |
+| ![리뷰 관리](docs/screenshots/admin-review.webp) | ![프로젝트 등록](docs/screenshots/admin-project-create.webp) |
+
 ## 주요 특징
 
 - **Repository 패턴** — Supabase 미연결 시 Mock으로 자동 전환. DB 없이 개발/빌드 가능
