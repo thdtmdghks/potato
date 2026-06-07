@@ -7,7 +7,7 @@ import { formatDate } from "@/shared/utils";
 import { Avatar } from "@/app/_components/avatar";
 import { SITE_URL } from "@/shared/constants";
 
-export const revalidate = 60;
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "고객 시공 후기 | 경산창호",
