@@ -21,7 +21,17 @@ export const LINKS = {
   map: `https://www.google.com/maps?q=${encodeURIComponent(BUSINESS.address)}&output=embed`,
 } as const;
 
-export const CATEGORIES = ["하이샤시", "방충망", "유리", "ABS도어", "방범창", "잡철"] as const;
+export const CATEGORIES = [
+  "하이샤시",
+  "방충망",
+  "유리",
+  "ABS도어",
+  "방범창",
+  "잡철",
+  "방화문",
+  "스텐",
+  "판넬",
+] as const;
 
 export const REVIEW_STATUS = {
   PENDING: "pending",
