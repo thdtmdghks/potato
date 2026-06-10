@@ -14,6 +14,7 @@ export default async function Home() {
     "@context": "https://schema.org",
     "@type": "LocalBusiness",
     name: BUSINESS.name,
+    alternateName: ["경산샤시", "경산샷시", "대구샤시", "대구샷시"],
     description: BUSINESS.description,
     telephone: BUSINESS.phone,
     address: {
@@ -23,6 +24,10 @@ export default async function Home() {
       addressRegion: "경상북도",
       addressCountry: "KR",
     },
+    areaServed: [
+      { "@type": "City", name: "경산시" },
+      { "@type": "City", name: "대구광역시" },
+    ],
     openingHoursSpecification: {
       "@type": "OpeningHoursSpecification",
       dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
