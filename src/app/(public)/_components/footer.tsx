@@ -20,7 +20,11 @@ export function Footer() {
           </div>
           <div>
             <h3 className="font-bold text-white">하는 일</h3>
-            <p className="mt-2 text-sm">{CATEGORIES.join(" · ")}</p>
+            <p className="mt-2 text-sm leading-relaxed">
+              {CATEGORIES.slice(0, 5).join(" · ")}
+              <br />
+              {CATEGORIES.slice(5).join(" · ")}
+            </p>
           </div>
         </div>
         <div className="mt-8 border-t border-gray-600 pt-4 text-center text-sm">
