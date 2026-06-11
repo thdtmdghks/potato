@@ -7,7 +7,7 @@ export class SupabaseProjectRepository implements ProjectRepository {
 
   async getAll(category?: string): Promise<Project[]> {
     let query = this.db.from("projects").select("*").order("created_at", { ascending: false });
-    if (category) query = query.eq("category", category);
+    if (category) query = query.cs("categories", [category]);
     const { data, error } = await query;
     if (error) throw error;
     return data ?? [];

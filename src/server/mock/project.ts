@@ -9,7 +9,9 @@ const mockProjects: Project[] = [
     id: "1",
     title: "방충망 교체",
     description: "빌라 1층 방충망 교체 완료.",
-    category: "방충망",
+    categories: ["방충망"],
+    region: "경산시 사동",
+    building_type: "빌라",
     images: [],
     primary_image: null,
     created_by: "4904776698",
@@ -21,7 +23,9 @@ const mockProjects: Project[] = [
     title: "아파트 거실 PVC 이중창 시공",
     description:
       "경산 옥산동 아파트 거실 PVC 이중창 교체 시공입니다. 기존 단창에서 이중창으로 변경하여 단열 성능을 대폭 개선했으며, 외부 소음 차단 효과도 확인됐습니다.",
-    category: "하이샤시",
+    categories: ["하이샤시"],
+    region: "경산시 옥산동",
+    building_type: "아파트",
     images: [IMG("pvc1")],
     primary_image: IMG("pvc1"),
     created_by: "4904776698",
@@ -33,7 +37,9 @@ const mockProjects: Project[] = [
     title: "상가 전면 알루미늄 샤시 전체 교체 공사",
     description:
       "경산 중방동 상가 1층 전면 알루미늄 샤시 교체 공사입니다. 기존 20년 된 샤시가 뒤틀려 밀폐가 안 되는 상태였습니다. 전면부 6미터 구간을 모두 철거하고 신규 알루미늄 프레임으로 교체했습니다. 5mm 복층유리를 적용하여 단열과 방음을 동시에 해결했고, 하부 물끊기 시공으로 빗물 침투도 완전히 차단했습니다. 공사 기간 이틀, 영업 지장 최소화를 위해 야간 작업으로 진행했습니다.",
-    category: "하이샤시",
+    categories: ["하이샤시", "유리"],
+    region: "경산시 중방동",
+    building_type: "상가",
     images: [IMG("alu1"), IMG("alu2"), IMG("alu3")],
     primary_image: IMG("alu1"),
     created_by: "4904776698",
@@ -45,7 +51,9 @@ const mockProjects: Project[] = [
     title: "복층유리 + 샤시 일체 교체",
     description:
       "진량읍 단독주택 전체 창호 교체 프로젝트입니다. 1층과 2층 합계 12개 창을 모두 교체했습니다. 기존 창호는 30년 이상 된 목재 프레임으로 틈새바람이 심하고 결로가 매년 발생하는 상태였습니다. 이번 시공에서는 LG하우시스 PVC 시스템 창호에 24mm 로이복층유리를 적용했습니다. 특히 북측 침실은 삼중유리로 업그레이드하여 겨울철 결로를 원천 차단했습니다. 욕실 2개소는 불투명 유리로 시공하여 채광과 프라이버시를 동시에 확보했습니다. 시공 후 열화상 카메라로 단열 성능을 측정한 결과, 외기 온도 대비 실내 유리면 온도차가 기존 12도에서 3도로 개선된 것을 확인했습니다. 공사 기간은 3일 소요되었으며 가구 보양 작업을 포함하여 깔끔하게 마무리했습니다.",
-    category: "유리",
+    categories: ["유리", "하이샤시"],
+    region: "경산시 진량읍",
+    building_type: "단독주택",
     images: [IMG("glass1"), IMG("glass2"), IMG("glass3"), IMG("glass4"), IMG("glass5")],
     primary_image: IMG("glass1"),
     created_by: "4904776698",
@@ -56,7 +64,9 @@ const mockProjects: Project[] = [
     id: "5",
     title: "문",
     description: "완",
-    category: "ABS도어",
+    categories: ["ABS도어"],
+    region: "경산시 계양동",
+    building_type: "단독주택",
     images: [IMG("door1"), IMG("door2")],
     primary_image: IMG("door1"),
     created_by: "4904776698",
@@ -68,7 +78,9 @@ const mockProjects: Project[] = [
     title: "방범창 + 방충망 일괄 시공",
     description:
       "빌라 1~3층 전 세대 방범창 및 방충망 일괄 시공입니다. 총 24개소 작업으로 세대별 시공 사진을 첨부합니다. 방범창은 스테인리스 재질, 방충망은 미세먼지 차단 기능망을 적용했습니다.",
-    category: "방범창",
+    categories: ["방범창", "방충망"],
+    region: "경산시 삼북동",
+    building_type: "빌라",
     images: [
       IMG("sec1"),
       IMG("sec2"),
@@ -91,7 +103,7 @@ export class MockProjectRepository implements ProjectRepository {
   private data = [...mockProjects];
 
   async getAll(category?: string) {
-    return category ? this.data.filter((p) => p.category === category) : this.data;
+    return category ? this.data.filter((p) => p.categories.includes(category)) : this.data;
   }
   async getById(id: string) {
     return this.data.find((p) => p.id === id) ?? null;
