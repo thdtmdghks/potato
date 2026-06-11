@@ -1,9 +1,32 @@
 import Link from "next/link";
+import {
+  AppWindow,
+  Grid,
+  Sparkles,
+  DoorClosed,
+  Shield,
+  Wrench,
+  Flame,
+  Construction,
+  Layers,
+} from "lucide-react";
 import { getServerRepositories } from "@/server";
 import { BUSINESS, LINKS } from "@/shared/constants";
 import { ProjectCarousel } from "./_components/project-carousel";
 import { ReviewCarousel } from "./_components/review-carousel";
 import { ROUTES } from "@/shared/routes";
+
+const CATEGORIES = [
+  { name: "하이샤시", icon: AppWindow },
+  { name: "방충망", icon: Grid },
+  { name: "유리", icon: Sparkles },
+  { name: "ABS도어", icon: DoorClosed },
+  { name: "방범창", icon: Shield },
+  { name: "잡철", icon: Wrench },
+  { name: "방화문", icon: Flame },
+  { name: "스텐", icon: Construction },
+  { name: "판넬", icon: Layers },
+];
 
 export default async function Home() {
   const { projects, reviews } = await getServerRepositories();
@@ -14,6 +37,7 @@ export default async function Home() {
     "@context": "https://schema.org",
     "@type": "LocalBusiness",
     name: BUSINESS.name,
+    alternateName: ["경산샤시", "경산샷시", "대구샤시", "대구샷시"],
     description: BUSINESS.description,
     telephone: BUSINESS.phone,
     address: {
@@ -23,6 +47,10 @@ export default async function Home() {
       addressRegion: "경상북도",
       addressCountry: "KR",
     },
+    areaServed: [
+      { "@type": "City", name: "경산시" },
+      { "@type": "City", name: "대구광역시" },
+    ],
     openingHoursSpecification: {
       "@type": "OpeningHoursSpecification",
       dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
@@ -57,29 +85,55 @@ export default async function Home() {
       <section className="from-navy to-navy-light bg-gradient-to-br py-16 text-center text-white md:py-24">
         <div className="mx-auto max-w-4xl px-4">
           <h1 className="text-3xl font-bold md:text-5xl">{BUSINESS.slogan}</h1>
-          <p className="mx-auto mt-4 max-w-2xl text-lg text-gray-300">
-            외풍·소음, 오래된 샤시 고민 한번에 해결해 드립니다.
+          <p className="mx-auto mt-4 max-w-3xl text-base leading-relaxed text-gray-300 md:text-lg">
+            하이샤시, 방충망, 유리 교체부터 ABS도어, 방화문, 판넬, 잡철 및 스텐 공사까지!
+            <br className="hidden sm:inline" />
+            경산 대구 지역의 창호 및 종합 금속·잡철 시공을 확실하게 책임집니다.
           </p>
-          <div className="mt-6 flex flex-wrap justify-center gap-3">
-            <span className="rounded-full border border-white/30 bg-white/10 px-4 py-1.5 text-sm">
+          <div className="mt-6 flex flex-wrap justify-center gap-2">
+            <span className="rounded-full border border-white/30 bg-white/10 px-3.5 py-1.5 text-xs md:text-sm">
               ⚡ {BUSINESS.region} 당일 시공
             </span>
-            <span className="rounded-full border border-white/30 bg-white/10 px-4 py-1.5 text-sm">
+            <span className="rounded-full border border-white/30 bg-white/10 px-3.5 py-1.5 text-xs md:text-sm">
               🏆 LX, KCC, 예림 자재
             </span>
-            <span className="rounded-full border border-white/30 bg-white/10 px-4 py-1.5 text-sm">
+            <span className="rounded-full border border-white/30 bg-white/10 px-3.5 py-1.5 text-xs md:text-sm">
               🏅 풍부한 경험
             </span>
-            <span className="rounded-full border border-white/30 bg-white/10 px-4 py-1.5 text-sm">
+            <span className="rounded-full border border-white/30 bg-white/10 px-3.5 py-1.5 text-xs md:text-sm">
               🔧 확실한 A/S
             </span>
-            <span className="rounded-full border border-white/30 bg-white/10 px-4 py-1.5 text-sm">
+            <span className="rounded-full border border-white/30 bg-white/10 px-3.5 py-1.5 text-xs md:text-sm">
               💯 꼼꼼한 공사
             </span>
           </div>
+
+          {/* 시공 품목 그리드 */}
+          <div className="mx-auto mt-10 max-w-xl rounded-2xl border border-white/10 bg-white/5 p-5 backdrop-blur-md">
+            <p className="text-accent mb-4 text-xs font-bold tracking-wider uppercase">
+              전문 시공 품목
+            </p>
+            <div className="grid grid-cols-3 gap-3 md:gap-4">
+              {CATEGORIES.map((item) => {
+                const Icon = item.icon;
+                return (
+                  <div
+                    key={item.name}
+                    className="flex flex-col items-center justify-center rounded-xl bg-white/5 px-2 py-3.5 transition-all duration-200 hover:scale-105 hover:bg-white/10 hover:shadow-lg"
+                  >
+                    <Icon className="text-accent mb-2 h-5 w-5" />
+                    <span className="text-[11px] font-semibold text-gray-200 md:text-xs">
+                      {item.name}
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
           <a
             href="#contact"
-            className="bg-accent hover:bg-accent-dark mt-8 inline-block rounded-lg px-8 py-3 text-lg font-bold text-white transition-colors"
+            className="bg-accent hover:bg-accent-dark mt-10 inline-block rounded-lg px-8 py-3 text-lg font-bold text-white transition-colors"
           >
             📞 상담·견적 문의하기
           </a>
@@ -176,14 +230,32 @@ export default async function Home() {
                 </a>
               </div>
             </div>
-            <div className="overflow-hidden rounded-lg">
-              <iframe
-                src={LINKS.map}
-                className="h-64 w-full border-0 md:h-full md:min-h-[250px]"
-                allowFullScreen
-                loading="lazy"
-                title={`${BUSINESS.name} 위치`}
-              />
+            <div className="flex flex-col gap-2.5">
+              <a
+                href={LINKS.naverMap}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group relative block overflow-hidden rounded-lg border border-gray-200 dark:border-gray-800"
+              >
+                <img
+                  src="/place.webp"
+                  alt={`${BUSINESS.name} 위치 지도`}
+                  className="h-64 w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                />
+                <div className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                  <span className="rounded-full bg-white/90 px-4 py-2 text-xs font-bold text-gray-800 shadow-md backdrop-blur-sm dark:bg-gray-900/90 dark:text-gray-100">
+                    🔍 네이버 지도로 자세히 보기
+                  </span>
+                </div>
+              </a>
+              <a
+                href={LINKS.naverMap}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center justify-center gap-1.5 rounded-lg border border-gray-200 bg-white py-2.5 text-xs font-bold text-gray-700 shadow-sm transition-colors hover:bg-gray-50 dark:border-gray-800 dark:bg-gray-950 dark:text-gray-300 dark:hover:bg-gray-900"
+              >
+                💚 네이버 지도에서 길찾기
+              </a>
             </div>
           </div>
         </div>

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { BUSINESS } from "@/shared/constants";
+import { BUSINESS, CATEGORIES } from "@/shared/constants";
 import { ROUTES } from "@/shared/routes";
 
 export function Footer() {
@@ -19,9 +19,12 @@ export function Footer() {
             <p className="mt-1 text-sm">🕐 {BUSINESS.closedDay}</p>
           </div>
           <div>
-            <h3 className="font-bold text-white">시공 안내</h3>
-            <p className="mt-2 text-sm">하이샤시 · 방충망 · 유리</p>
-            <p className="mt-1 text-sm">ABS도어 · 방범창</p>
+            <h3 className="font-bold text-white">하는 일</h3>
+            <p className="mt-2 text-sm leading-relaxed">
+              {CATEGORIES.slice(0, 5).join(" · ")}
+              <br />
+              {CATEGORIES.slice(5).join(" · ")}
+            </p>
           </div>
         </div>
         <div className="mt-8 border-t border-gray-600 pt-4 text-center text-sm">
