@@ -45,7 +45,9 @@ export type Database = {
           id?: string;
           title: string;
           description: string;
-          category: string;
+          categories: string[];
+          region?: string | null;
+          building_type?: string | null;
           images: string[];
           primary_image?: string | null;
           created_by: string;
@@ -55,7 +57,9 @@ export type Database = {
           id?: string;
           title?: string;
           description?: string;
-          category?: string;
+          categories?: string[];
+          region?: string | null;
+          building_type?: string | null;
           images?: string[];
           primary_image?: string | null;
           created_by?: string;
