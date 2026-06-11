@@ -19,6 +19,7 @@ export const LINKS = {
   sms: `sms:${BUSINESS.phone}`,
   kakao: "#", // TODO: 카카오톡 채널 URL
   map: `https://www.google.com/maps?q=${encodeURIComponent(BUSINESS.address)}&output=embed`,
+  naverMap: `https://map.naver.com/p/entry/place/37416233`,
 } as const;
 
 export const CATEGORIES = [

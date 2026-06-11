@@ -230,14 +230,32 @@ export default async function Home() {
                 </a>
               </div>
             </div>
-            <div className="overflow-hidden rounded-lg">
-              <iframe
-                src={LINKS.map}
-                className="h-64 w-full border-0 md:h-full md:min-h-[250px]"
-                allowFullScreen
-                loading="lazy"
-                title={`${BUSINESS.name} 위치`}
-              />
+            <div className="flex flex-col gap-2.5">
+              <a
+                href={LINKS.naverMap}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group relative block overflow-hidden rounded-lg border border-gray-200 dark:border-gray-800"
+              >
+                <img
+                  src="/place.webp"
+                  alt={`${BUSINESS.name} 위치 지도`}
+                  className="h-64 w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                />
+                <div className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+                  <span className="rounded-full bg-white/90 px-4 py-2 text-xs font-bold text-gray-800 shadow-md backdrop-blur-sm dark:bg-gray-900/90 dark:text-gray-100">
+                    🔍 네이버 지도로 자세히 보기
+                  </span>
+                </div>
+              </a>
+              <a
+                href={LINKS.naverMap}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center justify-center gap-1.5 rounded-lg border border-gray-200 bg-white py-2.5 text-xs font-bold text-gray-700 shadow-sm transition-colors hover:bg-gray-50 dark:border-gray-800 dark:bg-gray-950 dark:text-gray-300 dark:hover:bg-gray-900"
+              >
+                💚 네이버 지도에서 길찾기
+              </a>
             </div>
           </div>
         </div>
