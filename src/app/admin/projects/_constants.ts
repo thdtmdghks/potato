@@ -1,7 +1,9 @@
 export const FORM_KEYS = {
   title: "title",
   description: "description",
-  category: "category",
+  categories: "categories",
+  region: "region",
+  buildingType: "buildingType",
   images: "images",
   existingImages: "existingImages",
   primaryImage: "primaryImage",

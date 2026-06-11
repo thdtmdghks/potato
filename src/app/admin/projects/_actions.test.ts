@@ -30,11 +30,19 @@ beforeEach(async () => {
   await configureActionMocks(repos, mockAdminSession());
 });
 
-const createValidFormData = (overrides?: Record<string, string>) => {
+const createValidFormData = (overrides?: Record<string, any>) => {
   const fd = new FormData();
   fd.set(FORM_KEYS.title, overrides?.title ?? "테스트 프로젝트");
   fd.set(FORM_KEYS.description, overrides?.description ?? "설명입니다");
-  fd.set(FORM_KEYS.category, overrides?.category ?? "하이샤시");
+  if (overrides && "categories" in overrides) {
+    if (overrides.categories !== null && Array.isArray(overrides.categories)) {
+      overrides.categories.forEach((cat: string) => fd.append(FORM_KEYS.categories, cat));
+    }
+  } else {
+    fd.append(FORM_KEYS.categories, "하이샤시");
+  }
+  fd.set(FORM_KEYS.region, overrides?.region ?? "경산시");
+  fd.set(FORM_KEYS.buildingType, overrides?.buildingType ?? "아파트");
   return fd;
 };
 
@@ -74,7 +82,7 @@ describe("createProject", () => {
 
   it("카테고리가 비어있으면 Zod 검증 실패를 반환한다", async () => {
     const { createProject } = await importActions();
-    const fd = createValidFormData({ category: "" });
+    const fd = createValidFormData({ categories: [] });
 
     const result = await createProject(fd);
 

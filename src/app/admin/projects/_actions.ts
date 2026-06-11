@@ -30,7 +30,9 @@ export async function createProject(formData: FormData) {
     const parsed = projectSchema.safeParse({
       title: formData.get(FORM_KEYS.title),
       description: formData.get(FORM_KEYS.description),
-      category: formData.get(FORM_KEYS.category),
+      categories: formData.getAll(FORM_KEYS.categories) as string[],
+      region: (formData.get(FORM_KEYS.region) as string) || null,
+      building_type: (formData.get(FORM_KEYS.buildingType) as string) || null,
     });
 
     if (!parsed.success) {
@@ -55,7 +57,11 @@ export async function createProject(formData: FormData) {
     });
 
     const result = await projects.create({
-      ...parsed.data,
+      title: parsed.data.title,
+      description: parsed.data.description,
+      categories: parsed.data.categories,
+      region: parsed.data.region ?? null,
+      building_type: parsed.data.building_type ?? null,
       images: imageUrls,
       primary_image: primaryImage,
       created_by: session.kakaoId,
@@ -69,7 +75,7 @@ export async function createProject(formData: FormData) {
   } catch (error) {
     logError("admin.projects.createProject", error, {
       title: formData.get(FORM_KEYS.title),
-      category: formData.get(FORM_KEYS.category),
+      categories: formData.getAll(FORM_KEYS.categories),
     });
     return { success: false as const, error: "서버 오류가 발생했습니다." };
   }
@@ -86,7 +92,9 @@ export async function updateProject(id: string, formData: FormData) {
     const parsed = projectSchema.safeParse({
       title: formData.get(FORM_KEYS.title),
       description: formData.get(FORM_KEYS.description),
-      category: formData.get(FORM_KEYS.category),
+      categories: formData.getAll(FORM_KEYS.categories) as string[],
+      region: (formData.get(FORM_KEYS.region) as string) || null,
+      building_type: (formData.get(FORM_KEYS.buildingType) as string) || null,
     });
 
     if (!parsed.success) {
@@ -136,7 +144,7 @@ export async function updateProject(id: string, formData: FormData) {
     logError("admin.projects.updateProject", error, {
       id,
       title: formData.get(FORM_KEYS.title),
-      category: formData.get(FORM_KEYS.category),
+      categories: formData.getAll(FORM_KEYS.categories),
     });
     return { success: false as const, error: "서버 오류가 발생했습니다." };
   }
