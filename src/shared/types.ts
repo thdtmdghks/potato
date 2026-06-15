@@ -152,6 +152,7 @@ export interface AiResponse {
   description: string;
   suggestedTitle: string;
   isFallback: boolean;
+  isImageSkipped?: boolean;
 }
 
 export interface AiServiceParams {
@@ -160,4 +161,5 @@ export interface AiServiceParams {
   categories: string[];
   details: string;
   images?: string[]; // base64 또는 URL
+  metadata?: Record<string, unknown>;
 }

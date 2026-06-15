@@ -324,4 +324,60 @@ describe("generateAiDescription", () => {
     expect(result.description).toContain("경산 주택 ABS도어 시공 사례입니다.");
     expect(result.suggestedTitle).toBe("경산 주택 ABS도어 시공");
   });
+
+  it("원격 이미지 용량이 150KB를 초과하여 스킵되면 isImageSkipped: true를 반환한다", async () => {
+    process.env.AI_PROVIDER = AI_CONFIG.PROVIDERS.GEMINI;
+    process.env.AI_API_KEY = "test-gemini-key";
+    resetCachedAiService();
+
+    const mockImageResponse = {
+      ok: true,
+      arrayBuffer: async () => new ArrayBuffer(200 * 1024), // 200KB
+      headers: {
+        get: () => "image/webp",
+      },
+    };
+
+    const mockGeminiResponse = {
+      candidates: [
+        {
+          content: {
+            parts: [
+              {
+                text: JSON.stringify({
+                  description: `Gemini가 생성한 시공사례 설명글입니다.\n- ${BUSINESS.name}`,
+                  suggestedTitle: "경산 사동 아파트 하이샤시 시공",
+                }),
+              },
+            ],
+          },
+        },
+      ],
+    };
+
+    const spyFetch = vi.spyOn(global, "fetch");
+    spyFetch.mockImplementation(async (url) => {
+      if (typeof url === "string" && url.startsWith("http://example.com/large-image.webp")) {
+        return mockImageResponse as unknown as Response;
+      }
+      return {
+        ok: true,
+        json: async () => mockGeminiResponse,
+      } as Response;
+    });
+
+    const { generateAiDescription } = await importActions();
+
+    const result = await generateAiDescription({
+      region: "경산 사동",
+      buildingType: "아파트",
+      categories: ["하이샤시"],
+      details: "샤시 교체 완료",
+      images: ["http://example.com/large-image.webp"],
+    });
+
+    expect(result.success).toBe(true);
+    expect(result.isFallback).toBe(false);
+    expect(result.isImageSkipped).toBe(true);
+  });
 });

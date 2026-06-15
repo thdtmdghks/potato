@@ -34,10 +34,61 @@ export const CATEGORIES = [
   "판넬",
 ] as const;
 
+export const REGION_CONFIG = {
+  CITIES: ["경산", "대구"],
+  DEFAULT_CITY: "경산",
+  CLEAN_REGEXP: /^(경산시|대구광역시|경산|대구)\s*/,
+} as const;
+
+export const BUILDING_TYPES = ["아파트", "빌라", "상가", "단독주택", "공장", "기타"] as const;
+
+export const PROJECT_CONFIG = {
+  MAX_IMAGES: 20,
+} as const;
+
+export const SEO_CONFIG = {
+  DESCRIPTION_MIN_LENGTH: 110,
+  DESCRIPTION_MAX_LENGTH: 150,
+} as const;
+
+export const AI_CONFIG = {
+  PROVIDERS: {
+    GEMINI: "gemini",
+    OPENAI: "openai",
+  },
+  DEFAULT_MODELS: {
+    GEMINI: "gemini-2.5-flash",
+    OPENAI: "gpt-4o-mini",
+  },
+  PARAMETERS: {
+    MAX_TOKENS: 400,
+    TEMPERATURE: 0.7,
+  },
+  API_URLS: {
+    GEMINI: "https://generativelanguage.googleapis.com/v1beta/models",
+    OPENAI: "https://api.openai.com/v1/chat/completions",
+  },
+} as const;
+
+export const AI_GOOD_EXAMPLE = {
+  INPUT:
+    "대구 아파트, 하이샤시, 낡은 샤시 철거, 발코니 문 단열 보강, KCC 하이샤시, (연한 우드패턴 이중창 사진 첨부)",
+  OUTPUT_WITHOUT_SIGNATURE:
+    "대구 신암동 아파트 하이샤시 교체 사례입니다. 낡은 샤시를 철거하고 KCC 하이샤시로 새로 시공했습니다. 사진처럼 연한 우드패턴 프레임의 이중창과 복층유리로 외부 소음과 찬 바람을 줄여드렸습니다. 특히 발코니로 나가는 문에 단열을 더 튼튼하게 보강했습니다.",
+  get OUTPUT_WITH_SIGNATURE() {
+    return `${this.OUTPUT_WITHOUT_SIGNATURE}\n- ${BUSINESS.name}`;
+  },
+} as const;
+
 export const REVIEW_STATUS = {
   PENDING: "pending",
   APPROVED: "approved",
   REJECTED: "rejected",
+  DELETED: "deleted",
+} as const;
+
+export const PROJECT_STATUS = {
+  ACTIVE: "active",
   DELETED: "deleted",
 } as const;
 
