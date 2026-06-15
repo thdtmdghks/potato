@@ -8,7 +8,7 @@ export async function getProjectDetailMetadata(id: string): Promise<Metadata> {
   if (!project) return {};
 
   const title = `${project.title} — 경산 대구 샤시 샷시 시공 | ${BUSINESS.name}`;
-  const description = `경산 대구 ${project.category} 시공사례 — ${project.description} 샤시(샷시) 전문 ${BUSINESS.name} ${BUSINESS.phone}`;
+  const description = `경산 대구 ${project.categories.join(", ")} 시공사례 — ${project.description} 샤시(샷시) 전문 ${BUSINESS.name} ${BUSINESS.phone}`;
 
   const primaryImage = project.primary_image ?? project.images[0];
   const ogImages = primaryImage

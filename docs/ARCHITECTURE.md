@@ -176,16 +176,19 @@ export async function createProject(formData: FormData) {
 
 ### projects (시공사례)
 
-| 컬럼          | 타입        | 설명            |
-| ------------- | ----------- | --------------- |
-| id            | uuid (PK)   | 자동 생성       |
-| title         | text        | 제목            |
-| description   | text        | 설명            |
-| category      | text        | 카테고리        |
-| images        | text[]      | 이미지 URL 배열 |
-| primary_image | text (null) | 대표 이미지 URL |
-| created_by    | text        | 생성자 관리자ID |
-| created_at    | timestamptz | 생성일          |
+| 컬럼          | 타입        | 설명                                  |
+| ------------- | ----------- | ------------------------------------- |
+| id            | uuid (PK)   | 자동 생성                             |
+| title         | text        | 제목                                  |
+| description   | text        | 설명                                  |
+| categories    | text[]      | 다중 카테고리 (기본값: '{}')          |
+| region        | text (null) | 시공 지역 (예: 대구 수성구 만촌동 등) |
+| building_type | text (null) | 건물 유형 (예: 아파트, 빌라, 상가 등) |
+| images        | text[]      | 이미지 URL 배열                       |
+| primary_image | text (null) | 대표 이미지 URL                       |
+| status        | text        | 프로젝트 상태 (기본값: 'active')      |
+| created_by    | text        | 생성자 관리자ID                       |
+| created_at    | timestamptz | 생성일                                |
 
 ### reviews (고객 시공 후기)
 

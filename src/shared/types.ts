@@ -4,9 +4,12 @@ export type ProjectRow = {
   id: string;
   title: string;
   description: string;
-  category: string;
+  categories: string[];
+  region: string | null;
+  building_type: string | null;
   images: string[];
   primary_image: string | null;
+  status: string;
   created_by: string;
   created_at: string;
 };
@@ -43,9 +46,12 @@ export type Database = {
           id?: string;
           title: string;
           description: string;
-          category: string;
+          categories: string[];
+          region?: string | null;
+          building_type?: string | null;
           images: string[];
           primary_image?: string | null;
+          status?: string;
           created_by: string;
           created_at?: string;
         };
@@ -53,9 +59,12 @@ export type Database = {
           id?: string;
           title?: string;
           description?: string;
-          category?: string;
+          categories?: string[];
+          region?: string | null;
+          building_type?: string | null;
           images?: string[];
           primary_image?: string | null;
+          status?: string;
           created_by?: string;
           created_at?: string;
         };
@@ -137,3 +146,20 @@ export type Database = {
 export type Project = ProjectRow;
 export type Review = ReviewRow;
 export type ReviewEdit = ReviewEditRow;
+
+export interface AiResponse {
+  success: boolean;
+  description: string;
+  suggestedTitle: string;
+  isFallback: boolean;
+  isImageSkipped?: boolean;
+}
+
+export interface AiServiceParams {
+  region: string | null;
+  buildingType: string | null;
+  categories: string[];
+  details: string;
+  images?: string[]; // base64 또는 URL
+  metadata?: Record<string, unknown>;
+}

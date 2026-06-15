@@ -31,20 +31,18 @@ export function ProjectJsonLd({ project }: { project: Project }) {
     hasOfferCatalog: {
       "@type": "OfferCatalog",
       name: "창호 및 샤시 시공 서비스",
-      itemListElement: [
-        {
-          "@type": "Offer",
-          itemOffered: {
-            "@type": "Service",
-            name: `${project.category} 시공 — ${project.title}`,
-            description: project.description,
-            provider: {
-              "@type": "LocalBusiness",
-              name: BUSINESS.name,
-            },
+      itemListElement: project.categories.map((cat) => ({
+        "@type": "Offer",
+        itemOffered: {
+          "@type": "Service",
+          name: `${cat} 시공 — ${project.title}`,
+          description: project.description,
+          provider: {
+            "@type": "LocalBusiness",
+            name: BUSINESS.name,
           },
         },
-      ],
+      })),
     },
   };
 

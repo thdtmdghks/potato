@@ -9,6 +9,9 @@ import { FORM_KEYS } from "./_constants";
 import { resolvePrimaryImage } from "./_utils";
 import { logError, logWarn } from "@/server/logger";
 import { ROUTES } from "@/shared/routes";
+import { getAiService } from "@/server/ai/factory";
+import { PROJECT_STATUS } from "@/shared/constants";
+import type { AiServiceParams } from "@/shared/types";
 
 const STORAGE_BUCKET = process.env.STORAGE_BUCKET ?? "images";
 const STORAGE_PATH_PREFIX = "projects";
@@ -30,7 +33,9 @@ export async function createProject(formData: FormData) {
     const parsed = projectSchema.safeParse({
       title: formData.get(FORM_KEYS.title),
       description: formData.get(FORM_KEYS.description),
-      category: formData.get(FORM_KEYS.category),
+      categories: formData.getAll(FORM_KEYS.categories) as string[],
+      region: (formData.get(FORM_KEYS.region) as string) || null,
+      building_type: (formData.get(FORM_KEYS.buildingType) as string) || null,
     });
 
     if (!parsed.success) {
@@ -55,9 +60,14 @@ export async function createProject(formData: FormData) {
     });
 
     const result = await projects.create({
-      ...parsed.data,
+      title: parsed.data.title,
+      description: parsed.data.description,
+      categories: parsed.data.categories,
+      region: parsed.data.region ?? null,
+      building_type: parsed.data.building_type ?? null,
       images: imageUrls,
       primary_image: primaryImage,
+      status: PROJECT_STATUS.ACTIVE,
       created_by: session.kakaoId,
     });
     if (!result) {
@@ -69,7 +79,7 @@ export async function createProject(formData: FormData) {
   } catch (error) {
     logError("admin.projects.createProject", error, {
       title: formData.get(FORM_KEYS.title),
-      category: formData.get(FORM_KEYS.category),
+      categories: formData.getAll(FORM_KEYS.categories),
     });
     return { success: false as const, error: "서버 오류가 발생했습니다." };
   }
@@ -86,7 +96,9 @@ export async function updateProject(id: string, formData: FormData) {
     const parsed = projectSchema.safeParse({
       title: formData.get(FORM_KEYS.title),
       description: formData.get(FORM_KEYS.description),
-      category: formData.get(FORM_KEYS.category),
+      categories: formData.getAll(FORM_KEYS.categories) as string[],
+      region: (formData.get(FORM_KEYS.region) as string) || null,
+      building_type: (formData.get(FORM_KEYS.buildingType) as string) || null,
     });
 
     if (!parsed.success) {
@@ -136,7 +148,7 @@ export async function updateProject(id: string, formData: FormData) {
     logError("admin.projects.updateProject", error, {
       id,
       title: formData.get(FORM_KEYS.title),
-      category: formData.get(FORM_KEYS.category),
+      categories: formData.getAll(FORM_KEYS.categories),
     });
     return { success: false as const, error: "서버 오류가 발생했습니다." };
   }
@@ -158,12 +170,15 @@ export async function deleteProject(id: string) {
       return { success: false as const, error: "삭제에 실패했습니다." };
     }
 
-    if (project) deleteImages(storage, STORAGE_BUCKET, project.images);
-
     revalidateProjects();
     return { success: true as const };
   } catch (error) {
     logError("admin.projects.deleteProject", error, { id });
     return { success: false as const, error: "서버 오류가 발생했습니다." };
   }
+}
+
+export async function generateAiDescription(params: AiServiceParams) {
+  const aiService = getAiService();
+  return aiService.generateDescription(params);
 }

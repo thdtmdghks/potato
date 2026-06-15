@@ -4,7 +4,9 @@ import { projectSchema, reviewSchema } from "@/shared/schemas";
 const valid = {
   title: "프로젝트 제목",
   description: "프로젝트 설명",
-  category: "하이샤시",
+  categories: ["하이샤시"],
+  region: "경산시",
+  building_type: "아파트",
 };
 
 describe("projectSchema", () => {
@@ -20,8 +22,14 @@ describe("projectSchema", () => {
     expect(projectSchema.safeParse({ ...valid, description: "" }).success).toBe(false);
   });
 
-  it("category가 비어있으면 실패한다", () => {
-    expect(projectSchema.safeParse({ ...valid, category: "" }).success).toBe(false);
+  it("categories가 비어있으면 실패한다", () => {
+    expect(projectSchema.safeParse({ ...valid, categories: [] }).success).toBe(false);
+  });
+
+  it("region과 building_type이 null이어도 통과시킨다", () => {
+    expect(projectSchema.safeParse({ ...valid, region: null, building_type: null }).success).toBe(
+      true,
+    );
   });
 });
 

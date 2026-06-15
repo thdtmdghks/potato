@@ -29,10 +29,17 @@ export default async function ProjectDetail({ params }: { params: Promise<{ id: 
         <h1 className="text-navy text-2xl font-bold md:text-3xl dark:text-white">
           {project.title}
         </h1>
-        <span className="bg-gray-light mt-3 inline-block rounded-full px-3 py-1 text-sm dark:bg-gray-800 dark:text-gray-300">
-          {project.category}
-        </span>
-        <p className="text-gray-dark mt-4 leading-relaxed dark:text-gray-300">
+        <div className="mt-3 flex flex-wrap gap-2">
+          {project.categories.map((cat) => (
+            <span
+              key={cat}
+              className="bg-gray-light rounded-full px-3 py-1 text-sm dark:bg-gray-800 dark:text-gray-300"
+            >
+              {cat}
+            </span>
+          ))}
+        </div>
+        <p className="text-gray-dark mt-4 leading-relaxed whitespace-pre-wrap dark:text-gray-300">
           {project.description}
         </p>
 

@@ -11,22 +11,25 @@ import {
   Layers,
 } from "lucide-react";
 import { getServerRepositories } from "@/server";
-import { BUSINESS, LINKS } from "@/shared/constants";
+import { BUSINESS, LINKS, CATEGORIES } from "@/shared/constants";
 import { ProjectCarousel } from "./_components/project-carousel";
 import { ReviewCarousel } from "./_components/review-carousel";
 import { ROUTES } from "@/shared/routes";
 
-const CATEGORIES = [
-  { name: "하이샤시", icon: AppWindow },
-  { name: "방충망", icon: Grid },
-  { name: "유리", icon: Sparkles },
-  { name: "ABS도어", icon: DoorClosed },
-  { name: "방범창", icon: Shield },
-  { name: "잡철", icon: Wrench },
-  { name: "방화문", icon: Flame },
-  { name: "스텐", icon: Construction },
-  { name: "판넬", icon: Layers },
-];
+const CATEGORY_ICONS: Record<
+  (typeof CATEGORIES)[number],
+  React.ComponentType<{ className?: string }>
+> = {
+  하이샤시: AppWindow,
+  방충망: Grid,
+  유리: Sparkles,
+  ABS도어: DoorClosed,
+  방범창: Shield,
+  잡철: Wrench,
+  방화문: Flame,
+  스텐: Construction,
+  판넬: Layers,
+};
 
 export default async function Home() {
   const { projects, reviews } = await getServerRepositories();
@@ -114,16 +117,16 @@ export default async function Home() {
               전문 시공 품목
             </p>
             <div className="grid grid-cols-3 gap-3 md:gap-4">
-              {CATEGORIES.map((item) => {
-                const Icon = item.icon;
+              {CATEGORIES.map((cat) => {
+                const Icon = CATEGORY_ICONS[cat];
                 return (
                   <div
-                    key={item.name}
+                    key={cat}
                     className="flex flex-col items-center justify-center rounded-xl bg-white/5 px-2 py-3.5 transition-all duration-200 hover:scale-105 hover:bg-white/10 hover:shadow-lg"
                   >
                     <Icon className="text-accent mb-2 h-5 w-5" />
                     <span className="text-[11px] font-semibold text-gray-200 md:text-xs">
-                      {item.name}
+                      {cat}
                     </span>
                   </div>
                 );
