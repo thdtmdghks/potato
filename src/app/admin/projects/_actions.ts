@@ -9,6 +9,9 @@ import { FORM_KEYS } from "./_constants";
 import { resolvePrimaryImage } from "./_utils";
 import { logError, logWarn } from "@/server/logger";
 import { ROUTES } from "@/shared/routes";
+import { getAiService } from "@/server/ai/factory";
+import { PROJECT_STATUS } from "@/shared/constants";
+import type { AiServiceParams } from "@/shared/types";
 
 const STORAGE_BUCKET = process.env.STORAGE_BUCKET ?? "images";
 const STORAGE_PATH_PREFIX = "projects";
@@ -64,6 +67,7 @@ export async function createProject(formData: FormData) {
       building_type: parsed.data.building_type ?? null,
       images: imageUrls,
       primary_image: primaryImage,
+      status: PROJECT_STATUS.ACTIVE,
       created_by: session.kakaoId,
     });
     if (!result) {
@@ -166,12 +170,15 @@ export async function deleteProject(id: string) {
       return { success: false as const, error: "삭제에 실패했습니다." };
     }
 
-    if (project) deleteImages(storage, STORAGE_BUCKET, project.images);
-
     revalidateProjects();
     return { success: true as const };
   } catch (error) {
     logError("admin.projects.deleteProject", error, { id });
     return { success: false as const, error: "서버 오류가 발생했습니다." };
   }
+}
+
+export async function generateAiDescription(params: AiServiceParams) {
+  const aiService = getAiService();
+  return aiService.generateDescription(params);
 }

@@ -146,3 +146,24 @@ export type Database = {
 export type Project = ProjectRow;
 export type Review = ReviewRow;
 export type ReviewEdit = ReviewEditRow;
+
+export interface AiProposal {
+  description: string;
+  suggestedTitle: string;
+}
+
+export interface AiResponse {
+  success: boolean;
+  description: string;
+  suggestedTitle: string;
+  proposals: AiProposal[];
+  isFallback: boolean;
+}
+
+export interface AiServiceParams {
+  region: string | null;
+  buildingType: string | null;
+  categories: string[];
+  details: string;
+  images?: string[]; // base64 또는 URL
+}

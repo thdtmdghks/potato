@@ -13,8 +13,8 @@ describe("MockProjectRepository", () => {
   });
 
   it("getAll(category)은 필터링된 목록을 반환한다", async () => {
-    const filtered = await repo.getAll("웹");
-    expect(filtered.every((p) => p.category === "웹")).toBe(true);
+    const filtered = await repo.getAll("방충망");
+    expect(filtered.every((p) => p.categories.includes("방충망"))).toBe(true);
   });
 
   it("getById는 존재하는 항목을 반환한다", async () => {
@@ -32,10 +32,12 @@ describe("MockProjectRepository", () => {
     const created = await repo.create({
       title: "새 프로젝트",
       description: "설명",
-      category: "웹",
+      categories: ["하이샤시"],
       images: [],
       primary_image: null,
       created_by: "system",
+      region: null,
+      building_type: null,
     });
     expect(created).not.toBeNull();
     expect((await repo.getAll()).length).toBe(before + 1);

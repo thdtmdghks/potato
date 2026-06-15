@@ -1,12 +1,17 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database, Project } from "@/shared/types";
 import type { ProjectRepository } from "../repositories";
+import { PROJECT_STATUS } from "@/shared/constants";
 
 export class SupabaseProjectRepository implements ProjectRepository {
   constructor(private db: SupabaseClient<Database>) {}
 
   async getAll(category?: string): Promise<Project[]> {
-    let query = this.db.from("projects").select("*").order("created_at", { ascending: false });
+    let query = this.db
+      .from("projects")
+      .select("*")
+      .eq("status", PROJECT_STATUS.ACTIVE)
+      .order("created_at", { ascending: false });
     if (category) query = query.contains("categories", [category]);
     const { data, error } = await query;
     if (error) throw error;
@@ -14,7 +19,12 @@ export class SupabaseProjectRepository implements ProjectRepository {
   }
 
   async getById(id: string): Promise<Project | null> {
-    const { data, error } = await this.db.from("projects").select("*").eq("id", id).single();
+    const { data, error } = await this.db
+      .from("projects")
+      .select("*")
+      .eq("id", id)
+      .eq("status", PROJECT_STATUS.ACTIVE)
+      .maybeSingle();
     if (error) throw error;
     return data;
   }
@@ -37,7 +47,10 @@ export class SupabaseProjectRepository implements ProjectRepository {
   }
 
   async delete(id: string): Promise<boolean> {
-    const { error } = await this.db.from("projects").delete().eq("id", id);
+    const { error } = await this.db
+      .from("projects")
+      .update({ status: PROJECT_STATUS.DELETED })
+      .eq("id", id);
     if (error) throw error;
     return true;
   }

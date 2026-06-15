@@ -1,5 +1,6 @@
 import type { Project } from "@/shared/types";
 import type { ProjectRepository } from "../repositories";
+import { PROJECT_STATUS } from "@/shared/constants";
 
 const IMG = (seed: string, w = 800, h = 600) => `https://picsum.photos/seed/${seed}/${w}/${h}`;
 
@@ -14,6 +15,7 @@ const mockProjects: Project[] = [
     building_type: "빌라",
     images: [],
     primary_image: null,
+    status: PROJECT_STATUS.ACTIVE,
     created_by: "4904776698",
     created_at: "2025-06-01T00:00:00Z",
   },
@@ -28,6 +30,7 @@ const mockProjects: Project[] = [
     building_type: "아파트",
     images: [IMG("pvc1")],
     primary_image: IMG("pvc1"),
+    status: PROJECT_STATUS.ACTIVE,
     created_by: "4904776698",
     created_at: "2025-05-20T00:00:00Z",
   },
@@ -42,6 +45,7 @@ const mockProjects: Project[] = [
     building_type: "상가",
     images: [IMG("alu1"), IMG("alu2"), IMG("alu3")],
     primary_image: IMG("alu1"),
+    status: PROJECT_STATUS.ACTIVE,
     created_by: "4904776698",
     created_at: "2025-04-15T00:00:00Z",
   },
@@ -50,12 +54,13 @@ const mockProjects: Project[] = [
     id: "4",
     title: "복층유리 + 샤시 일체 교체",
     description:
-      "진량읍 단독주택 전체 창호 교체 프로젝트입니다. 1층과 2층 합계 12개 창을 모두 교체했습니다. 기존 창호는 30년 이상 된 목재 프레임으로 틈새바람이 심하고 결로가 매년 발생하는 상태였습니다. 이번 시공에서는 LG하우시스 PVC 시스템 창호에 24mm 로이복층유리를 적용했습니다. 특히 북측 침실은 삼중유리로 업그레이드하여 겨울철 결로를 원천 차단했습니다. 욕실 2개소는 불투명 유리로 시공하여 채광과 프라이버시를 동시에 확보했습니다. 시공 후 열화상 카메라로 단열 성능을 측정한 결과, 외기 온도 대비 실내 유리면 온도차가 기존 12도에서 3도로 개선된 것을 확인했습니다. 공사 기간은 3일 소요되었으며 가구 보양 작업을 포함하여 깔끔하게 마무리했습니다.",
+      "진량읍 단독주택 전체 창호 교체 프로젝트입니다. 1층 and 2층 합계 12개 창을 모두 교체했습니다. 기존 창호는 30년 이상 된 목재 프레임으로 틈새바람이 심하고 결로가 매년 발생하는 상태였습니다. 이번 시공에서는 LG하우시스 PVC 시스템 창호에 24mm 로이복층유리를 적용했습니다. 특히 북측 침실은 삼중유리로 업그레이드하여 겨울철 결로를 원천 차단했습니다. 욕실 2개소는 불투명 유리로 시공하여 채광과 프라이버시를 동시에 확보했습니다. 시공 후 열화상 카메라로 단열 성능을 측정한 결과, 외기 온도 대비 실내 유리면 온도차가 기존 12도에서 3도로 개선된 것을 확인했습니다. 공사 기간은 3일 소요되었으며 가구 보양 작업을 포함하여 깔끔하게 마무리했습니다.",
     categories: ["유리", "하이샤시"],
     region: "경산시 진량읍",
     building_type: "단독주택",
     images: [IMG("glass1"), IMG("glass2"), IMG("glass3"), IMG("glass4"), IMG("glass5")],
     primary_image: IMG("glass1"),
+    status: PROJECT_STATUS.ACTIVE,
     created_by: "4904776698",
     created_at: "2025-03-10T00:00:00Z",
   },
@@ -69,6 +74,7 @@ const mockProjects: Project[] = [
     building_type: "단독주택",
     images: [IMG("door1"), IMG("door2")],
     primary_image: IMG("door1"),
+    status: PROJECT_STATUS.ACTIVE,
     created_by: "4904776698",
     created_at: "2025-02-05T00:00:00Z",
   },
@@ -94,6 +100,7 @@ const mockProjects: Project[] = [
       IMG("sec10"),
     ],
     primary_image: IMG("sec1"),
+    status: PROJECT_STATUS.ACTIVE,
     created_by: "4904776698",
     created_at: "2025-01-10T00:00:00Z",
   },
@@ -103,25 +110,34 @@ export class MockProjectRepository implements ProjectRepository {
   private data = [...mockProjects];
 
   async getAll(category?: string) {
-    return category ? this.data.filter((p) => p.categories.includes(category)) : this.data;
+    const activeData = this.data.filter((p) => p.status === PROJECT_STATUS.ACTIVE);
+    return category ? activeData.filter((p) => p.categories.includes(category)) : activeData;
   }
   async getById(id: string) {
-    return this.data.find((p) => p.id === id) ?? null;
+    const found = this.data.find((p) => p.id === id) ?? null;
+    if (found && found.status === PROJECT_STATUS.DELETED) return null; // 소프트 삭제된 건 조회 불가 처리
+    return found;
   }
   async create(data: Omit<Project, "id" | "created_at">) {
-    const item = { ...data, id: crypto.randomUUID(), created_at: new Date().toISOString() };
+    const item = {
+      ...data,
+      status: data.status || PROJECT_STATUS.ACTIVE,
+      id: crypto.randomUUID(),
+      created_at: new Date().toISOString(),
+    };
     this.data.unshift(item);
     return item;
   }
   async update(id: string, data: Partial<Project>) {
     const idx = this.data.findIndex((p) => p.id === id);
-    if (idx === -1) return null;
+    if (idx === -1 || this.data[idx].status === PROJECT_STATUS.DELETED) return null;
     this.data[idx] = { ...this.data[idx], ...data };
     return this.data[idx];
   }
   async delete(id: string) {
-    const len = this.data.length;
-    this.data = this.data.filter((p) => p.id !== id);
-    return this.data.length < len;
+    const idx = this.data.findIndex((p) => p.id === id);
+    if (idx === -1 || this.data[idx].status === PROJECT_STATUS.DELETED) return false;
+    this.data[idx] = { ...this.data[idx], status: PROJECT_STATUS.DELETED };
+    return true;
   }
 }
