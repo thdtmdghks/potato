@@ -18,7 +18,7 @@ export class GeminiAiService implements AiService {
   }
 
   async generateDescription(params: AiServiceParams): Promise<AiResponse> {
-    const { region, buildingType, categories, details, images } = params;
+    const { images } = params;
     let isImageSkipped = false;
 
     try {

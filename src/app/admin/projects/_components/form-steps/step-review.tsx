@@ -147,12 +147,13 @@ export function StepReview({
             <span>🌟 권장하는 좋은 설명글 작성 예시</span>
           </div>
           <p className="mb-2.5 text-[11px] text-gray-500 dark:text-gray-400">
-            자재의 일반 설명(예: '샤시는 추위를 막아줍니다')이나 주관적 느낌(예: '깔끔하고
-            멋집니다')을 배제하고, <b>현장 위치, 명확한 자재 사양 및 시공 팩트</b> 중심으로 담백하게
-            요약하여 작성 시 로컬 SEO 노출과 고객 신뢰도에 훨씬 효과적입니다.
+            자재의 일반 설명(예: &apos;샤시는 추위를 막아줍니다&apos;)이나 주관적 느낌(예:
+            &apos;깔끔하고 멋집니다&apos;)을 배제하고,{" "}
+            <b>현장 위치, 명확한 자재 사양 및 시공 팩트</b> 중심으로 담백하게 요약하여 작성 시 로컬
+            SEO 노출과 고객 신뢰도에 훨씬 효과적입니다.
           </p>
           <div className="rounded-xl border border-emerald-100 bg-white/80 p-3 font-mono text-[11px] text-emerald-800 italic shadow-sm dark:border-emerald-900/20 dark:bg-gray-950/60 dark:text-emerald-400">
-            "{AI_GOOD_EXAMPLE.OUTPUT_WITHOUT_SIGNATURE}"
+            &quot;{AI_GOOD_EXAMPLE.OUTPUT_WITHOUT_SIGNATURE}&quot;
           </div>
         </div>
 

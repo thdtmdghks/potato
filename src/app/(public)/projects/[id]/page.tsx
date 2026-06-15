@@ -39,7 +39,7 @@ export default async function ProjectDetail({ params }: { params: Promise<{ id: 
             </span>
           ))}
         </div>
-        <p className="text-gray-dark mt-4 leading-relaxed dark:text-gray-300">
+        <p className="text-gray-dark mt-4 leading-relaxed whitespace-pre-wrap dark:text-gray-300">
           {project.description}
         </p>
 

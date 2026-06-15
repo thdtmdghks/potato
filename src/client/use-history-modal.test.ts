@@ -3,8 +3,8 @@ import { renderHook, act } from "@testing-library/react";
 import { useHistoryModal } from "./use-history-modal";
 
 describe("useHistoryModal", () => {
-  let originalPushState: any;
-  let originalBack: any;
+  let originalPushState: typeof window.history.pushState;
+  let originalBack: typeof window.history.back;
 
   beforeEach(() => {
     vi.clearAllMocks();

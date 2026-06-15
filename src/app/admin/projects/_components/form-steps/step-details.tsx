@@ -83,8 +83,8 @@ export function StepDetails({
             </div>
             <p className="text-[11px] leading-relaxed text-gray-600 dark:text-gray-400">
               AI가 단순한 자재 일반론에서 벗어나 <b>현장 중심의 담백하고 신뢰감 높은 포트폴리오</b>
-              를 작성할 수 있도록 <b>"현장 문제"</b>와 <b>"시공 내역"</b>을 함께 기입해 주세요.
-              (자재설명이나 주관적 미사여구는 AI가 자동으로 배제합니다.)
+              를 작성할 수 있도록 <b>&quot;현장 문제&quot;</b>와 <b>&quot;시공 내역&quot;</b>을 함께
+              기입해 주세요. (자재설명이나 주관적 미사여구는 AI가 자동으로 배제합니다.)
             </p>
 
             <div className="grid gap-3 md:grid-cols-2">
@@ -141,7 +141,7 @@ export function StepDetails({
                       🤖 AI 최종 본문:
                     </span>
                     <p className="mt-0.5 rounded bg-emerald-50/30 px-1.5 py-1 text-[10px] leading-relaxed text-emerald-800 dark:bg-emerald-950/20 dark:text-emerald-400">
-                      "{AI_GOOD_EXAMPLE.OUTPUT_WITHOUT_SIGNATURE}"
+                      &quot;{AI_GOOD_EXAMPLE.OUTPUT_WITHOUT_SIGNATURE}&quot;
                     </p>
                   </div>
                 </div>
