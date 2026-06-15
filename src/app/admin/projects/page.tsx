@@ -1,7 +1,6 @@
 import Link from "next/link";
-import Image from "next/image";
 import { getServerRepositories } from "@/server";
-import { DeleteButton } from "./_components/delete-button";
+import { ProjectList } from "./_components/project-list";
 import { ROUTES } from "@/shared/routes";
 
 export default async function AdminProjects() {
@@ -9,128 +8,39 @@ export default async function AdminProjects() {
   const items = await projects.getAll();
 
   return (
-    <>
-      <header className="flex items-center justify-between">
-        <h1 className="text-navy text-2xl font-bold dark:text-white">포트폴리오 관리</h1>
+    <main className="space-y-8">
+      {/* 상단 헤더 영역 */}
+      <header className="flex flex-col gap-4 border-b border-gray-100 pb-5 sm:flex-row sm:items-center sm:justify-between dark:border-gray-800">
+        <div>
+          <h1 className="text-navy text-2xl font-bold sm:text-3xl dark:text-white">
+            시공사례 포트폴리오 관리
+          </h1>
+          <p className="text-gray-dark mt-1 text-sm dark:text-gray-400">
+            고객들에게 보여줄 실제 시공사례 포트폴리오를 등록하고 관리합니다.
+          </p>
+        </div>
         <Link
           href={ROUTES.admin.projectsNew}
-          className="bg-navy hover:bg-navy-light rounded-lg px-4 py-2 text-sm text-white"
+          className="bg-navy hover:bg-navy-light inline-flex items-center justify-center gap-1.5 rounded-xl px-5 py-3 text-sm font-bold text-white shadow-sm transition-all active:scale-[0.98] dark:bg-blue-600 dark:hover:bg-blue-500"
         >
-          새 프로젝트
+          <span>✨ 새 시공사례 등록</span>
         </Link>
       </header>
 
+      {/* 포트폴리오 리스트 영역 */}
       {items.length === 0 ? (
-        <p className="text-gray-dark mt-8 dark:text-gray-400">등록된 프로젝트가 없습니다.</p>
+        <section className="dark:border-gray-850 flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-gray-200 py-16 text-center">
+          <span className="text-4xl">🗂️</span>
+          <p className="text-navy mt-4 font-semibold dark:text-gray-200">
+            등록된 시공사례가 아직 없습니다.
+          </p>
+          <p className="text-gray-dark mt-1.5 text-xs dark:text-gray-400">
+            우측 상단 버튼을 클릭해 첫 번째 포트폴리오를 채워보세요.
+          </p>
+        </section>
       ) : (
-        <>
-          {/* 모바일: 카드 */}
-          <ul className="mt-6 space-y-3 md:hidden">
-            {items.map((item) => (
-              <li
-                key={item.id}
-                className="rounded-lg border border-gray-200 p-4 dark:border-gray-700"
-              >
-                {item.images.length > 0 && (
-                  <div className="mb-2 flex gap-1 overflow-x-auto">
-                    {item.images.slice(0, 4).map((url) => (
-                      <Image
-                        key={url}
-                        src={url}
-                        alt=""
-                        width={64}
-                        height={64}
-                        sizes="64px"
-                        className="h-16 w-16 shrink-0 rounded object-cover"
-                      />
-                    ))}
-                    {item.images.length > 4 && (
-                      <span className="bg-gray-light text-gray-dark flex h-16 w-16 shrink-0 items-center justify-center rounded text-xs dark:bg-gray-800 dark:text-gray-400">
-                        +{item.images.length - 4}
-                      </span>
-                    )}
-                  </div>
-                )}
-                <p className="text-navy font-semibold dark:text-white">{item.title}</p>
-                <p className="text-gray-dark mt-1 text-sm dark:text-gray-300">
-                  {item.category} · 이미지 {item.images.length}장
-                </p>
-                <div className="mt-2 flex gap-2">
-                  <Link
-                    href={ROUTES.admin.projectEdit(item.id)}
-                    className="text-navy text-sm underline dark:text-blue-400"
-                  >
-                    수정
-                  </Link>
-                  <DeleteButton id={item.id} />
-                </div>
-              </li>
-            ))}
-          </ul>
-
-          {/* 데스크톱: 테이블 */}
-          <div className="mt-6 hidden md:block">
-            <table className="w-full text-left text-sm">
-              <thead>
-                <tr className="border-b border-gray-200 dark:border-gray-700">
-                  <th
-                    scope="col"
-                    className="text-gray-dark py-2 pr-4 font-medium dark:text-gray-300"
-                  >
-                    이미지
-                  </th>
-                  <th
-                    scope="col"
-                    className="text-gray-dark py-2 pr-4 font-medium dark:text-gray-300"
-                  >
-                    제목
-                  </th>
-                  <th
-                    scope="col"
-                    className="text-gray-dark py-2 pr-4 font-medium dark:text-gray-300"
-                  >
-                    카테고리
-                  </th>
-                  <th scope="col" className="text-gray-dark py-2 font-medium dark:text-gray-300">
-                    관리
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {items.map((item) => (
-                  <tr key={item.id} className="border-b border-gray-100 dark:border-gray-800">
-                    <td className="py-2 pr-4">
-                      {item.images.length > 0 ? (
-                        <Image
-                          src={item.images[0]}
-                          alt=""
-                          width={80}
-                          height={60}
-                          sizes="80px"
-                          className="h-10 w-14 rounded object-cover"
-                        />
-                      ) : (
-                        <span className="bg-gray-light inline-block h-10 w-14 rounded dark:bg-gray-800" />
-                      )}
-                    </td>
-                    <td className="text-navy py-2 pr-4 dark:text-white">{item.title}</td>
-                    <td className="py-2 pr-4 dark:text-gray-300">{item.category}</td>
-                    <td className="py-2">
-                      <Link
-                        href={ROUTES.admin.projectEdit(item.id)}
-                        className="text-navy mr-3 underline dark:text-blue-400"
-                      >
-                        수정
-                      </Link>
-                      <DeleteButton id={item.id} />
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </>
+        <ProjectList items={items} />
       )}
-    </>
+    </main>
   );
 }
