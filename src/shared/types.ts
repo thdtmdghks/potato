@@ -147,16 +147,10 @@ export type Project = ProjectRow;
 export type Review = ReviewRow;
 export type ReviewEdit = ReviewEditRow;
 
-export interface AiProposal {
-  description: string;
-  suggestedTitle: string;
-}
-
 export interface AiResponse {
   success: boolean;
   description: string;
   suggestedTitle: string;
-  proposals: AiProposal[];
   isFallback: boolean;
 }
 

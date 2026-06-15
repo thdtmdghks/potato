@@ -88,27 +88,16 @@ export class GeminiAiService implements AiService {
               responseSchema: {
                 type: "OBJECT",
                 properties: {
-                  proposals: {
-                    type: "ARRAY",
-                    description:
-                      "서로 다른 톤앤매너와 초점을 가진 3가지 시공사례 설명글 및 추천 제목 세트.",
-                    items: {
-                      type: "OBJECT",
-                      properties: {
-                        description: {
-                          type: "STRING",
-                          description: `170자에서 200자 내외의 한국어 시공사례 설명글. 마지막 줄엔 반드시 줄바꿈 후 '- ${BUSINESS.name}' 서명이 단독으로 들어감.`,
-                        },
-                        suggestedTitle: {
-                          type: "STRING",
-                          description: "로컬 SEO 검색 노출을 위한 구체적인 시공사례 추천 제목.",
-                        },
-                      },
-                      required: ["description", "suggestedTitle"],
-                    },
+                  description: {
+                    type: "STRING",
+                    description: `170자에서 200자 내외의 한국어 시공사례 설명글. 마지막 줄엔 반드시 줄바꿈 후 '- ${BUSINESS.name}' 서명이 단독으로 들어감.`,
+                  },
+                  suggestedTitle: {
+                    type: "STRING",
+                    description: "로컬 SEO 검색 노출을 위한 구체적인 시공사례 추천 제목.",
                   },
                 },
-                required: ["proposals"],
+                required: ["description", "suggestedTitle"],
               },
             },
           }),
@@ -133,34 +122,17 @@ export class GeminiAiService implements AiService {
 
       try {
         const parsedRes = JSON.parse(contentText);
-        const rawProposals = parsedRes.proposals || [];
-        const proposals = rawProposals
-          .map((p: any) => ({
-            description: sanitizeResponseField(p.description),
-            suggestedTitle: sanitizeResponseField(p.suggestedTitle),
-          }))
-          .slice(0, 3);
+        const description = sanitizeResponseField(parsedRes.description);
+        const suggestedTitle = sanitizeResponseField(parsedRes.suggestedTitle);
 
-        if (proposals.length === 0) {
-          const singleDesc = sanitizeResponseField(parsedRes.description);
-          const singleTitle = sanitizeResponseField(parsedRes.suggestedTitle);
-          if (singleDesc) {
-            proposals.push({
-              description: singleDesc,
-              suggestedTitle: singleTitle,
-            });
-          }
-        }
-
-        if (proposals.length === 0) {
+        if (!description) {
           return this.fallbackService.generateDescription(params);
         }
 
         return {
           success: true,
-          description: proposals[0].description,
-          suggestedTitle: proposals[0].suggestedTitle,
-          proposals,
+          description,
+          suggestedTitle: suggestedTitle || "",
           isFallback: false,
         };
       } catch {

@@ -80,34 +80,17 @@ export class OpenAiService implements AiService {
 
       try {
         const parsedRes = JSON.parse(content);
-        const rawProposals = parsedRes.proposals || [];
-        const proposals = rawProposals
-          .map((p: any) => ({
-            description: sanitizeResponseField(p.description),
-            suggestedTitle: sanitizeResponseField(p.suggestedTitle),
-          }))
-          .slice(0, 3);
+        const description = sanitizeResponseField(parsedRes.description);
+        const suggestedTitle = sanitizeResponseField(parsedRes.suggestedTitle);
 
-        if (proposals.length === 0) {
-          const singleDesc = sanitizeResponseField(parsedRes.description);
-          const singleTitle = sanitizeResponseField(parsedRes.suggestedTitle);
-          if (singleDesc) {
-            proposals.push({
-              description: singleDesc,
-              suggestedTitle: singleTitle,
-            });
-          }
-        }
-
-        if (proposals.length === 0) {
+        if (!description) {
           return this.fallbackService.generateDescription(params);
         }
 
         return {
           success: true,
-          description: proposals[0].description,
-          suggestedTitle: proposals[0].suggestedTitle,
-          proposals,
+          description,
+          suggestedTitle: suggestedTitle || "",
           isFallback: false,
         };
       } catch {

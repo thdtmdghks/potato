@@ -226,20 +226,8 @@ describe("generateAiDescription", () => {
             parts: [
               {
                 text: JSON.stringify({
-                  proposals: [
-                    {
-                      description: `Gemini가 생성한 시공사례 설명글입니다.\n- ${BUSINESS.name}`,
-                      suggestedTitle: "경산 사동 아파트 하이샤시 시공",
-                    },
-                    {
-                      description: `Gemini가 제안한 2번째 안입니다.\n- ${BUSINESS.name}`,
-                      suggestedTitle: "경산 사동 아파트 창호 교체",
-                    },
-                    {
-                      description: `Gemini가 제안한 3번째 안입니다.\n- ${BUSINESS.name}`,
-                      suggestedTitle: "경산 사동 하이샤시 시공완료",
-                    },
-                  ],
+                  description: `Gemini가 생성한 시공사례 설명글입니다.\n- ${BUSINESS.name}`,
+                  suggestedTitle: "경산 사동 아파트 하이샤시 시공",
                 }),
               },
             ],
@@ -280,20 +268,8 @@ describe("generateAiDescription", () => {
         {
           message: {
             content: JSON.stringify({
-              proposals: [
-                {
-                  description: `GPT가 생성한 시공사례 설명글입니다.\n- ${BUSINESS.name}`,
-                  suggestedTitle: "대구 수성구 빌라 유리 교체 시공",
-                },
-                {
-                  description: `GPT가 제안한 2번째 안입니다.\n- ${BUSINESS.name}`,
-                  suggestedTitle: "대구 수성구 빌라 유리 시공",
-                },
-                {
-                  description: `GPT가 제안한 3번째 안입니다.\n- ${BUSINESS.name}`,
-                  suggestedTitle: "대구 수성구 유리 교체 공사",
-                },
-              ],
+              description: `GPT가 생성한 시공사례 설명글입니다.\n- ${BUSINESS.name}`,
+              suggestedTitle: "대구 수성구 빌라 유리 교체 시공",
             }),
           },
         },
