@@ -9,6 +9,7 @@ export type ProjectRow = {
   building_type: string | null;
   images: string[];
   primary_image: string | null;
+  status: string;
   created_by: string;
   created_at: string;
 };
@@ -50,6 +51,7 @@ export type Database = {
           building_type?: string | null;
           images: string[];
           primary_image?: string | null;
+          status?: string;
           created_by: string;
           created_at?: string;
         };
@@ -62,6 +64,7 @@ export type Database = {
           building_type?: string | null;
           images?: string[];
           primary_image?: string | null;
+          status?: string;
           created_by?: string;
           created_at?: string;
         };
