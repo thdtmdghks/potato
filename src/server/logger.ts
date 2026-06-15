@@ -51,12 +51,18 @@ export function logError(context: string, error: unknown, payload?: unknown) {
   const webhookUrl = env.DISCORD_ERROR_WEBHOOK_URL;
   if (!webhookUrl) return;
 
-  const errorMessage =
-    error instanceof Error
-      ? error.message
-      : typeof error === "object" && error !== null && "message" in error
-        ? String((error as { message: unknown }).message)
-        : JSON.stringify(error);
+  let errorMessage = "";
+  try {
+    errorMessage =
+      error instanceof Error
+        ? error.message
+        : typeof error === "object" && error !== null && "message" in error
+          ? String((error as { message: unknown }).message)
+          : JSON.stringify(error);
+  } catch {
+    errorMessage = String(error);
+  }
+
   const coreStack = getSanitizedStack(error);
   const nodeEnv = process.env.NODE_ENV?.toUpperCase() || "LOCAL";
 
@@ -117,9 +123,15 @@ export function logError(context: string, error: unknown, payload?: unknown) {
     });
   }
   if (payload) {
+    let serializedPayload = "";
+    try {
+      serializedPayload = JSON.stringify(payload, null, 2).slice(0, MAX_FIELD_LENGTH);
+    } catch {
+      serializedPayload = "[Serialization Failed]";
+    }
     embed.fields.push({
       name: "시도 데이터 (Payload)",
-      value: `\`\`\`json\n${JSON.stringify(payload, null, 2).slice(0, MAX_FIELD_LENGTH)}\n\`\`\``,
+      value: `\`\`\`json\n${serializedPayload}\n\`\`\``,
     });
   }
 
@@ -152,9 +164,15 @@ export function logWarn(context: string, message: string, payload?: unknown) {
   };
 
   if (payload) {
+    let serializedPayload = "";
+    try {
+      serializedPayload = JSON.stringify(payload, null, 2).slice(0, MAX_FIELD_LENGTH);
+    } catch {
+      serializedPayload = "[Serialization Failed]";
+    }
     embed.fields.push({
       name: "관련 데이터 (Payload)",
-      value: `\`\`\`json\n${JSON.stringify(payload, null, 2).slice(0, MAX_FIELD_LENGTH)}\n\`\`\``,
+      value: `\`\`\`json\n${serializedPayload}\n\`\`\``,
     });
   }
 

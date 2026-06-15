@@ -7,6 +7,17 @@ const OPTIONS = {
   fileType: "image/webp",
 };
 
+const AI_OPTIONS = {
+  maxSizeMB: 0.04, // 40KB 이하
+  maxWidthOrHeight: 768, // AI 이미지 인식에 충분한 크기
+  useWebWorker: true,
+  fileType: "image/webp",
+};
+
 export const compressImage = async (file: File): Promise<File> => {
   return imageCompression(file, OPTIONS);
+};
+
+export const compressImageForAi = async (file: File): Promise<File> => {
+  return imageCompression(file, AI_OPTIONS);
 };
