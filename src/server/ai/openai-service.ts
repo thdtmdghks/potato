@@ -13,7 +13,7 @@ export class OpenAiService implements AiService {
   }
 
   async generateDescription(params: AiServiceParams): Promise<AiResponse> {
-    const { region, buildingType, categories, details, images } = params;
+    const { images } = params;
 
     try {
       const prompt = buildUserPrompt(params);

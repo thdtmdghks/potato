@@ -38,6 +38,7 @@ describe("MockProjectRepository", () => {
       created_by: "system",
       region: null,
       building_type: null,
+      status: "active",
     });
     expect(created).not.toBeNull();
     expect((await repo.getAll()).length).toBe(before + 1);
