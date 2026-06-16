@@ -162,8 +162,7 @@ export async function deleteProject(id: string) {
       return { success: false as const, error: "인증이 필요합니다." };
     }
 
-    const { storage, projects } = await getServerRepositories();
-    const project = await projects.getById(id);
+    const { projects } = await getServerRepositories();
 
     const success = await projects.delete(id);
     if (!success) {

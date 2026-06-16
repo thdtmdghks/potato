@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import {
   AppWindow,
   Grid,
@@ -240,9 +241,11 @@ export default async function Home() {
                 rel="noopener noreferrer"
                 className="group relative block overflow-hidden rounded-lg border border-gray-200 dark:border-gray-800"
               >
-                <img
+                <Image
                   src="/place.webp"
                   alt={`${BUSINESS.name} 위치 지도`}
+                  width={800}
+                  height={256}
                   className="h-64 w-full object-cover transition-transform duration-300 group-hover:scale-105"
                 />
                 <div className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 transition-opacity duration-300 group-hover:opacity-100">

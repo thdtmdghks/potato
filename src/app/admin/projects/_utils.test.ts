@@ -101,7 +101,7 @@ describe("fileToBase64", () => {
       if (this.onerror) {
         // mock Error 자체를 ProgressEvent 인자 대신 강제로 전달하여 reject에 들어가게 함
         const mockError = new Error("Mock FileReader Error");
-        this.onerror(mockError as unknown as ProgressEvent);
+        this.onerror(mockError as unknown as ProgressEvent<FileReader>);
       }
     });
 
