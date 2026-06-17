@@ -2,18 +2,21 @@
 
 ## 🟠 기능
 
-- [ ] 파비콘 제작 및 적용 (현재 Vercel 기본 아이콘 노출)
 - [ ] 홈/프로젝트 페이지 OG `og:image` 설정 (리뷰 상세는 완료)
 - [ ] 모바일 메뉴 포커스 트랩 + ESC 닫기
 
 ## 🟡 코드 품질
 
-- [ ] 에러 핸들링 고도화 — Repository 에러 전파 + instrumentation.ts 글로벌 훅 (`docs/error_handling_improvement_plan.md` 1~3단계)
+- [ ] instrumentation.ts 글로벌 에러 훅 (프레임워크 레벨 미처리 예외 수집)
 - [ ] E2E 관리자 페이지 테스트 (카카오 storageState 설정)
 
 ## 🟢 개선
 
-- [x] ARCHITECTURE.md 현행화 (현재 구조와 맞지 않는 부분 수정)
+- [x] ARCHITECTURE.md 현행화
+- [x] 파비콘 적용 (icon.png)
+- [x] Repository 에러 전파 (throw 방식 전환)
+- [x] FloatingCta 제거
+- [x] React.cache로 상세 페이지 중복 DB 호출 제거
 
 ---
 
