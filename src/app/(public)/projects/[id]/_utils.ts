@@ -1,10 +1,16 @@
 import type { Metadata } from "next";
+import { cache } from "react";
 import { getServerRepositories } from "@/server";
 import { BUSINESS, SITE_URL } from "@/shared/constants";
+import type { Project } from "@/shared/types";
+
+export const getProject = cache(async (id: string): Promise<Project | null> => {
+  const { projects } = await getServerRepositories();
+  return projects.getById(id);
+});
 
 export async function getProjectDetailMetadata(id: string): Promise<Metadata> {
-  const { projects } = await getServerRepositories();
-  const project = await projects.getById(id);
+  const project = await getProject(id);
   if (!project) return {};
 
   const title = `${project.title} — 경산 대구 샤시 샷시 시공 | ${BUSINESS.name}`;

@@ -8,17 +8,38 @@
 
 ## 스크린샷
 
-|              공개 홈페이지               |                      고객 후기 작성                      |
-| :--------------------------------------: | :------------------------------------------------------: |
-| ![홈](docs/screenshots/public-home.webp) | ![후기 작성](docs/screenshots/public-review-create.webp) |
+|              공개 홈페이지               |                  고객 후기 목록                   |
+| :--------------------------------------: | :-----------------------------------------------: |
+| ![홈](docs/screenshots/public-home.webp) | ![후기 목록](docs/screenshots/public-review.webp) |
 
-|                  고객 후기 목록                   |                  관리자 대시보드                   |
-| :-----------------------------------------------: | :------------------------------------------------: |
-| ![후기 목록](docs/screenshots/public-review.webp) | ![대시보드](docs/screenshots/admin-dashboard.webp) |
+|                      내 후기                       |                       후기 수정                        |
+| :------------------------------------------------: | :----------------------------------------------------: |
+| ![내 후기](docs/screenshots/public-review-my.webp) | ![후기 수정](docs/screenshots/public-review-edit.webp) |
 
-|                 관리자 리뷰 관리                 |                        시공사례 등록                         |
-| :----------------------------------------------: | :----------------------------------------------------------: |
-| ![리뷰 관리](docs/screenshots/admin-review.webp) | ![프로젝트 등록](docs/screenshots/admin-project-create.webp) |
+|                  관리자 대시보드                   |                 관리자 리뷰 관리                 |
+| :------------------------------------------------: | :----------------------------------------------: |
+| ![대시보드](docs/screenshots/admin-dashboard.webp) | ![리뷰 관리](docs/screenshots/admin-review.webp) |
+
+|                  시공사례 관리                   |                         시공사례 등록 (AI)                         |
+| :----------------------------------------------: | :----------------------------------------------------------------: |
+| ![시공사례](docs/screenshots/admin-project.webp) | ![프로젝트 등록](docs/screenshots/admin-project-create-step3.webp) |
+
+<details>
+<summary>프로젝트 등록 5단계 마법사 전체 보기</summary>
+
+|                      1단계: 기본 정보                      |                     2단계: 사진 업로드                     |
+| :--------------------------------------------------------: | :--------------------------------------------------------: |
+| ![Step1](docs/screenshots/admin-project-create-step1.webp) | ![Step2](docs/screenshots/admin-project-create-step2.webp) |
+
+|                    3단계: AI 설명 생성                     |                      4단계: 미리보기                       |
+| :--------------------------------------------------------: | :--------------------------------------------------------: |
+| ![Step3](docs/screenshots/admin-project-create-step3.webp) | ![Step4](docs/screenshots/admin-project-create-step4.webp) |
+
+|                      5단계: 최종 확인                      |
+| :--------------------------------------------------------: |
+| ![Step5](docs/screenshots/admin-project-create-step5.webp) |
+
+</details>
 
 ## 주요 특징
 
@@ -34,9 +55,11 @@
 
 ## 주요 기능
 
-- **시공사례 갤러리** — 카테고리 필터 + 이미지 라이트박스 + 관리자 CRUD + 5단계 마법사 폼 (AI 재생성 및 피드백 반영, 이탈 방지 가드)
+- **시공사례 갤러리** — 다중 카테고리 필터 + 이미지 라이트박스 + 관리자 CRUD + 5단계 마법사 폼 (AI 재생성 및 피드백 반영, 이탈 방지 가드)
+- **AI 시공 설명 생성** — Gemini API로 시공 사진 분석 + SEO 최적화 description 자동 작성 (Fallback 템플릿 보장)
 - **고객 후기 시스템** — 카카오 로그인 인증 → 별점/대표사진 선택 → 관리자 승인 후 노출
 - **후기 수정 파이프라인** — 원본 유지 + 수정 요청 대기 → 관리자가 원본/수정안 대조 후 승인/반려
+- **리뷰 상세 및 갤러리** — 개별 리뷰 SEO 페이지 + 승인된 전체 후기 갤러리 목록
 - **관리자 대시보드** — 빠른 액션(초대 링크, 프로젝트 등록) + 현황 카드
 - **리뷰 초대 링크** — UUID v7 기반 1회용 링크 생성 + 모바일 공유 API 연동
 - **실시간 알림** — 에러/보안 이벤트 Discord 즉시 전송 (Sentry 대체)
@@ -78,6 +101,7 @@ src/
 - [`docs/CODE_STYLE.md`](docs/CODE_STYLE.md) — 코딩 컨벤션
 - [`docs/SEO.md`](docs/SEO.md) — SEO 전략 및 적용 현황
 - [`docs/features/reviews-dev-plan.md`](docs/features/reviews-dev-plan.md) — 후기 시스템 개발 계획서 및 설정 가이드
+- [`docs/features/project-seo-plan.md`](docs/features/project-seo-plan.md) — 프로젝트 등록 SEO 고도화 계획
 
 ## 시작하기
 

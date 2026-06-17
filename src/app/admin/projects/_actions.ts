@@ -19,6 +19,7 @@ const STORAGE_PATH_PREFIX = "projects";
 const revalidateProjects = () => {
   revalidatePath(ROUTES.home);
   revalidatePath(ROUTES.projects);
+  revalidatePath(ROUTES.admin.root);
   revalidatePath(ROUTES.admin.projects);
 };
 
