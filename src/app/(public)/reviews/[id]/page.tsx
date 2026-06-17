@@ -1,12 +1,11 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getServerRepositories } from "@/server";
 import { ROUTES } from "@/shared/routes";
 import { formatDate } from "@/shared/utils";
 import { Avatar } from "@/app/_components/avatar";
 import { ReviewDetailImages } from "./_components/review-detail-images";
-import { SITE_URL } from "@/shared/constants";
+import { getReview, getReviewDetailMetadata } from "./_utils";
 
 interface Props {
   params: Promise<{ id: string }>;
@@ -14,34 +13,12 @@ interface Props {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params;
-  const { reviews } = await getServerRepositories();
-  const review = await reviews.getById(id);
-
-  if (!review || review.status !== "approved") {
-    return { title: "후기를 찾을 수 없습니다 | 경산창호" };
-  }
-
-  const description = review.content.slice(0, 150) + (review.content.length > 150 ? "..." : "");
-  const ogImage = review.primary_image ?? review.images[0];
-
-  return {
-    title: `${review.author_name}님의 시공 후기 | 경산창호`,
-    description,
-    alternates: {
-      canonical: `${SITE_URL}/reviews/${id}`,
-    },
-    openGraph: {
-      title: `${review.author_name}님의 시공 후기 | 경산창호`,
-      description,
-      ...(ogImage && { images: [{ url: ogImage, width: 800, height: 600 }] }),
-    },
-  };
+  return getReviewDetailMetadata(id);
 }
 
 export default async function ReviewDetailPage({ params }: Props) {
   const { id } = await params;
-  const { reviews } = await getServerRepositories();
-  const review = await reviews.getById(id);
+  const review = await getReview(id);
 
   if (!review || review.status !== "approved") {
     notFound();

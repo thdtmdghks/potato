@@ -3,8 +3,7 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 import { ROUTES } from "@/shared/routes";
 import type { Metadata } from "next";
-import { getServerRepositories } from "@/server";
-import { getProjectDetailMetadata } from "./_utils";
+import { getProjectDetailMetadata, getProject } from "./_utils";
 import { ProjectJsonLd } from "./_components/project-json-ld";
 
 export async function generateMetadata({
@@ -18,8 +17,7 @@ export async function generateMetadata({
 
 export default async function ProjectDetail({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const { projects } = await getServerRepositories();
-  const project = await projects.getById(id);
+  const project = await getProject(id);
   if (!project) notFound();
 
   return (
