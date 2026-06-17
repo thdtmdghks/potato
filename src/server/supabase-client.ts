@@ -4,7 +4,7 @@ import { logWarn, logError } from "./logger";
 
 const HTTP_STATUS_BAD_REQUEST = 400;
 const HTTP_STATUS_UNAUTHORIZED = 401;
-const RETRY_MAX_ATTEMPTS = 3;
+const RETRY_MAX_ATTEMPTS = 5;
 const RETRY_DELAY_MS = 500;
 
 const customFetch = async (input: RequestInfo | URL, init?: RequestInit): Promise<Response> => {
