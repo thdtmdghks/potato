@@ -7,11 +7,12 @@ import { logWarn, logError } from "@/server/logger";
 import { ROUTES } from "@/shared/routes";
 import { REVIEW_STATUS, USER_ROLE } from "@/shared/constants";
 
-const revalidateReviews = () => {
+const revalidateReviews = (id?: string) => {
   revalidatePath(ROUTES.home);
   revalidatePath(ROUTES.reviews);
   revalidatePath(ROUTES.admin.root);
   revalidatePath(ROUTES.admin.reviews);
+  if (id) revalidatePath(ROUTES.reviewDetail(id));
 };
 
 const verifyAdmin = async () => {
@@ -35,7 +36,7 @@ export async function approveReview(id: string, primaryImage: string | null) {
     if (!result) {
       return { success: false as const, error: "승인 처리에 실패했습니다." };
     }
-    revalidateReviews();
+    revalidateReviews(id);
     return { success: true as const };
   } catch (error) {
     logError("admin.reviews.approveReview", error, { id });
@@ -52,7 +53,7 @@ export async function deleteReview(id: string) {
     if (!result) {
       return { success: false as const, error: "삭제 처리에 실패했습니다." };
     }
-    revalidateReviews();
+    revalidateReviews(id);
     return { success: true as const };
   } catch (error) {
     logError("admin.reviews.deleteReview", error, { id });
@@ -89,7 +90,7 @@ export async function approveReviewEdit(reviewId: string) {
     // update 성공 후 delete가 실패할 확률은 극히 낮으므로 우선 승인 후 후속 삭제를 실행합니다.
     await reviewEdits.delete(reviewId);
 
-    revalidateReviews();
+    revalidateReviews(reviewId);
     return { success: true as const };
   } catch (error) {
     logError("admin.reviews.approveReviewEdit", error, { reviewId });
