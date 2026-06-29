@@ -16,11 +16,12 @@ import type { AiServiceParams } from "@/shared/types";
 const STORAGE_BUCKET = process.env.STORAGE_BUCKET ?? "images";
 const STORAGE_PATH_PREFIX = "projects";
 
-const revalidateProjects = () => {
+const revalidateProjects = (id?: string) => {
   revalidatePath(ROUTES.home);
   revalidatePath(ROUTES.projects);
   revalidatePath(ROUTES.admin.root);
   revalidatePath(ROUTES.admin.projects);
+  if (id) revalidatePath(ROUTES.projectDetail(id));
 };
 
 export async function createProject(formData: FormData) {
@@ -143,7 +144,7 @@ export async function updateProject(id: string, formData: FormData) {
     const removedImages = project.images.filter((url) => !existingImages.includes(url));
     deleteImages(storage, STORAGE_BUCKET, removedImages);
 
-    revalidateProjects();
+    revalidateProjects(id);
     return { success: true as const };
   } catch (error) {
     logError("admin.projects.updateProject", error, {
@@ -170,7 +171,7 @@ export async function deleteProject(id: string) {
       return { success: false as const, error: "삭제에 실패했습니다." };
     }
 
-    revalidateProjects();
+    revalidateProjects(id);
     return { success: true as const };
   } catch (error) {
     logError("admin.projects.deleteProject", error, { id });

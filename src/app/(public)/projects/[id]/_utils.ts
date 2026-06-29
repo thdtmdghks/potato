@@ -9,6 +9,12 @@ export const getProject = cache(async (id: string): Promise<Project | null> => {
   return projects.getById(id);
 });
 
+export const getAllProjectParams = async () => {
+  const { projects } = await getServerRepositories();
+  const items = await projects.getAll();
+  return items.map((item) => ({ id: item.id }));
+};
+
 export async function getProjectDetailMetadata(id: string): Promise<Metadata> {
   const project = await getProject(id);
   if (!project) return {};
