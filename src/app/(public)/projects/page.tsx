@@ -78,7 +78,9 @@ export default async function Projects({
                 )}
                 <div className="mt-2">
                   <span className="text-accent text-xs">{item.categories.join(", ")}</span>
-                  <h2 className="text-navy text-sm font-medium dark:text-white">{item.title}</h2>
+                  <h2 className="text-navy line-clamp-2 text-sm font-medium dark:text-white">
+                    {item.title}
+                  </h2>
                 </div>
               </Link>
             </li>
