@@ -73,7 +73,7 @@ export function ProjectCard({ item, onImageClick }: ProjectCardProps) {
             )}
           </div>
 
-          <h2 className="text-navy truncate text-base leading-snug font-bold tracking-tight sm:whitespace-normal dark:text-white">
+          <h2 className="text-navy line-clamp-1 text-base leading-snug font-bold tracking-tight sm:line-clamp-2 dark:text-white">
             {item.title}
           </h2>
 

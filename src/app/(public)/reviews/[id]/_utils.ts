@@ -9,6 +9,12 @@ export const getReview = cache(async (id: string): Promise<Review | null> => {
   return reviews.getById(id);
 });
 
+export const getAllReviewParams = async () => {
+  const { reviews } = await getServerRepositories();
+  const items = await reviews.getAllApproved();
+  return items.map((item) => ({ id: item.id }));
+};
+
 export async function getReviewDetailMetadata(id: string): Promise<Metadata> {
   const review = await getReview(id);
 

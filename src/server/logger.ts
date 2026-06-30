@@ -1,4 +1,5 @@
 import { env } from "@/shared/env";
+import { after } from "next/server";
 
 const MAX_FIELD_LENGTH = 800;
 const MAX_STACK_LINES = 12;
@@ -135,8 +136,8 @@ export function logError(context: string, error: unknown, payload?: unknown) {
     });
   }
 
-  // 백그라운드 발송 (await 미사용하여 응답 속도 보존)
-  sendToDiscord(webhookUrl, embed);
+  // 응답 완료 후 백그라운드 발송 (Vercel Serverless에서도 전송 보장)
+  after(() => sendToDiscord(webhookUrl, embed));
 }
 
 /**
@@ -176,6 +177,6 @@ export function logWarn(context: string, message: string, payload?: unknown) {
     });
   }
 
-  // 백그라운드 발송
-  sendToDiscord(webhookUrl, embed);
+  // 응답 완료 후 백그라운드 발송
+  after(() => sendToDiscord(webhookUrl, embed));
 }

@@ -5,10 +5,11 @@ import { logWarn, logError } from "./logger";
 const HTTP_STATUS_BAD_REQUEST = 400;
 const HTTP_STATUS_UNAUTHORIZED = 401;
 const RETRY_MAX_ATTEMPTS = 5;
-const RETRY_DELAY_MS = 500;
+const RETRY_DELAY_MS = 300;
 
 const customFetch = async (input: RequestInfo | URL, init?: RequestInit): Promise<Response> => {
   let attempts = 0;
+  const startTime = Date.now();
   const delay = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
   let lastErrorBody: Record<string, unknown> | null = null;
   let encounteredClockSkew = false;
@@ -51,7 +52,9 @@ const customFetch = async (input: RequestInfo | URL, init?: RequestInit): Promis
           `Clock skew error (JWT issued at future) resolved on retry attempt ${attempts}/${RETRY_MAX_ATTEMPTS}`,
           {
             url: input.toString(),
+            method: init?.method || "GET",
             attemptsRequired: attempts,
+            totalDelayMs: Date.now() - startTime,
             originalError: lastErrorBody,
           },
         );

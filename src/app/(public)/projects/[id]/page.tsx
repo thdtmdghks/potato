@@ -3,8 +3,12 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 import { ROUTES } from "@/shared/routes";
 import type { Metadata } from "next";
-import { getProjectDetailMetadata, getProject } from "./_utils";
+import { getProjectDetailMetadata, getProject, getAllProjectParams } from "./_utils";
 import { ProjectJsonLd } from "./_components/project-json-ld";
+
+export async function generateStaticParams() {
+  return getAllProjectParams();
+}
 
 export async function generateMetadata({
   params,

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useEffect, useRef } from "react";
+import { useState, useMemo, useEffect, useRef, useTransition } from "react";
 import { useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
@@ -33,6 +33,7 @@ interface Props {
 export function ProjectForm({ project }: Props) {
   const isEdit = !!project;
   const router = useRouter();
+  const [isNavigating, startTransition] = useTransition();
 
   // Wizard Flow Step 관리 (1 ~ 5)
   const [step, setStep] = useState(1);
@@ -439,7 +440,9 @@ export function ProjectForm({ project }: Props) {
       return;
     }
 
-    router.push(ROUTES.admin.projects);
+    startTransition(() => {
+      router.push(ROUTES.admin.projects);
+    });
   };
 
   // Wizard Steps 설정
@@ -592,7 +595,7 @@ export function ProjectForm({ project }: Props) {
             city={city}
             town={town}
             onPrev={handlePrevStep}
-            isSubmitting={isSubmitting}
+            isSubmitting={isSubmitting || isNavigating}
             compressing={compressing}
             onGenerateAi={handleGenerateAi}
             isGeneratingAi={isGeneratingAi}

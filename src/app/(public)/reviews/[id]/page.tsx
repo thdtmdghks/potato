@@ -5,10 +5,14 @@ import { ROUTES } from "@/shared/routes";
 import { formatDate } from "@/shared/utils";
 import { Avatar } from "@/app/_components/avatar";
 import { ReviewDetailImages } from "./_components/review-detail-images";
-import { getReview, getReviewDetailMetadata } from "./_utils";
+import { getReview, getReviewDetailMetadata, getAllReviewParams } from "./_utils";
 
 interface Props {
   params: Promise<{ id: string }>;
+}
+
+export async function generateStaticParams() {
+  return getAllReviewParams();
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
