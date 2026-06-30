@@ -15,7 +15,7 @@ export const getAllProjectParams = async () => {
   return items.map((item) => ({ id: item.id }));
 };
 
-export async function getProjectDetailMetadata(id: string): Promise<Metadata> {
+export const getProjectDetailMetadata = async (id: string): Promise<Metadata> => {
   const project = await getProject(id);
   if (!project) return {};
 
@@ -58,4 +58,4 @@ export async function getProjectDetailMetadata(id: string): Promise<Metadata> {
       images: primaryImage ? [primaryImage] : undefined,
     },
   };
-}
+};
