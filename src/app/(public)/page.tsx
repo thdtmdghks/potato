@@ -1,4 +1,4 @@
-import Link from "next/link";
+import { Suspense } from "react";
 import Image from "next/image";
 import {
   AppWindow,
@@ -11,11 +11,19 @@ import {
   Construction,
   Layers,
 } from "lucide-react";
-import { getServerRepositories } from "@/server";
 import { BUSINESS, LINKS, CATEGORIES } from "@/shared/constants";
-import { ProjectCarousel } from "./_components/project-carousel";
-import { ReviewCarousel } from "./_components/review-carousel";
-import { ROUTES } from "@/shared/routes";
+import { ProjectCarouselSection } from "./_components/project-carousel-section";
+import { ReviewCarouselSection } from "./_components/review-carousel-section";
+import { ProjectCarouselSkeleton } from "./_components/project-carousel-skeleton";
+import { ReviewCarouselSkeleton } from "./_components/review-carousel-skeleton";
+
+const HERO_BADGES = [
+  { emoji: "⚡", label: `${BUSINESS.region} 당일 시공` },
+  { emoji: "🏆", label: "LX, KCC, 예림 자재" },
+  { emoji: "🏅", label: "풍부한 경험" },
+  { emoji: "🔧", label: "확실한 A/S" },
+  { emoji: "💯", label: "꼼꼼한 공사" },
+] as const;
 
 const CATEGORY_ICONS: Record<
   (typeof CATEGORIES)[number],
@@ -32,59 +40,9 @@ const CATEGORY_ICONS: Record<
   판넬: Layers,
 };
 
-export default async function Home() {
-  const { projects, reviews } = await getServerRepositories();
-  const recentProjects = await projects.getAll();
-  const approvedReviews = await reviews.getAllApproved();
-
-  const jsonLd = {
-    "@context": "https://schema.org",
-    "@type": "LocalBusiness",
-    name: BUSINESS.name,
-    alternateName: ["경산샤시", "경산샷시", "대구샤시", "대구샷시"],
-    description: BUSINESS.description,
-    telephone: BUSINESS.phone,
-    address: {
-      "@type": "PostalAddress",
-      streetAddress: "원효로40길 64-8",
-      addressLocality: "경산시",
-      addressRegion: "경상북도",
-      addressCountry: "KR",
-    },
-    areaServed: [
-      { "@type": "City", name: "경산시" },
-      { "@type": "City", name: "대구광역시" },
-    ],
-    openingHoursSpecification: {
-      "@type": "OpeningHoursSpecification",
-      dayOfWeek: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
-    },
-    ...(approvedReviews.length > 0
-      ? {
-          review: approvedReviews.map((rev) => ({
-            "@type": "Review",
-            author: {
-              "@type": "Person",
-              name: rev.author_name,
-            },
-            datePublished: new Date(rev.created_at).toISOString().split("T")[0],
-            reviewBody: rev.content,
-            reviewRating: {
-              "@type": "Rating",
-              ratingValue: String(rev.rating),
-              bestRating: "5",
-            },
-          })),
-        }
-      : {}),
-  };
-
+export default function Home() {
   return (
     <>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-      />
       {/* 히어로 */}
       <section className="from-navy to-navy-light bg-gradient-to-br py-16 text-center text-white md:py-24">
         <div className="mx-auto max-w-4xl px-4">
@@ -95,21 +53,14 @@ export default async function Home() {
             경산 대구 지역의 창호 및 종합 금속·잡철 시공을 확실하게 책임집니다.
           </p>
           <div className="mt-6 flex flex-wrap justify-center gap-2">
-            <span className="rounded-full border border-white/30 bg-white/10 px-3.5 py-1.5 text-xs md:text-sm">
-              ⚡ {BUSINESS.region} 당일 시공
-            </span>
-            <span className="rounded-full border border-white/30 bg-white/10 px-3.5 py-1.5 text-xs md:text-sm">
-              🏆 LX, KCC, 예림 자재
-            </span>
-            <span className="rounded-full border border-white/30 bg-white/10 px-3.5 py-1.5 text-xs md:text-sm">
-              🏅 풍부한 경험
-            </span>
-            <span className="rounded-full border border-white/30 bg-white/10 px-3.5 py-1.5 text-xs md:text-sm">
-              🔧 확실한 A/S
-            </span>
-            <span className="rounded-full border border-white/30 bg-white/10 px-3.5 py-1.5 text-xs md:text-sm">
-              💯 꼼꼼한 공사
-            </span>
+            {HERO_BADGES.map(({ emoji, label }) => (
+              <span
+                key={label}
+                className="rounded-full border border-white/30 bg-white/10 px-3.5 py-1.5 text-xs md:text-sm"
+              >
+                {emoji} {label}
+              </span>
+            ))}
           </div>
 
           {/* 시공 품목 그리드 */}
@@ -144,47 +95,15 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* 시공사례 */}
-      <section id="gallery" className="pt-20 pb-10">
-        <div className="mx-auto max-w-5xl px-4">
-          <h2 className="text-navy text-center text-2xl font-bold dark:text-white">시공사례</h2>
-          <p className="text-gray-dark mt-2 text-center text-sm dark:text-gray-400">
-            실제 현장 시공 모습을 확인하세요
-          </p>
-        </div>
-        <div className="mt-10">
-          <ProjectCarousel projects={recentProjects} />
-        </div>
-        <div className="mx-auto mt-6 max-w-5xl px-4 text-right">
-          <Link
-            href={ROUTES.projects}
-            className="text-navy hover:text-accent text-sm dark:text-blue-400"
-          >
-            전체보기 →
-          </Link>
-        </div>
-      </section>
+      {/* 시공사례 캐러셀 */}
+      <Suspense fallback={<ProjectCarouselSkeleton />}>
+        <ProjectCarouselSection />
+      </Suspense>
 
-      {/* 시공후기 */}
-      {approvedReviews.length > 0 && (
-        <section className="border-t border-gray-100 bg-gray-50/30 py-20 dark:border-gray-800 dark:bg-gray-950/10">
-          <div className="mx-auto mb-12 max-w-5xl px-4 text-center">
-            <h2 className="text-navy text-2xl font-bold dark:text-white">고객 시공 후기</h2>
-            <p className="text-gray-dark mt-2 text-sm dark:text-gray-400">
-              실제 경산창호를 이용하신 고객님들의 생생한 한마디입니다
-            </p>
-          </div>
-          <ReviewCarousel reviews={approvedReviews} />
-          <div className="mt-8 text-center">
-            <Link
-              href={ROUTES.reviews}
-              className="text-accent text-sm font-semibold hover:underline"
-            >
-              전체 후기 보기 →
-            </Link>
-          </div>
-        </section>
-      )}
+      {/* 시공후기 캐러셀 + JSON-LD */}
+      <Suspense fallback={<ReviewCarouselSkeleton />}>
+        <ReviewCarouselSection />
+      </Suspense>
 
       {/* 연락처 */}
       <section id="contact" className="bg-gray-50 py-16 dark:bg-gray-900/50">
