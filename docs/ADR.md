@@ -536,3 +536,102 @@ Vercel Hobby(무료 플랜) 환경에서는 런타임 로그 보존 기간이 1�
 
 - **모바일 연산 효율성**: 이미지 1장당 소요되는 CPU 연산 비용을 획기적으로 줄여, 사양이 낮은 모바일 기기에서도 다량의 시공사례 이미지를 업로드할 때 브라우저 탭이 다운되거나 지연되는 현상을 완전히 방지합니다.
 - **최소 용량 보존**: 이미 충분히 압축된 초소형 이미지의 압축 열화를 예방하여 화질 저하 문제를 해소합니다.
+
+---
+
+## ADR-018: loading.tsx 제거 + Suspense 직접 배치로 통일
+
+**배경:** 홈(`/`)에서 프로젝트 상세(`/projects/[id]`)로 직접 이동 시, 상세 스켈레톤(`projects/[id]/loading.tsx`) 대신 목록 스켈레톤(`projects/loading.tsx`)이 표시되는 문제 발견.
+
+**원인 분석:**
+
+Next.js App Router에서 `loading.tsx`는 해당 세그먼트의 `page.tsx` + **모든 하위 children**을 감싸는 암시적 `<Suspense>` boundary로 동작한다. `projects/` 세그먼트에 `layout.tsx`가 없으면, 외부에서 진입 시 `projects/loading.tsx`가 세그먼트 전체(목록이든 상세든)의 fallback으로 잡힌다.
+
+- **목록 → 상세:** `projects/` 세그먼트가 이미 렌더됨 → `[id]/loading.tsx`만 동작 ✅
+- **홈 → 상세:** `projects/` 세그먼트 자체가 새로 진입 → `projects/loading.tsx`가 먼저 잡힘 ❌
+
+이는 Next.js 공식 문서에도 명시된 의도된 동작이며, 버그가 아님.
+
+**검토한 대안:**
+
+1. `projects/layout.tsx` 빈 파일 추가 — 세그먼트를 "이미 렌더됨" 상태로 만들어 하위 boundary만 동작하게 함. 하지만 빈 layout 파일이 암묵적 동작에 의존하여 의도가 불명확.
+2. `loading.tsx` 유지하면서 `projects/` 전용 layout 추가 — 파일 수 증가. 근본적으로 loading.tsx의 boundary 범위를 제어할 수 없는 문제는 동일.
+3. **`loading.tsx` 제거 + `<Suspense>` 직접 배치** — 공식 문서 Examples에서도 안내하는 패턴. boundary 위치를 개발자가 정확히 제어.
+
+**결정:** `loading.tsx`를 전체 프로젝트에서 사용하지 않고, `<Suspense>`를 직접 배치한다.
+
+**핵심 규칙:**
+
+1. `loading.tsx` 사용 금지
+2. `async` 컴포넌트는 반드시 어딘가의 `<Suspense>` 안에 있어야 함
+3. Suspense는 **사용자에게 먼저 보여줄 수 있는 UI와 기다려야 하는 UI의 경계**에 배치
+4. page.tsx에서 최소 1개의 Suspense로 메인 데이터 영역을 감싸는 것이 기본
+5. 하위 컴포넌트에서 독립적인 추가 fetch가 있으면 그 자리에 Suspense 추가
+
+**page.tsx 역할:**
+
+- `generateMetadata` / `generateStaticParams` (page에서만 가능)
+- Suspense boundary 배치
+- params/searchParams를 하위에 전달
+- 정적 UI(제목, 필터 등)를 Suspense 밖에 배치하여 즉시 렌더
+
+```tsx
+// Case 1: 단순 — 전체를 Content로 위임
+export default async function Page({ params }) {
+  const { id } = await params;
+  return (
+    <Suspense fallback={<Skeleton />}>
+      <Content id={id} />
+    </Suspense>
+  );
+}
+
+// Case 2: 정적 UI + 데이터 분리
+export default function Page() {
+  return (
+    <main>
+      <h1>시공사례</h1>
+      <CategoryFilter />
+      <Suspense fallback={<ListSkeleton />}>
+        <ProjectList />
+      </Suspense>
+    </main>
+  );
+}
+
+// Case 3: 독립 데이터 병렬 로딩
+export default function Page() {
+  return (
+    <main>
+      <HeroSection />
+      <Suspense fallback={<CarouselSkeleton />}>
+        <ProjectCarouselData />
+      </Suspense>
+      <Suspense fallback={<ReviewSkeleton />}>
+        <ReviewCarouselData />
+      </Suspense>
+    </main>
+  );
+}
+```
+
+**데이터 로딩 컴포넌트(`_components/`)의 역할:**
+
+- `await`로 데이터 fetch
+- 조건 분기 (`notFound()`, 인증 체크 등)
+- 가져온 데이터로 UI 렌더링
+- 하위에 독립 fetch가 있으면 추가 Suspense 배치 가능
+
+**이점:**
+
+- **boundary 위치 명시적** — page.tsx를 보면 어디에 스켈레톤이 걸리는지 즉시 파악
+- **부분 즉시 렌더** — 제목, 필터 등 정적 UI는 Suspense 밖에 두어 즉시 표시. 데이터 영역만 로딩
+- **중첩 라우트 간섭 없음** — 세그먼트 레벨 boundary가 없으므로 하위 라우트에 영향 안 줌
+- **일관된 패턴** — 모든 페이지가 동일 구조
+
+**감수하는 단점:**
+
+- `loading.tsx` 한 파일로 끝나던 것이 Skeleton 컴포넌트 + Content 컴포넌트 분리 필요 (파일 수 약간 증가)
+- page.tsx에서 직접 `await`하고 끝나던 것이 컴포넌트 분리 필수 (Suspense가 자식의 suspend를 잡으려면 별도 async 컴포넌트 필요)
+
+**적용 범위:** 공개 페이지 + 관리자 페이지 전체 (DB 호출하는 모든 서버 컴포넌트 페이지)
