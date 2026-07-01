@@ -45,6 +45,11 @@ const items = await projects.getAll();
 - 라우트별 상수는 `_constants.ts`, 순수 함수는 `_utils.ts` + `_utils.test.ts`에 배치.
 - `_utils.ts`에는 `React.cache()`로 감싼 서버 데이터 페칭도 포함 가능 (generateMetadata + 본체 중복 호출 방지). 규모 커지면 `_server.ts`로 분리.
 - Server Action은 오케스트레이션만. 데이터 변환/검증은 `_utils.ts`로 분리하여 테스트.
+- **`loading.tsx` 사용 금지. `<Suspense>`를 직접 배치한다.** (ADR-018 참조)
+  - `async` 컴포넌트는 반드시 어딘가의 `<Suspense>` 안에 있어야 함.
+  - Suspense는 사용자에게 먼저 보여줄 수 있는 UI와 기다려야 하는 UI의 경계에 배치.
+  - `page.tsx`는 메타데이터, params 추출, 정적 UI, Suspense 배치만 담당. 데이터 로딩은 `_components/` 내 async 컴포넌트에 위임.
+  - 스켈레톤은 `_components/`에 개별 파일로 배치.
 - Design tokens: `text-navy`, `bg-navy`, `text-accent`, `bg-accent`, `text-gray-dark`, `bg-gray-light`
 - 컴포넌트 및 로직 모듈화 (금지 제약 중심):
   - **인라인 비대화 금지**: 부모 컴포넌트 내부(렌더링 블록)에 하위 마크업(예: 리스트 아이템 카드, 마법사의 개별 단계, 확대 모달 돔 등)을 직접 인라인으로 작성하지 않는다. 독립적으로 추상화할 수 있는 모든 UI 영역은 지체 없이 별도 서브 컴포넌트로 분리한다.
