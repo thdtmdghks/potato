@@ -15,7 +15,7 @@ export const getAllReviewParams = async () => {
   return items.map((item) => ({ id: item.id }));
 };
 
-export async function getReviewDetailMetadata(id: string): Promise<Metadata> {
+export const getReviewDetailMetadata = async (id: string): Promise<Metadata> => {
   const review = await getReview(id);
 
   if (!review || review.status !== "approved") {
@@ -37,4 +37,4 @@ export async function getReviewDetailMetadata(id: string): Promise<Metadata> {
       ...(ogImage && { images: [{ url: ogImage, width: 800, height: 600 }] }),
     },
   };
-}
+};

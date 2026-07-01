@@ -1,12 +1,10 @@
+import { Suspense } from "react";
 import Link from "next/link";
-import { getServerRepositories } from "@/server";
-import { ProjectList } from "./_components/project-list";
 import { ROUTES } from "@/shared/routes";
+import { AdminProjectListContent } from "./_components/admin-project-list-content";
+import { AdminProjectListSkeleton } from "./_components/admin-project-list-skeleton";
 
-export default async function AdminProjects() {
-  const { projects } = await getServerRepositories();
-  const items = await projects.getAll();
-
+export default function AdminProjects() {
   return (
     <main className="space-y-8">
       {/* 상단 헤더 영역 */}
@@ -28,19 +26,9 @@ export default async function AdminProjects() {
       </header>
 
       {/* 포트폴리오 리스트 영역 */}
-      {items.length === 0 ? (
-        <section className="dark:border-gray-850 flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-gray-200 py-16 text-center">
-          <span className="text-4xl">🗂️</span>
-          <p className="text-navy mt-4 font-semibold dark:text-gray-200">
-            등록된 시공사례가 아직 없습니다.
-          </p>
-          <p className="text-gray-dark mt-1.5 text-xs dark:text-gray-400">
-            우측 상단 버튼을 클릭해 첫 번째 포트폴리오를 채워보세요.
-          </p>
-        </section>
-      ) : (
-        <ProjectList items={items} />
-      )}
+      <Suspense fallback={<AdminProjectListSkeleton />}>
+        <AdminProjectListContent />
+      </Suspense>
     </main>
   );
 }

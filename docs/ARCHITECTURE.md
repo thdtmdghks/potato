@@ -134,16 +134,31 @@ export async function createProject(formData: FormData) {
 
 ## 렌더링 전략
 
-| 페이지           | 렌더링 방식          | 이유                       |
-| ---------------- | -------------------- | -------------------------- |
-| `/`              | Dynamic (SSR)        | DB에서 시공사례/리뷰 fetch |
-| `/projects`      | Dynamic (SSR)        | 카테고리 필터              |
-| `/projects/[id]` | Dynamic (SSR)        | 동적 파라미터              |
-| `/reviews`       | Dynamic (SSR)        | 승인된 리뷰 목록           |
-| `/reviews/[id]`  | Dynamic (SSR)        | 동적 파라미터 + SEO        |
-| `/reviews/write` | Dynamic (SSR)        | 세션 체크 + 링크 검증      |
-| `/reviews/my`    | Dynamic (SSR)        | 세션 기반 조회             |
-| `/admin/*`       | Client + Server 혼합 | 인증 + CRUD                |
+**On-demand ISR + Suspense 직접 배치 (ADR-018)**
+
+| 페이지           | 렌더링 방식                | 갱신 시점                              |
+| ---------------- | -------------------------- | -------------------------------------- |
+| `/`              | ISR (정적 생성)            | revalidateProjects / revalidateReviews |
+| `/projects`      | ISR (정적 생성)            | revalidateProjects                     |
+| `/projects/[id]` | ISR (generateStaticParams) | revalidateProjects(id)                 |
+| `/reviews`       | ISR (정적 생성)            | revalidateReviews                      |
+| `/reviews/[id]`  | ISR (generateStaticParams) | revalidateReviews(id)                  |
+| `/reviews/write` | Dynamic (세션 + 링크 검증) | —                                      |
+| `/reviews/my`    | Dynamic (세션 기반)        | —                                      |
+| `/admin/*`       | Dynamic (인증 + CRUD)      | —                                      |
+
+### Suspense 패턴 (loading.tsx 미사용)
+
+```
+page.tsx (정적 UI + Suspense 배치)
+  └─ <Suspense fallback={<Skeleton />}>
+       └─ <Content /> (async 컴포넌트 — 데이터 fetch + 렌더링)
+```
+
+- `page.tsx`: metadata, params, 정적 UI, Suspense boundary 배치만 담당
+- 데이터 로딩: `_components/` 내 async 서버 컴포넌트에 위임
+- 스켈레톤: `_components/`에 개별 파일로 배치
+- 독립 데이터가 여러 개면 Suspense를 병렬로 배치 (홈: 프로젝트 캐러셀 + 리뷰 캐러셀)
 
 ## 반응형 레이아웃 (모바일 우선)
 
@@ -244,6 +259,8 @@ export async function createProject(formData: FormData) {
 1. **Server Action catch** → `logError` (비즈니스 맥락 포함)
 2. **error.tsx (클라이언트 바운더리)** → `reportUnexpectedError` Server Action → `logError`
 3. **storage-utils deleteImages** → `.catch` 내 `logError` (fire-and-forget)
+
+Discord 전송은 `after()` API로 응답 완료 후 백그라운드 실행 (Vercel Serverless 전송 보장).
 
 ### 환경변수 검증
 

@@ -1,11 +1,10 @@
+import { Suspense } from "react";
 import type { Metadata } from "next";
-import { auth } from "@/auth";
-import { getServerRepositories } from "@/server";
-import { getReviewWriteState, isValidUUIDv7 } from "./_utils";
+import { isValidUUIDv7 } from "./_utils";
 import { ReviewWriteView } from "./_components/review-write-view";
-import { ROUTES } from "@/shared/routes";
+import { ReviewWriteContent } from "./_components/review-write-content";
+import { ReviewWriteSkeleton } from "./_components/review-write-skeleton";
 
-// 검색 엔진 색인 차단
 export const metadata: Metadata = {
   title: "고객 후기 작성 | 경산창호",
   robots: {
@@ -26,16 +25,9 @@ export default async function ReviewWritePage({ searchParams }: PageProps) {
     return <ReviewWriteView state={{ type: "INVALID_LINK" }} />;
   }
 
-  const session = await auth();
-  if (!session?.kakaoId) {
-    return (
-      <ReviewWriteView state={{ type: "AUTH_REQUIRED", redirectTo: ROUTES.writeReview(id) }} />
-    );
-  }
-
-  const { reviews, reviewEdits } = await getServerRepositories();
-
-  const state = await getReviewWriteState(id, session, { reviews, reviewEdits });
-
-  return <ReviewWriteView state={state} />;
+  return (
+    <Suspense fallback={<ReviewWriteSkeleton />}>
+      <ReviewWriteContent id={id} />
+    </Suspense>
+  );
 }
