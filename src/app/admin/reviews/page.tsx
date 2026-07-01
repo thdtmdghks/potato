@@ -1,16 +1,16 @@
+import { Suspense } from "react";
 import type { Metadata } from "next";
-import { getServerRepositories } from "@/server";
-import { AdminReviewsView } from "./_components/admin-reviews-view";
+import { AdminReviewsContent } from "./_components/admin-reviews-content";
+import { AdminReviewsSkeleton } from "./_components/admin-reviews-skeleton";
 
 export const metadata: Metadata = {
   title: "리뷰 관리 | 경산창호 관리자",
 };
 
-export default async function AdminReviewsPage() {
-  const { reviews, reviewEdits } = await getServerRepositories();
-
-  const pendingReviews = await reviews.getAllPending();
-  const editRequests = await reviewEdits.getAllWithOriginal();
-
-  return <AdminReviewsView pendingReviews={pendingReviews} editRequests={editRequests} />;
+export default function AdminReviewsPage() {
+  return (
+    <Suspense fallback={<AdminReviewsSkeleton />}>
+      <AdminReviewsContent />
+    </Suspense>
+  );
 }
